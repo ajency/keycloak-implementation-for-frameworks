@@ -1,0 +1,51 @@
+<h3 class="text-center">User Profile</h3>
+
+<div class="well col-lg-6 col-md-6 col-sm-12 col-xs-12 col-lg-offset-3 col-md-offset-3"
+     style="margin-top:20px;position:relative;z-index:10" ng-controller="profileController">
+
+  <form class="form-horizontal">
+    <div class="form-group">
+      <label class="col-sm-4 control-label">Email:</label>
+      <label class="col-sm-6" style="padding-top:5px">{{profileController.email}}</label>
+
+    </div>
+    <br>
+    <div class="form-group">
+      <label class="col-sm-4 control-label">Name:</label>
+      <label class="col-sm-6" style="padding-top:5px">{{profileController.name}}</label>
+
+
+    </div>
+    <br>
+    <div class="form-group">
+      <label class="col-sm-4 control-label">Contact:</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" ng-model="profileController.contact" placeholder="Contact" ng-change="onChange()">
+      </div>
+
+    </div>
+    <br>
+    <div class="form-group">
+      <label class="col-sm-4 control-label">DOB (mm/dd/yyyy):</label>
+      <div class="col-sm-6">
+        <input type="date" class="form-control" ng-model="profileController.dob" placeholder="Date of Birth" ng-change="onChange()">
+      </div>
+
+    </div>
+    <br>
+    <div class="form-group">
+      <label class="col-sm-4 control-label">Emergency Contact:</label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" ng-model="profileController.econtact" placeholder="Emergency Contact" ng-change="onChange()">
+      </div>
+
+    </div>
+    <br>
+    </form>
+
+
+  <button class="btn btn-info" style="float:left;" ng-click="profileController.redirect()">Change Password</button>
+
+  <button class="btn btn-success" style="float:right;" ng-click="profileController.submit()" ng-disabled="disableSubmit">Submit</button>
+
+</div>

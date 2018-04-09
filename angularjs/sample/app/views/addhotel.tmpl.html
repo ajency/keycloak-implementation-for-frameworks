@@ -1,0 +1,64 @@
+<md-dialog id="itinerary_block" class="itinerary_modal" aria-label="Hotels" ng-cloak>
+  <md-dialog-content class="itinerary_tab">
+    <ul class="hotel_details clearfix">
+      <li><img src="images/icons/hotel.png" class="icons"></li>
+      <li class="add_image" ngf-select="ctrl.parent.uploadFiles($file, true)" accept="image/*">
+        <div class="progress_bar" ng-if="ctrl.parent.progress"><span>•</span><span>•</span><span>•</span></div>
+        <img ng-src="{{ctrl.parent.hotelToAdd.imageUrl}}" class="icons">
+         <br> <span>Add Image </span>
+      </li>
+      <li>
+        <div class="hotel_fields">
+          <p class="edit-caption ">Hotel Name</p>
+          <input type="text" class="city_field" name="hotelName" ng-model="ctrl.parent.hotelToAdd.name" placeholder=""> <br>
+        </div>
+      </li>
+      <li>
+        <div class="hotel_fields">
+          <p class="edit-caption ">Room Type</p>
+          <input type="text" class="city_field" name="roomType" ng-model="ctrl.parent.hotelToAdd.roomType" placeholder="">
+        </div>
+      </li>
+      <li>
+        <span class="star_rating">Star Rating:</span>
+        <select class="drop_dwn" ng-model="ctrl.parent.hotelToAdd.starRating">
+          <option value="1">1 Star</option>
+          <option value="2">2 Star</option>
+          <option value="3">3 Star</option>
+          <option value="4">4 Star</option>
+          <option value="5">5 Star</option>
+        </select>
+      </li>
+      <li>
+        <span class="No_rooms">No of Rooms:</span>
+        <select class="drop_dwn" ng-model="ctrl.parent.hotelToAdd.noOfRoom">
+          <option value="1">1 </option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+      </li>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="ctrl.parent.cancelDialog();">
+        <img src="images/icons/close.jpg" class="close_img" ng-click="ctrl.parent.cancelDialog();">
+      </button>
+    </ul>
+
+    <div class="split_hotel">
+      <p class="split_title">{{ctrl.parent.HotelDialogTitle}}</p>
+      <div layout="row" layout-wrap flex>
+          <div flex="50" ng-repeat="day in ctrl.parent.itinerary.days | limitTo: ctrl.parent.itinerary.days.length-1">
+            <md-checkbox ng-disabled="ctrl.parent.enableDisableDays(day.date, ctrl.parent.selectedHotelDays)" ng-checked="ctrl.parent.exists(day.date, ctrl.parent.selectedHotelDays, ctrl.parent.itinerary.days[ctrl.parent.currentDay].date)"
+               ng-click="ctrl.parent.toggle(day.date, ctrl.parent.selectedHotelDays)">
+                {{day.date | formatDateWithFormat:'MM-DD-YYYY'}}
+            </md-checkbox>
+          </div>
+        </div>
+    </div>
+    <div class="modal-footer itinerary_btn">
+      <!--button type="button" class="preview_btn" ng-click="ctrl.parent.openHotelsSRP();">Hotels SRP</button-->
+      <button type="button" class="preview_btn" data-dismiss="modal" ng-click="ctrl.parent.cancelDialog();">Close</button>
+      <button type="button" class="send_btn" ng-click="ctrl.parent.addHotel();">{{ctrl.parent.isHotelEdit ? 'Save':'Add'}}</button>
+    </div>
+  </md-dialog-content>
+</md-dialog>

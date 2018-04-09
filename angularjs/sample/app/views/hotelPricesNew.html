@@ -1,0 +1,347 @@
+<div class="col-lg-12 col-md-12" ng-controller="hotelPriceController" ng-init="getAllConstants();">
+  <h3 class="text-center">Hotel Prices</h3>
+
+
+  <form style="position:relative;z-index:20;" class="form-inline pull-left" role="form">
+    <div class="form-group">
+      <select class="form-control" ng-model="hotelPriceController.agent" ng-change="searchHotels(0)"
+              ng-options="item.id as item.name for item in agents">
+        <option value="">Select Agent</option>
+      </select>
+    </div>
+  </form>
+
+  <form style="position:relative;z-index:20;" class="form-inline pull-right" role="form">
+    <div class="form-group">
+      <select class="form-control" ng-model="hotelPriceController.country"
+              ng-options="item.id as item.name for item in countries" ng-change="getActiveStatesByCountries()">
+        <option value="">Select Country</option>
+      </select>
+      <select class="form-control" ng-model="hotelPriceController.state"
+              ng-options="item.id as item.state for item in states" ng-change="getActiveCitiesByStates()">
+        <option value="">Select State</option>
+      </select>
+      <select class="form-control" ng-model="hotelPriceController.city"
+              ng-options="item.id as item.city for item in cities" ng-change="searchHotels(0)">
+        <option value="">Select City</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <!--<label >Search</label>-->
+      <input type="text" ng-model="searchValue" class="form-control" placeholder="Search">
+    </div>
+  </form>
+
+  </br></br>
+  <div style="position:relative;z-index:10;" class="table-responsive">
+    <table class="table table-striped table-bordered">
+      <thead>
+      <tr>
+        <th class="text-center" ng-click="sort('id')">Hotel Id
+          <span class="glyphicon sort-icon" ng-show="sortKey=='id'"
+                ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+        </th>
+        <th class="text-center" ng-click="sort('name')">Hotel Name
+          <span class="glyphicon sort-icon" ng-show="sortKey=='name'"
+                ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+        </th>
+        <th class="text-center" ng-click="sort('star')">Star Rating
+          <span class="glyphicon sort-icon" ng-show="sortKey=='star'"
+                ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+        </th>
+        <th class="text-center" ng-click="sort('address')">Address
+          <span class="glyphicon sort-icon" ng-show="sortKey=='address'"
+                ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+        </th>
+        <th class="text-center" ng-click="sort('website')">Website
+          <span class="glyphicon sort-icon" ng-show="sortKey=='website'"
+                ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+        </th>
+        <th class="text-center" ng-click="sort('priceAvailable')">Price Submitted
+          <span class="glyphicon sort-icon" ng-show="sortKey=='priceAvailable'"
+                ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+        </th>
+        <th class="text-center">Edit</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr dir-paginate="hotel in hotels |orderBy:sortKey:reverse|filter:searchValue|itemsPerPage:8">
+        <td class="col-sm-1 text-center">{{ hotel.id}}</td>
+        <td class="col-sm-2 text-center">{{ hotel.name}}</td>
+        <td class="col-sm-1 text-center">{{ hotel.star}}</td>
+        <td class="col-sm-2 text-center">{{ hotel.address}}</td>
+        <td class="col-sm-2 text-center">{{ hotel.website}}</td>
+        <td class="col-sm-2 text-center">{{ hotel.priceAvailable}}</td>
+
+        <td class="text-center">
+          <button class="btn" ng-click="showDetails(hotel.sequence-1);toggleModal();">
+            <span class="glyphicon"></span>Edit
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <dir-pagination-controls
+      max-size="20"
+      direction-links="true"
+      boundary-links="true">
+    </dir-pagination-controls>
+  </div>
+
+  <button style="position:relative;z-index:10;" class="btn btn-success" ng-click="getMoreHotels();">
+    <span class="glyphicon glyphicon-"></span> Get More
+  </button>
+
+  <modal title="Hotel Details" dikhao="showModal">
+
+    <form class="form-horizontal" name='hotelPriceForm'>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">City</label>
+
+        <div class="col-sm-8">
+          <p>{{hotels[sequenceForEdit].city}}</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Name</label>
+
+        <div class="col-sm-8">
+          <p>{{hotels[sequenceForEdit].name}}</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Star Rating</label>
+
+        <div class="col-sm-8">
+          <p>{{hotels[sequenceForEdit].star}}</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Address</label>
+
+        <div class="col-sm-8">
+          <p>{{hotels[sequenceForEdit].address}}</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">pincode</label>
+
+        <div class="col-sm-8">
+          <p>{{hotels[sequenceForEdit].pincode}}</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">checkin</label>
+
+        <div class="col-sm-8">
+          <p>{{hotels[sequenceForEdit].checkin}}</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">checkin</label>
+
+        <div class="col-sm-8">
+          <p>{{hotels[sequenceForEdit].checkin}}</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">checkout</label>
+
+        <div class="col-sm-8">
+          <p>{{hotels[sequenceForEdit].checkout}}</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Swimming pool available</label>
+
+        <div class="col-sm-8">
+          <p>{{hotels[sequenceForEdit].amenities.swimming}}</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Wifi available</label>
+
+        <div class="col-sm-8">
+          <p>{{hotels[sequenceForEdit].amenities.wifi}}</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Gym available</label>
+
+        <div class="col-sm-8">
+          <p>{{hotels[sequenceForEdit].amenities.swimming}}</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Pantry available</label>
+
+        <div class="col-sm-8">
+          <p>{{hotels[sequenceForEdit].amenities.restaurant}}</p>
+        </div>
+      </div>
+
+
+      <div class="col-sm-12">
+
+        <label>Add Price:</label>
+
+        <div ng-repeat="data in priceData track by $index" ng-init="dataPosition=$index">
+
+
+          <div class="col-sm-12">
+            <hr style="background-color:black;height:2px">
+              <span style="position:relative;z-index:100;font-size:20px;color:red;cursor: pointer;float:right;"
+                    ng-click="deletePriceModel(dataPosition)" class="glyphicon glyphicon-remove"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-3 control-label">Dates:</label>
+
+            <div class="col-lg-4 col-md-4 form-group ">
+              <label class="control-label">Start Date (mm/dd/yyyy):</label>
+
+              <div>
+                <input type="date" ng-model="data.start_date" placeholder="Date">
+              </div>
+            </div>
+
+            <div class="col-lg-4 col-md-4 form-group">
+              <label class="control-label">End Date (mm/dd/yyyy):</label>
+
+              <div>
+                <input type="date" ng-model="data.end_date" placeholder="Date">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-3 control-label">Currency:</label>
+
+            <div class="col-sm-4">
+              <select class="form-control" ng-model="data.currency"
+                      ng-options="item.id as item.name for item in currencies">
+                <option value="">Select Currency</option>
+              </select>
+            </div>
+          </div>
+
+          <div ng-repeat="object in data.price track by $index" ng-init="position=$index">
+
+            <div class="col-sm-8 col-sm-offset-2">
+              <hr style="background-color:blue;height:1px">
+              <span style="position:relative;z-index:100;font-size:20px;color:red;cursor: pointer;float:right;"
+                    ng-click="deleteIndexPriceModel(dataPosition, position)" class="glyphicon glyphicon-remove"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-3 control-label">Days:<span style="color:red">*</span></label>
+
+              <div class="col-sm-8">
+                <dropdown-multiselect model="object.days" options="days"></dropdown-multiselect>
+              </div>
+              <div class="col-sm-4 col-sm-offset-3">
+                <span style="color:red" ng-show="(object.days.length === 0)">Choose atleast one.</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-3 control-label">Room Type<span style="color:red">*</span></label>
+
+              <div class="col-sm-7">
+                <select class="form-control" ng-model="object.room_type"
+                        ng-options="item.id as item.name for item in roomTypes">
+                  <option value="">Select RoomType</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-sm-2">
+              <label class="control-label">Price Single:</label>
+              <div>
+                <input class="form-control mod" type="number" step="0.01"
+                       ng-model="object.price_single"
+                       placeholder="Single">
+              </div>
+            </div>
+
+            <div class="col-sm-2">
+              <label class="control-label">Price Double:</label>
+
+              <div>
+                <input class="form-control mod" type="number" step="0.01"
+                       ng-model="object.price_double"
+                       placeholder="Double">
+              </div>
+            </div>
+
+            <div class="col-sm-2">
+              <label class="control-label">Price Triple:</label>
+
+              <div>
+                <input class="form-control mod" type="number" step="0.01"
+                       ng-model="object.price_triple"
+                       placeholder="Triple">
+              </div>
+            </div>
+
+            <div class="col-sm-2">
+              <label class="control-label">Price CWB:</label>
+
+              <div>
+                <input class="form-control mod" type="number" step="0.01"
+                       ng-model="object.price_cwb"
+                       placeholder="CWB">
+              </div>
+            </div>
+
+            <div class="col-sm-2">
+              <label class="control-label">Price CNB:</label>
+
+              <div>
+                <input class="form-control mod" type="number" step="0.01"
+                       ng-model="object.price_cnb"
+                       placeholder="CNB">
+              </div>
+            </div>
+
+          </div>
+
+          <div class="col-sm-6 col-sm-offset-3" ng-click="addAnotherPrice(dataPosition)">
+            <div align="center">
+              <br>
+              <button class="btn btn-info">Add Another Price</button>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-sm-6 col-sm-offset-3" ng-click="addNewPrice()">
+          <div align="center">
+            <br>
+            <button class="btn btn-info">Add Another slot</button>
+          </div>
+        </div>
+
+      </div>
+
+      <button class="btn btn-success" ng-click="savePrice();" ng-disabled="checkDate()">
+        <span class="glyphicon glyphicon-"></span> Save Price
+      </button>
+
+    </form>
+
+  </modal>
+
+</div>

@@ -1,0 +1,332 @@
+<style>
+  .slick-initialized .slick-slide {
+    /*width: 280px !important;;*/
+    left: -50px;
+    width: 100%;
+  }
+
+  .md-scroll-mask {
+    position: initial !important;
+  }
+
+  #mdtab md-tabs-wrapper{
+    display: none;
+  }
+
+  .combobtn {
+    font-size: 10px;
+    width: 45px;
+    height: 16px;
+    font-family: Roboto-Medium;
+    color: #fff;
+    line-height: 16px;
+    background-color: #0FBCE7!important;
+    border: transparent;
+    text-align: center;
+}
+.mustdobtn {
+    font-size: 10px;
+    width: 45px;
+    height: 16px;
+    font-family: Roboto-Medium;
+    color: #000;
+    line-height: 16px;
+    background-color: #ffa32c!important;
+    border: transparent;
+    text-align: center;
+}
+
+.combobtn, .mustdobtn {
+    min-width: 45px!important;
+    min-height: 16px!important;
+    display: inline-block;
+    vertical-align: middle;
+}
+.itinerary_city_name {
+    font-size: 20px;
+    font-family: Roboto-Regular;
+}
+
+.btn_close {
+    padding-top: 20px;
+    border: 0 transparent;
+    background: 0 0;
+    float: right;
+    outline: 0;
+}
+
+</style>
+<div class="col-lg-12 col-md-12" ng-controller="cityDetailsController" ng-init="getCityDetails()" style="max-width:75%; margin-left: 12%;margin-right:12%;">
+  <md-toolbar class="md-hue-2" style="padding: 0px;">
+    <div class="md-toolbar-tools" style="padding-top: 6px;">
+      <md-button ng-click="goBack();" style="height:48px; width:48px;align-content: center;" class="md-icon-button" aria-label="Settings">
+        <img class="backicon" style="align-content: center;" src="images/ic_arrow_back.png"/>
+      </md-button>
+      <h2>
+        <span style="overflow: hidden; white-space: nowrap;color: #fff;">{{city_name}} - Things to do </span>
+      </h2>
+    </div>
+  </md-toolbar>
+  <!--Tab-->
+  <md-tabs id="mdtab1" md-stretch-tabs="auto" md-dynamic-height md-border-bottom md-selected="data.selectedIndex"
+  md-swipe-content="true" style="height: auto;margin-top: 49px;" ng-click="outsideClick()">
+    <md-tab label="activities" md-on-select="activityTabSelected(true);"></md-tab>
+    <md-tab label="about" md-on-select="activityTabSelected(false);"></md-tab>
+  </md-tabs>
+  <div style="height: 100%;margin-top: 25px;">
+    <md-tabs id="mdtab" md-stretch-tabs="auto" md-dynamic-height md-border-bottom md-selected="data.selectedIndex"md-swipe-content="true" style="height: auto;" ng-click="outsideClick()">
+      <md-tab label="activities" md-on-select="activityTabSelected(true);">
+        <md-content class="" style="background-color: #F2F2F2;padding-bottom:10vh;height: auto;">
+          <div ng-if="cityActivities.length === 0 && loadedAllActivities===true" style="text-align: center;margin-top: 45vh;font-size: 20px;">No Activities Available</div>
+          <div ng-repeat="activity in cityActivities[0].activities |filter:search">
+            <md-card style="margin: 11px;">
+              <!--Description-->
+              <div class="col-xs-12" style="padding: 0px;">
+                <div class="col-xs-10 card_title_padding_left" ng-click="showactivitydetails(activity.activity_id.id,cityDesciption.id,activity.activity_id.name)" style="outline: none;">
+                  <span class="ellipse" style="display: block;">
+                    <span class="itinerary_city_name"style="max-width: 150px;text-transform: capitalize;">{{activity.name}}
+                    </span>
+                    <br>
+                    <div class="mustdobtn" ng-if="activity.is_common === true">Must Do</div>
+                    <span class="itinerary_city_date" style="font-size: 14px;">{{activity.name}} &nbsp;</span>
+                    <div class="itinerary_transfer_duration">Duration: {{activity.durationString}}</div>
+                  </span>
+                </div>
+                <div ng-if="addBtnDisabled" class="col-xs-2 card_title_padding_right">
+                  <button ng-if="!activity.selected && draft_id && draft_day_id" class="btn_close"ng-click="addActivity(activity.activitySequence, false, 'activity')">
+                    <img src="images/icons/ic_add.png" style="width: 24px;"/>
+                  </button>
+                  <button ng-if="activity.selected" class="btn_close">
+                    <img src="images/icons/blue_check.png" style="width: 24px;"/>
+                  </button>
+                </div>
+              </div>
+              <div class="col-xs-12" style="margin-top: -5px;padding-bottom: 8px;">
+                <span class="tour_desc" style="text-transform: uppercase;">{{}}</span>
+              </div>
+              <!--Image-->
+              <div class="col-xs-12" style="padding: 0px;outline: none;" ng-click="showactivitydetails(activity.id,cityDesciption.id,activity.name)">
+                <div class="gradient-effect" style=" position: relative; float: left;width: 100%;">
+                  <img src='loaders/image_loading.png' lazy-img='{{activity.cover_image}}' style="width: 100%;height: 200px;z-index: -1;object-fit: cover;object-position: center;cursor:pointer;">
+                  <div>
+                    <div class="trip_div" style="bottom: 10px;">
+                      <div>
+                        <img ng-if="activity.rating_image_url" ng-src="{{activity.rating_image_url}}" alt="" style="width: 100px;float: left;">
+                        <span ng-if="activity.rating_image_url" style="margin-left: 10px;" class="tour_review">{{activity.num_reviews}} Reviews</span>
+                        <div ng-if="activity.activity_inclusions" class="col-xs-12" style="color:white; padding:4px;margin-left: -7px;text-transform: capitalize;">Includes:
+                        </div>
+                        <div>
+                          <span style="margin-left: -7px;color:white;padding:4px ; display: inline-block; margin-left: -7px;text-transform: capitalize;">{{activity.activity_inclusions}}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div style=" color: white; position: absolute;bottom: 38px; right:2px;">
+                    <div style=" position: relative; bottom: 0;margin-right: 11px;">
+                      <span class="activity_price" style="position:relative;color: white;font-size:22px">&#8377; {{activity.activity_price.total_price_INR | cur}}</span>
+                      <!-- <span class="activity_price_count" style="font-size:12px;position:relative;color: white; margin-left: 36px;"> /adult</span> -->
+                    </div>
+                  </div>
+              </div>
+            </md-card>
+          </div>
+          <div>
+            <div ng-repeat="minitour in cityActivities[0].minitours |filter:search">
+              <md-card style="margin: 11px;">
+                <!--Description-->
+                <div class="col-xs-12" style="padding: 0px;">
+                  <div class="col-xs-10 card_title_padding_left" ng-click="showminitourdetails(minitour.id,cityDesciption.id,minitour.name)" style="outline: none;">
+                    <span class="ellipse" style="display: block;">
+                      <span class="itinerary_city_name" style="max-width: 150px;text-transform: capitalize;">{{minitour.name}}</span>
+                      <br>
+                      <div class="mustdobtn" ng-if="activity.minitour_id.is_common === true">Must Do</div>
+                      <div class="combobtn">Combo</div>
+                      &nbsp; <span class="itinerary_transfer_duration">Duration: {{minitour.durationString}}</span>
+                    </span>
+                  </div>
+                  <div ng-if="!addBtnDisabled" class="col-xs-2 card_title_padding_right">
+                    <i ng-if="activity.fav === false" ng-click="addFav(minitour.id,minitour.miniTourSequence,minitour.type)" style="font-size: 20px;outline:none;color: red;margin-top: 4px;margin-left: 23px;" class="fa fa-heart-o"></i>
+                    <i ng-if="activity.fav === true" ng-click="removeFav(minitour.id,minitour.miniTourSequence,minitour.type)" style="font-size: 20px;outline:none;color: red;margin-top: 4px;margin-left: 23px;" class="fa fa-heart"></i>
+                  </div>
+                  <div ng-if="addBtnDisabled" class="col-xs-2 card_title_padding_right">
+                    <button ng-if="!minitour.selected && draft_id && draft_day_id" class="btn_close"
+                    ng-click="addActivity(minitour.miniTourSequence, false, 'minitours')">
+                      <img src="images/icons/ic_add.png" style="width: 24px;"/>
+                    </button>
+                    <button ng-if="minitour.selected" class="btn_close">
+                      <img src="images/icons/blue_check.png" style="width: 24px;"/>
+                    </button>
+                  </div>
+                </div>
+                <div ng-if="minitour.activities.length === 0">
+                  <img src="loaders/image_loading.png"/>
+                </div>
+                <!--Image-->
+                <div ng-if="dataready" ng-click="showminitourdetails(minitour.id,cityDesciption.id,minitour.name)">
+                  <slick settings="slickConfig" slidesToShow=1 init-onload="true" data="cityActivities">
+                    <div class="gradient-effect" ng-repeat="miniphotos in minitour.activities" style="margin-right:10px;">
+                      <img src='loaders/image_loading.png' lazy-img='{{miniphotos.activity_details.cover_image}}' err-src="loaders/image_loading.png" style="height: 170px;width: 100%;object-fit: cover;object-position: center;cursor:pointer;"/>
+                      <div style="position: absolute;bottom: 7%;padding-left: 8px;">
+                        <img ng-show="miniphotos.activity_details.rating_image_url"ng-src="{{miniphotos.activity_details.rating_image_url}}" alt=""
+                        style="width: 80px;float: left;margin-right: 5px;display: inline;margin-top:3px;"/>
+                        <span  class="tour_review">    {{miniphotos.activity_details.num_reviews}} Reviews</span>
+                        <div>
+                          <div class="ellipse" style=" max-width: 180px; color: white; /* max-height: 17px; */ font-family: Roboto-regular; font-size: 14px; text-transform: capitalize; padding-left: 5px;">
+                            {{miniphotos.activity_details.name}}
+                          </div>
+                          <div>
+                            <span style="color: #FFFFFF; font-family: Roboto-light; padding-left: 6px; display: block;">
+                              {{miniphotos.activity_type.name}}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </slick>
+                </div>
+                <div class="col-xs-12" style="padding-top:4px; padding-bottom: 8px;" ng-click="showminitourdetails(minitour.id,cityDesciption.id,minitour.name)">
+                  <div ng-if="minitour.activity_inclusions" class="col-xs-7" style=" white-space: nowrap; text-transform: capitalize; padding-left: 0px; font-family: Roboto-regular;padding-top:10px; overflow: hidden; text-overflow: ellipsis;">Includes: {{minitour.activity_inclusions}}
+                  </div>
+                  <div class="col-xs-5 pull-right" style="font-family: Roboto-regular;padding: 0px; margin: 0px; font-size: 22px;text-align:right;padding-bottom: 10px;">
+                    <span class="activity_price">&#8377; {{minitour.activity_price.total_price_INR | cur}}</span>
+                    <!-- <span class="activity_price_count" style="line-height: 0; color: rgba(0, 0, 0, 0.87);font-weight: bold;opacity: 0.7; font-size:10px !important; margin-top: 8px;">/adult</span> -->
+                  </div>
+                </div>
+              </md-card>
+            </div>
+            <!--dir-pagination-controls max-size="20" direction-links="true" boundary-links="true">
+            </dir-pagination-controls-->
+          </div>
+          <button style="position:relative;z-index:10" class="btn btn-success" ng-if="cityActivities.length === 0 && loadedAllActivities===true" ng-click="getMoreActivities();">
+            <span class="glyphicon glyphicon-"></span> Get More
+          </button>
+        </md-content>
+      </md-tab>
+      <md-tab label="about" md-on-select="activityTabSelected(false);">
+        <md-content style="background-color: #ffffff;padding-bottom:10vh;height: auto;">
+          <!--Description for city-->
+          <div style="font-size: 18px;text-transform: uppercase;padding-bottom: 8px; padding-left:8px;padding-top: 8px;font-family: Roboto-Regular;">{{cityDesciption.name}}</div>
+          <div ng-if="cityDesciption.short_description" class="col-xs-12 hoteldesc" style="text-align: justify;padding-bottom: 16px;padding-top: 16px;padding-right: 8px;padding-left: 8px;">
+            <div style="font-size: 18px;text-transform: uppercase;padding-bottom: 8px;font-weight: bold;padding-top: 8px;color: #FFA32C;">outline</div>
+            <div class="linebreak"> {{cityDesciption.short_description | linebreak}}</div>
+          </div>
+          <div class="col-xs-12 hoteldesc" style="text-align: justify;padding-bottom: 16px;padding-top: 16px;padding-right: 8px;padding-left: 8px;">
+            <div style="font-size: 18px;text-transform: uppercase;padding-bottom: 8px;font-weight: bold;padding-top: 8px;color: #FFA32C;">description</div>
+            <div class="linebreak"> {{cityDesciption.description | linebreak}}</div>
+          </div>
+          <!--Gallery-->
+          <hr>
+          <div ng-if="citydescription.photos.length > 0" class="col-xs-12" style="text-transform: uppercase;padding-left: 6px;">
+            <div style="font-size: 18px;text-transform: uppercase;padding-bottom: 8px;font-weight: bold;padding-top: 8px;color: #FFA32C;">gallery</div>
+          </div>
+          <div class="col-xs-12" style="padding: 0px;padding-left: 8px;padding-right: 8px;height: auto;">
+            <div class="swiper-container">
+              <div class="swiper-wrapper my-gallery">
+                <div ng-repeat="gallery in citydescription.photos" class="swiper-slide gradient-effect">
+                  <img ng-src="{{gallery.photo_url}}" err-src="images/image_loading.png" class="swiper-lazy"/>
+                  <div class="swiper-lazy-preloaders"></div>
+                </div>
+              </div>
+              <div style="color: #FFFFFF;font-size: 16px;position: absolute;top: 10%;margin-left: 25%;" class="swiper-pagination">
+              </div>
+            </div>
+          </div>
+        </md-content>
+      </md-tab>
+    </md-tabs>
+  </div>
+  <div class="col-xs-12 snack_bar_position snack_bar_panel" ng-if="showSnackBarCityView" style="">
+    <div style="padding: 0px;font-family: Roboto">
+      <div style="float: left;margin-right: 10px;">Added</div>
+        <div class="ellipse snack_text">{{addActivityName}}</div>
+    </div>
+  </div>
+  <div class="col-xs-12" ng-if="favSnackBar" style="z-index: 99999;height: 50px;color: #000000;background-color: #ffa32c;font-size: 16px;padding-top: 16px;position: fixed;bottom: 0%;">
+    <div style="padding: 0px;text-overflow: ellipsis;overflow: hidden;max-height: 20px;text-transform: uppercase;font-family: Roboto">{{favText}}</div>
+  </div>
+  <div class="col-xs-12 snack_bar_panel" ng-if="favLoginSnackBar"style="position: fixed;bottom: 0%;">
+    <div style="padding: 0px;text-overflow: ellipsis;overflow: hidden;max-height: 20px;text-transform: uppercase;font-family: Roboto">Please
+      <span ng-click="redirectLogin();" style="font-weight: bold;text-decoration: underline;">login / signup</span> to continue
+    </div>
+  </div>
+  <div ng-if="addBtnDisabled" class="col-xs-12 fixed_btm">
+    <div class="col-xs-12" style="border-bottom:1px solid #e0e0e0;margin: 0px; padding: 0px;" ng-show="activitiesTab == true">
+      <div class="col-xs-6" ng-click="openCustomDialog()" style="text-align: center;border-right:1px solid #e0e0e0;height: 100%;">
+        <span style="font-size: 16px; opacity: 0.5;padding: 8px;" class="fa fa-filter" aria-hidden="true"></span>
+        <span style="text-transform: uppercase;font-size: 14px;font-family: Roboto-Light;">Filter</span>
+      </div>
+      <div class="col-xs-6" ng-click="on_sort_click()" style="text-align: center;border-right:1px solid #e0e0e0;height: 100%;">
+        <span style="font-size: 16px;opacity:0.5;padding: 8px;" class="fa fa-sort" aria-hidden="true"></span>
+        <span style="text-transform: uppercase;font-size: 14px;font-family: Roboto-Light;">Sort</span>
+      </div>
+    </div>
+    <div class="col-xs-12" style="">
+      <md-button ng-click="goBack()" type="button" style="height: 40px;line-height: 0.3;background-color: #0FBCE7; width: 100%;border: none;border-radius: 3px;float: right;color: white; outline:none;padding: 0px;margin: 0px;text-transform: initial;">Done
+      </md-button>
+    </div>
+  </div>
+  <div  ng-if="showFixedFooter" class="col-xs-12 fixed_btm" style="padding: 8px;">
+    <md-button ng-click="goToForm1()" type="button" class="btn btn-secondary btn_bottom_next"
+    style="width: 100%;">Create itinerary
+    </md-button>
+  </div>
+  <!--End Tab-->
+</div>
+
+<script type="text/ng-template" id="alertDialog.tmpl.html">
+  <md-dialog style="min-width: 310px;border-radius: 0px;
+    max-height: 70%;" aria-label="Alert Price" ng-cloak>
+    <form>
+      <md-dialog-content>
+        <div class="md-dialog-content" style="padding: 0px;">
+          <div class="col-xs-12" style="font-size: 16px;font-family: Roboto;padding-top: 15px;font-weight: bold;">
+            {{ctrl.parent.alertTitle}}
+          </div>
+          <div class="col-xs-12" style="padding: 15px;">
+            <p ng-bind-html="ctrl.parent.alertText" n style="font-family: Roboto-Regular;"></p>
+          </div>
+        </div>
+      </md-dialog-content>
+      <md-dialog-actions layout="row">
+        <md-button ng-click="ctrl.parent.cancelDialog()" type="button" class="btn btn-secondary tour_explorebtn"
+                   style="height: 40px;line-height: 0.3;background-color: white;">No
+        </md-button>
+        <md-button ng-click="ctrl.parent.dialogOk()" type="button"
+                   class="btn btn-secondary tour_explorebtn"
+                   style="height: 40px;line-height: 0.3;background-color: white;">Yes
+        </md-button>
+      </md-dialog-actions>
+    </form>
+  </md-dialog>
+</script>
+<script type="text/ng-template" id="sortDialog.tmpl.html">
+  <md-dialog style="min-width: 310px;border-radius: 0px;
+    max-height: 70%;" aria-label="Sort Options" ng-cloak>
+    <form>
+      <md-dialog-content>
+        <div style="padding: 16px;">
+          <div class="col-xs-12" style="font-size: 16px;font-family: Roboto;font-weight: bold;">
+            Sort Options
+          </div>
+          <div class="col-xs-12" style="padding-top: 16px;">
+            <md-radio-group ng-model="ctrl.parent.selectedFilterType" style="font-family: Roboto-Light;">
+              <md-radio-button ng-repeat="d in ctrl.parent.sortOptions" ng-value="d.name" aria-label="{{ d.label }}">
+                {{ d.label }}
+              </md-radio-button>
+            </md-radio-group>
+          </div>
+        </div>
+      </md-dialog-content>
+      <md-dialog-actions layout="row">
+        <md-button ng-click="ctrl.parent.cancelDialog()" type="button" class="btn btn-secondary"
+                   style="height: 40px;line-height: 0.3;background-color: #0FBCE7; color: white;">Cancel
+        </md-button>
+        <md-button ng-click="ctrl.parent.on_filter_done();" type="button"
+                   class="btn btn-secondary"
+                   style="height: 40px;line-height: 0.3;background-color: #0FBCE7;color: white;">Ok
+        </md-button>
+      </md-dialog-actions>
+    </form>
+  </md-dialog>
+</script>

@@ -1,0 +1,223 @@
+<md-dialog id="itinerary_block" class="itinerary_modal" aria-label="Flights" ng-cloak>
+  <md-dialog-content class="itinerary_tab">
+    <div class="hop_wrap" ng-if="ctrl.parent.flights.onwards">
+      <span ng-show="!ctrl.parent.isFlightEdit">{{ctrl.parent.flights.departureCity.airport_code }} - {{ ctrl.parent.flights.destinationCity.airport_code}}</span>
+      <div  ng-repeat="flightToAdd in ctrl.parent.flights.onwards.flights">
+        <div>
+          <span ng-show="!ctrl.parent.isFlightEdit">Onward HOP {{$index + 1}}:</span>
+          <ul class="flight_details clearfix">
+            <img src="images/icons/close.jpg" class="close_img" ng-click="ctrl.parent.removeHop('onwards', $index)" ng-if="$index > 0">
+            <li>
+              <img src="images/icons/flight.png" class="icons">
+            </li>
+            <li class="city_field">
+              <p class="edit-caption ">Departure City*</p>
+              <div ng-show="!flightToAdd.departureCity" ng-message="required" class="required_msg">required</div>
+              <div angucomplete-alt id= "{{'exDepartureCityOnwards' + $index}}" pause="300" selected-object="ctrl.parent.selectedOnwardsDepartureAirportFunction" local-data="ctrl.parent.airports"
+                local-search="ctrl.parent.airportSearch" title-field="airportText" minlength="2" focus-in="ctrl.parent.resetUserCityData('exDepartureCityOnwards' + $index + '_value')"
+                input-class="form-control form-control-small" initial-value="flightToAdd.departureCity" match-class="highlight"
+                ng-model="flightToAdd.departureCity" class="departure_city">
+              </div>
+            </li>
+            <li> - </li>
+            <li class="city_field">
+              <p class="edit-caption ">Destination City*</p>
+              <div ng-show="!flightToAdd.destinationCity" ng-message="required" class="required_msg">required</div>
+              <div angucomplete-alt id="{{'exDestinationCityOnwards' + $index}}" pause="300" selected-object="ctrl.parent.selectedOnwardsDestinationAirportFunction"
+                local-data="ctrl.parent.airports" local-search="ctrl.parent.airportSearch" title-field="airportText" minlength="2"
+                minlength="2" focus-in="ctrl.parent.resetUserCityData('exDestinationCityOnwards' + $index + '_value')" input-class="form-control form-control-small"
+                initial-value="flightToAdd.destinationCity" match-class="highlight" ng-model="flightToAdd.destinationCity"
+                class="departure_city">
+              </div>
+            </li>
+            <li class="duration flight_duration">
+              <md-input-container>
+                <div ng-show="!flightToAdd.duration" ng-message="required" class="required_msg">required</div>
+                <input required="" type="number" ng-model="flightToAdd.duration" placeholder="Duration (mins)*">
+              </md-input-container>
+            </li>
+            <li class="duration">
+              <md-input-container class="flight_detail">
+                <input ng-model="flightToAdd.flightNumber" placeholder="Flight Number">
+              </md-input-container>
+            </li>
+            <li style="width:25px;height:auto;">
+              <img ng-show="flightToAdd.airline" ng-src="{{flightToAdd.airline.small_image_url}}" class="icons">
+            </li>
+            <li class="flight_detail">
+              <p class="edit-caption ">Airline Name*</p>
+              <div ng-show="!flightToAdd.airline" ng-message="required" class="required_msg">required</div>
+              <div required="" angucomplete-alt id="{{'exAirlineNameOnwards' + $index}}" pause="300" selected-object="ctrl.parent.selectedOnwardsAirlineFunction" local-data="ctrl.parent.airlines"
+                local-search="ctrl.parent.airlineSearch" title-field="name" minlength="2" minlength="2" focus-in="ctrl.parent.resetUserCityData('exAirlineNameOnwards' + $index + '_value')"
+                input-class="form-control form-control-small" initial-value="flightToAdd.airline" match-class="highlight" ng-model="flightToAdd.airline"
+                class="departure_city" placeholder="">
+              </div>
+            </li>
+            <li class="duration">
+              <p class="edit-caption date_caption">Departure Date*</p>
+              <div ng-show="!flightToAdd.departureDate" ng-message="required" class="required_msg">required</div>
+              <md-datepicker required="" ng-model="flightToAdd.departureDate" md-placeholder="Departure Date" md-min-date="ctrl.parent.minDate" md-open-on-focus onkeydown="return false"></md-datepicker>
+            </li>
+            <li class="duration">
+              <md-input-container class="flight_detail time_field">
+                <input type="time" ng-model="flightToAdd.departureTime" placeholder="Departure Time (hh:mm)">
+              </md-input-container>
+            </li>
+            <li class="duration">
+              <md-input-container class="flight_detail time_field">
+                <input type="time" ng-model="flightToAdd.arrivalTime" placeholder="Arrival Time (hh:mm)">
+              </md-input-container>
+            </li>
+            <li class="duration">
+              <p class="edit-caption date_caption">Arrival Date*</p>
+              <div ng-show="!flightToAdd.arrivalDate" ng-message="required" class="required_msg">required</div>
+              <md-datepicker required="" ng-model="flightToAdd.arrivalDate" md-placeholder="Arrival Date" md-min-date="ctrl.parent.minDate" md-open-on-focus onkeydown="return false"></md-datepicker>
+            </li>
+            <li class="duration">
+              <p class="airline tag">Airline class*</p>
+              <div ng-show="!flightToAdd.airlineClass" ng-message="required" class="required_msg">required</div>
+              <select required="" class="form-control drop_dwn" ng-model="flightToAdd.airlineClass" ng-options="item.name as item.name for item in ctrl.parent.preferredFlyingClasses">
+                <option value="">Airline class</option>
+              </select>
+            </li>
+            <li class="duration">
+              <md-input-container class="flight_detail baggage">
+                <input ng-model="flightToAdd.cabinLuggageAllowance" type='number' pattern="[0-9]*" placeholder="Cabin Baggage"> <span class="baggage_title">Kg</span>
+              </md-input-container>
+            </li>
+            <li class="duration">
+              <md-input-container class="flight_detail baggage">
+                <input ng-model="flightToAdd.CheckinLuggageAllowance" type='number' pattern="[0-9]*" placeholder="Checkin Baggage"> <span class="baggage_title">Kg</span>
+              </md-input-container>
+            </li>
+            <li class="duration flight_checkbox">
+              <md-input-container class="flight_detail time_field">
+                <input type="checkbox" ng-model="flightToAdd.is_refundable" placeholder="Refundable">
+              </md-input-container>
+            </li>
+            <li class="duration flight_checkbox">
+              <md-input-container class="flight_detail time_field">
+                <input type="checkbox" ng-model="flightToAdd.meals_included" placeholder="Meals">
+              </md-input-container>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button type="button" class="preview_btn" data-dismiss="modal" ng-show="!ctrl.parent.isFlightEdit" ng-click="ctrl.parent.addAnotherHOP('onwards');">
+        + Add Another HOP</button>
+    </div>
+    <div ng-if="ctrl.parent.flights.return">
+      <span ng-show="!ctrl.parent.isFlightEdit">{{ctrl.parent.flights.destinationCity.airport_code }} - {{ ctrl.parent.flights.departureCity.airport_code}}</span>
+      <div ng-repeat="flightToAdd in ctrl.parent.flights.return.flights">
+        <div>
+          <span ng-show="!ctrl.parent.isFlightEdit">Return HOP {{$index + 1}}:</span>
+          <ul class="flight_details clearfix">
+            <img src="images/icons/close.jpg" class="close_img" ng-click="ctrl.parent.removeHop('return', $index)" ng-if="$index > 0">
+            <li>
+              <img src="images/icons/flight.png" class="icons">
+            </li>
+            <li class="city_field">
+              <p class="edit-caption ">Departure City*</p>
+              <div ng-show="!flightToAdd.departureCity" ng-message="required" class="required_msg">required</div>
+              <div angucomplete-alt id="{{'exDepartureCityReturn' + $index}}" pause="300" selected-object="ctrl.parent.selectedReturnDepartureAirportFunction" local-data="ctrl.parent.airports"
+                local-search="ctrl.parent.airportSearch" title-field="airportText" minlength="2" focus-in="ctrl.parent.resetUserCityData('exDepartureCityReturn' + $index + '_value')"
+                input-class="form-control form-control-small" initial-value="flightToAdd.departureCity" match-class="highlight"
+                ng-model="flightToAdd.departureCity" class="departure_city">
+              </div>
+            </li>
+            <li> - </li>
+            <li class="city_field">
+              <p class="edit-caption ">Destination City*</p>
+              <div ng-show="!flightToAdd.destinationCity" ng-message="required" class="required_msg">required</div>
+              <div angucomplete-alt id="{{'exDestinationCityReturn' + $index}}" pause="300" selected-object="ctrl.parent.selectedReturnDestinationAirportFunction"
+                local-data="ctrl.parent.airports" local-search="ctrl.parent.airportSearch" title-field="airportText" minlength="2"
+                minlength="2" focus-in="ctrl.parent.resetUserCityData('exDestinationCityReturn' + $index + '_value')" input-class="form-control form-control-small"
+                initial-value="flightToAdd.destinationCity" match-class="highlight" ng-model="flightToAdd.destinationCity"
+                class="departure_city">
+              </div>
+            </li>
+            <li class="duration flight_duration">
+              <md-input-container>
+                <div style="position: absolute;bottom: -7px;" ng-show="!flightToAdd.duration" ng-message="required" class="required_msg">required</div>
+                <input required="" ng-model="flightToAdd.duration" placeholder="Duration (hrs)*">
+              </md-input-container>
+            </li>
+            <li class="duration">
+              <md-input-container class="flight_detail">
+                <input ng-model="flightToAdd.flightNumber" placeholder="Flight Number">
+              </md-input-container>
+            </li>
+            <li style="width:25px;height:auto;">
+              <img ng-show="flightToAdd.airline" ng-src="{{flightToAdd.airline.small_image_url}}" class="icons">
+            </li>
+            <li class="flight_detail">
+              <p class="edit-caption ">Airline Name*</p>
+              <div ng-show="!flightToAdd.airline" ng-message="required" class="required_msg">required</div>
+              <div angucomplete-alt id="{{'exAirlineNameReturn' + $index}}" pause="300" selected-object="ctrl.parent.selectedReturnAirlineFunction" local-data="ctrl.parent.airlines"
+                local-search="ctrl.parent.airlineSearch" title-field="name" minlength="2" minlength="2" focus-in="ctrl.parent.resetUserCityData('exAirlineNameReturn' + $index + '_value')"
+                input-class="form-control form-control-small" initial-value="flightToAdd.airline" match-class="highlight" ng-model="flightToAdd.airline"
+                class="departure_city" placeholder="">
+              </div>
+            </li>
+            <li class="duration">
+              <p class="edit-caption date_caption">Departure Date*</p>
+              <div ng-show="!flightToAdd.departureDate" ng-message="required" class="required_msg">required</div>
+              <md-datepicker  required="" ng-model="flightToAdd.departureDate" md-placeholder="Departure Date"></md-datepicker>
+            </li>
+            <li class="duration">
+              <md-input-container class="flight_detail time_field">
+                <input type="time" ng-mo del="flightToAdd.departureTime"  placeholder="Departure Time (hh:mm)">
+              </md-input-container>
+            </li>
+            <li class="duration">
+              <md-input-container class="flight_detail time_field">
+                <input type="time" ng-model="flightToAdd.arrivalTime"  placeholder="Arrival Time (hh:mm)">
+              </md-input-container>
+            </li>
+            <li class="duration">
+              <p class="edit-caption date_caption">Arrival Date*</p>
+              <div ng-show="!flightToAdd.arrivalDate" ng-message="required" class="required_msg">required</div>
+              <md-datepicker required="" ng-model="flightToAdd.arrivalDate" md-placeholder="Arrival Date"></md-datepicker>
+            </li>
+            <li class="duration">
+              <p class="airline tag">Airline class*</p>
+              <div ng-show="!flightToAdd.airlineClass" ng-message="required" class="required_msg">required</div>
+              <select required="" class="form-control drop_dwn" ng-model="flightToAdd.airlineClass" ng-options="item.name as item.name for item in ctrl.parent.preferredFlyingClasses">
+                <option value="">Airline class</option>
+              </select>
+            </li>
+            <li class="duration">
+              <md-input-container class="flight_detail baggage">
+                <input ng-model="flightToAdd.cabinLuggageAllowance" type='number' pattern="[0-9]*" placeholder="Cabin Baggage"><span class="baggage_title">Kg</span>
+              </md-input-container>
+            </li>
+            <li class="duration">
+              <md-input-container class="flight_detail baggage">
+                <input ng-model="flightToAdd.CheckinLuggageAllowance" type='number' pattern="[0-9]*" placeholder="Checkin Baggage"><span class="baggage_title">Kg</span>
+              </md-input-container>
+            </li>
+            <li class="duration flight_checkbox">
+              <md-input-container class="flight_detail time_field">
+                <input type="checkbox" ng-model="flightToAdd.is_refundable" placeholder="Refundable">
+              </md-input-container>
+            </li>
+            <li class="duration flight_checkbox">
+              <md-input-container class="flight_detail time_field">
+                <input type="checkbox" ng-model="flightToAdd.meals_included" placeholder="Meals">
+              </md-input-container>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <button type="button" class="preview_btn" data-dismiss="modal" ng-show="!ctrl.parent.isFlightEdit" ng-click="ctrl.parent.addAnotherHOP('return');">
+        + Add Another HOP</button>
+    </div>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="ctrl.parent.cancelDialog();">
+      <img src="images/icons/close.jpg" class="close_img">
+    </button>
+    <div class="modal-footer itinerary_btn">
+      <button type="button" class="preview_btn" data-dismiss="modal" ng-click="ctrl.parent.cancelDialog();">Close</button>
+      <button type="button" class="send_btn" ng-click="ctrl.parent.addFlight();">{{!ctrl.parent.isFlightEdit ?'Add':'Save'}}</button>
+    </div>
+  </md-dialog-content>
+</md-dialog>

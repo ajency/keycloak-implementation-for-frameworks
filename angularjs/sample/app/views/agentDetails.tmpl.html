@@ -1,0 +1,34 @@
+<md-dialog class="dialog_size agent_dialog" aria-label="Quotations" ng-cloak style="z-index: 99998; max-height:100% !important;">
+    <md-dialog-content>
+      <div class="tabs_content itinerary_mail">
+        <div class="input_field"><span class="title">Agent ID:</span>
+          <span>{{ctrl.parent.agentDetails.AgencyId}}</span>
+        </div>
+        <div class="input_field"><span class="title">Name:</span> 
+          <span>{{ctrl.parent.agentDetails.AgencyName}}</span>
+        </div>
+        <div class="input_field"><span class="title">Email:</span> 
+          <span>{{ctrl.parent.agentDetails.EmailId}}</span>
+        </div>
+        <div class="input_field"><span class="title">Phone:</span>
+          <span>{{ctrl.parent.agentDetails.PhoneNumber1}}</span>
+        </div>
+        <div class="input_field"><span class="title">Address:</span>
+          <span>{{ctrl.parent.agentDetails.StreetAddress}} {{ctrl.parent.agentDetails.State}} {{ctrl.parent.agentDetails.Pincode}}</span>
+        </div>
+        <div class="input_field"><span class="title">Products:</span>
+          <ul style="list-style: none;" class="clearfix">
+            <li ng-if="ctrl.parent.agentDetails.Visa">Visa</li>
+            <li ng-if="ctrl.parent.agentDetails.Train">Train</li>
+            <li ng-if="ctrl.parent.agentDetails.Hotels">Hotels</li>
+            <li ng-if="ctrl.parent.agentDetails.Holidays">Holidays</li>
+            <li ng-if="ctrl.parent.agentDetails.Forex">Forex</li>
+            <li ng-if="ctrl.parent.agentDetails.Flights">Flights</li>
+          </ul>
+        </div>
+        <div class="send_btn">
+          <button type="button" class="orange_btn" ng-click="ctrl.parent.cancelDialog();">Close</button>
+        </div>
+      </div>
+    </md-dialog-content>
+  </md-dialog>

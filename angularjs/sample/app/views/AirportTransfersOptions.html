@@ -1,0 +1,63 @@
+<style>
+.itinerary_transfer_duration {
+    font-size: 14px;
+    font-family: Roboto-Regular;
+    line-height: 1.2;
+    color: #939393;
+    outline: 0;
+}
+</style>
+<div class="col-lg-12 col-md-12" ng-controller="airportTransfersController" ng-init="initData()">
+  <md-toolbar class="md-hue-2" style="padding: 0px;">
+    <div class="md-toolbar-tools" style="padding-top: 6px;">
+      <md-button ng-click="goBack()" class="md-icon-button" aria-label="Settings">
+        <img class="backicon" src="images/ic_arrow_back.png"/>
+      </md-button>
+      <h2>
+        <span style="overflow: hidden;white-space: nowrap;" ng-if="airport_to_hotel">
+          Airport to Hotel Transfers
+        </span>
+        <span style="overflow: hidden;white-space: nowrap;" ng-if="!airport_to_hotel">
+          Hotel to Airport Transfers
+        </span>
+      </h2>
+    </div>
+  </md-toolbar>
+  <div style="height: 100%;">
+    <div style="margin-top: 20px;" ng-class="body_image">
+      <div ng-if="airportTransferOptions.length === 0 && loadedTransfers===true" style="text-align: center;margin-top:20vh;margin-bottom:20vh;font-size: 18px;">  No Airport Transfers Available
+      </div>
+      <div ng-repeat="airportTransfer in airportTransferOptions track by $index">
+        <div ng-repeat="transfer in airportTransfer.activity_price track by $index" class="col-xs-12" style="padding: 0px;padding-top: 8px; padding-bottom: 8px; background-color: white; border-bottom: 1px solid #d8d8d8">
+          <div class="col-xs-2" style="padding: 0px; padding-left:16px; text-align: left;padding-top: 22px;">
+            <img ng-src="{{airportTransfer.imageUrl}}" style="width: 36px;"/>
+          </div>
+          <div class="col-xs-6">
+            <span class="itinerary_transfer_name" style="max-width: 100%;text-transform: capitalize;">
+              <span ng-if="airportTransfer.default_transfer_type.is_private">Private</span>
+              <span ng-if="!airportTransfer.default_transfer_type.is_private">Shared</span>
+              {{airportTransfer.default_transfer_type.name}}({{transfer.supplier.agency_name}})
+            </span><br>
+            <span class="itinerary_transfer_duration" style="display: block; line-height: 130%;">
+              {{airportTransfer.airport_name}}
+            </span>
+            <span class="itinerary_transfer_duration">{{transfer.slot.start_time}} - {{transfer.slot.end_time}}</span>
+          </div>
+          <div class="col-xs-4" style="padding: 0px;text-align: right; padding-right: 16px;line-height: 1;">
+            <span class="itinerary_transfer_name" style="position:relative;font-size:16px">&#8377; {{transfer.total_price_INR?transfer.total_price_INR:0 | cur}}</span><br>
+            <span class="itinerary_transfer_duration" style="font-size:12px;position:relative;">
+              /adult
+          </span><br>
+          <md-button ng-disabled="itineraryBtnDisabled" ng-click="onTransferSelected($parent.$index, $index)" aria-label="Add" style="background-color: #0ebce7; min-width: 64px; min-height: 0px;padding: 0px; margin: 0px;font-size: 12px; font-family: Roboto-Regular; color: white;width: 100%;">
+            <span>Add</span>
+          </md-button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-xs-12 snack_bar_panel snack_bar_position" ng-if="showSnackBar===true">
+  <div style="padding: 0px;text-overflow: ellipsis;overflow: hidden;max-height: 20px;text-transform: uppercase;text-align: center;font-family: Roboto-Regular">
+    Please <span ng-click="redirectLogin();" style="font-weight: bold;text-decoration: underline;">login / signup</span> to add this
+  </div>
+</div>

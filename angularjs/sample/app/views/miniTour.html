@@ -1,0 +1,295 @@
+<div class="col-lg-12 col-md-12" ng-controller="minitourController" ng-init="getActiveCountries()">
+  <h3 class="text-center">Mini Tour</h3>
+
+  <button style="position:relative;z-index:10" class="btn btn-success" ng-click="editMinitour(0,'new');toggleModal();">
+    <span class="glyphicon glyphicon-plane"></span> Create New Minitour
+  </button>
+
+  <form style="position:relative;z-index:20" class="form-inline pull-right" role="form">
+    <div class="form-group">
+      <select class="form-control" ng-model="minitourController.scountry"
+              ng-options="item.id as item.country for item in countries" ng-change="getActiveStatesByCountries(0)">
+        <option value="">Select Country</option>
+      </select>
+      <select class="form-control" ng-model="minitourController.sstate"
+              ng-options="item.id as item.state for item in sstates" ng-change="getActiveCitiesByStates(0)">
+        <option value="">Select State</option>
+      </select>
+      <select class="form-control" ng-model="minitourController.scity"
+              ng-options="item.id as item.city for item in scities" ng-change="getMinitours(0); getActivitiesByCity(0);">
+        <option value="">Select City</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <!--<label >Search</label>-->
+      <input type="text" ng-model="searchValue" class="form-control" placeholder="Search">
+    </div>
+  </form>
+  </br></br>
+
+  <div style="position:relative;z-index:10" class="table-responsive">
+    <table class="table table-striped table-bordered">
+      <thead>
+      <tr>
+        <th ng-click="sort('id')">Id
+          <span class="glyphicon sort-icon" ng-show="sortKey=='id'"
+                ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+        </th>
+        <th ng-click="sort('name')">Name
+          <span class="glyphicon sort-icon" ng-show="sortKey=='name'"
+                ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+        </th>
+        <th ng-click="sort('city')">City
+          <span class="glyphicon sort-icon" ng-show="sortKey=='city'"
+                ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+        </th>
+        <th>Details</th>
+        <th>Edit</th>
+        <th>Status</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr dir-paginate="minitour in minitours |orderBy:sortKey:reverse|filter:searchValue|itemsPerPage:8">
+        <td>{{ minitour.id}}</td>
+        <td>{{ minitour.name}}</td>
+        <td>{{ minitour.city }}</td>
+        <!--<td>{{ minitour.activities }}</td>-->
+        <!--<td>{{ minitour.durationHours}} hrs <span ng-show="minitour.durationMinutes !== 0">{{minitour.durationMinutes}} mins</span>-->
+        <!--</td>-->
+
+        <td>
+          <button class="btn btn-primary" ng-click="editMinitour(minitour.sequence,'show');toggleModal();">Show
+          </button>
+        </td>
+        <td>
+          <button class="btn" ng-click="editMinitour(minitour.sequence,'edit');toggleModal();">
+            <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Edit
+          </button>
+        </td>
+        <td class="text-center">
+
+          <button class="btn btn-success btn-sm statusBtn" ng-show="minitour.active"
+                  ng-click="statusMinitour(minitour.sequence)">
+            Active
+          </button>
+          <button class="btn btn-danger btn-sm statusBtn" ng-hide="minitour.active"
+                  ng-click="statusMinitour(minitour.sequence)">
+            Deactive
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <dir-pagination-controls
+      max-size="20"
+      direction-links="true"
+      boundary-links="true">
+    </dir-pagination-controls>
+  </div>
+
+  <button style="position:relative;z-index:10" class="btn btn-success" ng-click="getMoreMinitours();">
+    <span class="glyphicon glyphicon-"></span> Get More
+  </button>
+
+  <modal title="minitour Form" dikhao="showModal">
+
+    <form class="form-horizontal" name="myForm">
+      <div class="form-group" ng-show="showCountry">
+        <label class="col-sm-3 control-label">Country:</label>
+        <div class="col-sm-4">
+          <select class="form-control" ng-model="minitourController.country" ng-disabled="isEdit"
+                  ng-options="item.id as item.country for item in countries" ng-change="getActiveStatesByCountries(1)">
+            <option value="">Select Country</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group" ng-show="showCountry">
+        <label class="col-sm-3 control-label">State:</label>
+
+        <div class="col-sm-4">
+          <select class="form-control" ng-model="minitourController.state" ng-disabled="isEdit"
+                  ng-options="item.id as item.state for item in states" ng-change="getActiveCitiesByStates(1)">
+            <option value="">Select State</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">City:<span style="color:red">*</span></label>
+
+        <div class="col-sm-4">
+          <select ng-disabled="isEdit" class="form-control" ng-model="minitourController.city"
+                  ng-options="item.id as item.city for item in cities" ng-change="getActivitiesByCity(1)">
+            <option value="">Select City</option>
+          </select>
+        </div>
+        <div class="col-sm-4">
+          <span style="color:red" ng-show="(minitourController.city === null)">City is required</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Minitour Name:<span style="color:red">*</span></label>
+
+        <div class="col-sm-4">
+          <input type="text" class="form-control" name="minitourName" ng-model="minitourController.minitourName"
+                 placeholder="Minitour Name" ng-disabled="info">
+        </div>
+
+        <div class="col-sm-4">
+          <span style="color:red" ng-show="(minitourController.minitourName === '')">Minitour name is required.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Activities Involved<span style="color:red">*</span></label>
+
+        <div class="col-sm-9">
+          <div ng-repeat="object in minitourController.activitiesInvolved">
+            <div class="form-group">
+              <div class="col-sm-3">
+                <select class="form-control" ng-model="object.activity_id"
+                        ng-disabled="info"
+                        ng-options="item.id as item.nameString for item in activities"
+                  ng-change="minitourMap(200)">
+                  <option value="">Select Activity</option>
+                </select>
+              </div>
+
+              <div class="col-sm-2">
+                <input type="checkbox" ng-model="object.ticket_included">
+                &nbsp&nbsp Ticket Included &nbsp&nbsp
+              </div>
+              <div class="col-sm-2">
+                <input type="checkbox" ng-model="object.photo_stop">
+                &nbsp&nbsp Photo Stop &nbsp&nbsp
+              </div>
+              <div class="col-sm-2">
+                <input type="checkbox" ng-model="object.drive_through">
+                &nbsp&nbsp Drive Through &nbsp&nbsp
+              </div>
+              <div class="col-sm-2">
+                <input type="checkbox" ng-model="object.guide_included">
+                &nbsp&nbsp Guide Included &nbsp&nbsp
+              </div>
+
+              <div ng-show="minitourController.activitiesInvolved.length > 1" class="col-sm-1"
+                   style="padding-top:12px;">
+                <br>
+              <span ng-click="deleteActivity($index)">
+              <a><span style="font-size:20px;cursor: pointer;" class="glyphicon glyphicon-remove-circle"></span></a>
+              </span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-3"></div>
+          <div class="col-sm-4">
+            <button class="btn" ng-click="addNewActivity()" ng-disabled="info">
+              <span class="glyphicon glyphicon-pencil"></span>Add new Activity
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-6">
+          <div class="map_canvas" id="map_canvas"></div>
+          <button style="float:right" ng-click="minitourMap(0)">Re-Center</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+      <div class="col-sm-4 col-sm-offset-3">
+        <input type="checkbox" ng-model="minitourController.not_eligible_for_child">
+        &nbsp&nbsp Not Eligible For Child &nbsp&nbsp
+      </div>
+
+      <div class="col-sm-4">
+        <input type="checkbox" ng-model="minitourController.not_recommended_for_senior_citizen">
+        &nbsp&nbsp Not Recommended For Senior Citizen &nbsp&nbsp
+      </div>
+      </div>
+
+      <div class="form-group"
+           ng-class="{ 'has-error' : myForm.minitourCode.$invalid && !myForm.minitourCode.$pristine }">
+        <label class="col-sm-3 control-label">Description:<span style="color:red">*</span></label>
+
+        <div class="col-sm-6">
+          <textarea class="form-control" rows="8" ng-model="minitourController.description" placeholder="Description"
+            ></textarea>
+        </div>
+        <div class="col-sm-3">
+
+          <span style="color:red" ng-show="(minitourController.description === '')">Description is required.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Highlights:</label>
+
+        <div class="col-sm-6">
+          <textarea class="form-control" rows="8" ng-model="minitourController.highlight" placeholder="Highlights"
+            ></textarea>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Precausions:</label>
+
+        <div class="col-sm-6">
+          <textarea class="form-control" rows="8" ng-model="minitourController.precausions" placeholder="Precausions"
+            ></textarea>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Itinerary:</label>
+
+        <div class="col-sm-6">
+          <textarea class="form-control" rows="8" ng-model="minitourController.itinerary" placeholder="Itinerary"
+            ></textarea>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Tips:</label>
+
+        <div class="col-sm-6">
+          <textarea class="form-control" rows="8" ng-model="minitourController.tips" placeholder="Tips"
+            ></textarea>
+        </div>
+      </div>
+      <div class="form-group" ng-class="{ 'has-error' : myForm.duration.$invalid && !myForm.duration.$pristine }">
+        <label class="col-sm-3 control-label">Duration:<span style="color:red">*</span></label>
+    
+        <div class="col-sm-2">
+              <input type="number" class="form-control mod" min=0 ng-model="minitourController.durationHours"
+                      placeholder="Hours">
+            </div>
+            <span class="col-sm-1">hrs.</span>
+
+            <div class="col-sm-2">
+              <input type="number" class="form-control mod" min=0 ng-model="minitourController.durationMinutes"
+                      placeholder="Minutes">
+            </div>
+            <span class="col-sm-1">mins.</span>
+        <div class="col-sm-4">
+          <span style="color:red" ng-show="(minitourController.duration === '')">Duration is required.</span>
+        </div>
+      </div>
+    </form>
+    <hr>
+    <button class="btn btn-primary" ng-disabled="checkduration()
+    ||(minitourController.city === '') || (minitourController.city === null)
+    ||(minitourController.minitourName === '') || (minitourController.minitourName === null)
+    || (minitourController.activitiesInvolved.length === 0) || (minitourController.activitiesInvolved === null)
+    || (minitourController.description === '') || (minitourController.description === null)"
+            ng-click="saveMinitour()" ng-hide="info">
+      <span class="glyphicon glyphicon-save"></span>{{buttonText}}
+    </button>
+    <button class="btn" ng-click="editMinitour(minitour.id,'edit');toggleModal();" ng-show="info">
+      <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Edit
+    </button>
+  </modal>
+</div>

@@ -1,0 +1,12 @@
+{
+    "realm": "TestLocal",
+    "auth-server-url": "http://keycloak.test.team/auth",
+    "ssl-required": "external",
+    "resource": "lms-webapp",
+    "credentials": {
+        "secret": "135f154-f79b-4002-ac6f-174c43b4db64"
+    },
+    "use-resource-role-mappings": true,
+    "confidential-port": 0,
+    "policy-enforcer": {}
+}

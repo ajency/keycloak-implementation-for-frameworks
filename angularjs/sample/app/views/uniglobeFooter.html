@@ -1,0 +1,17 @@
+<div class="col-lg-8 col-md-8">
+  <div class="col-sm-4 col-xs-4">
+    <label>Booking Management</label><br>
+    <a ng-href="#/leads">Leads</a><br>
+    <br>
+  </div>
+  <div class="col-sm-4 col-xs-4" ng-if="userType==='Uniglobe Supervisor'">
+    <label>User Management</label><br>
+    <a ng-href="#/employee">Employees</a><br>
+    <br>
+  </div>
+  <div>
+    <label>Profile</label><br>
+    <a ng-href="#/changePassword">Change Password</a><br>
+    <a ng-href="#/addSignature">Add Signature</a><br>
+  </div>
+</div>

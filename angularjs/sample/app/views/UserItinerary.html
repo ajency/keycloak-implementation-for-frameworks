@@ -1,0 +1,253 @@
+<div ng-controller="userItineraryController">
+
+
+
+  <div class="col-xs-12">
+    <button ng-click="convertpdf()">Download as pdf</button>
+    <br></div>
+
+  <div class="col-md-8 col-md-offset-2" style="overflow: hidden;" >
+
+
+
+
+
+    <div ng-repeat="day in details" ng-init="position=$index" style="overflow: hidden;" id="div{{position}}">
+      <div ng-repeat="x in day.activities" id="{{x.div}}" style="overflow: hidden" >
+        <div ng-show="x.type === 6" class="col-xs-12" style="overflow: hidden;padding:0" >
+          <div class="col-xs-2" style="display:flex;justify-content:center;align-items:center;bottom:0;top:0;position: absolute">
+            <div>
+              <p class="text-center" style="font-size: x-large;margin-bottom:0;color:#0066bb">{{x.dayno}}</p>
+              <p class="text-center">{{x.date}}</p>
+            </div>
+          </div>
+          <div class="col-xs-10  col-xs-offset-2">
+            <div style="width:100%;box-shadow: 0px 6px 10px 4px rgba(0,0,0,0.3);background-color:midnightblue;overflow: hidden;">
+              <br>
+              <p class="text-center" style="font-size: xx-large;color:#FFFFFF">{{x.title}}</p>
+              <br>
+            </div>
+          </div>
+          <div class="col-xs-12"><br></div>
+        </div>
+
+        <div ng-show="x.type === 0" class="col-xs-12" style="overflow: hidden;padding:0;" >
+          <div class="col-xs-2"
+               style="display:flex;justify-content:center;align-items:center;bottom:0;top:0;position: absolute">
+            <div>
+              <p class="text-center" style="font-size: x-large;margin-bottom:0;color:#0066bb">{{x.time}}</p>
+
+              <p class="text-center">{{x.date}}</p>
+            </div>
+          </div>
+
+          <div class="col-xs-10 col-xs-offset-2">
+            <div style="width:100%;box-shadow: 0px 8px 10px 6px rgba(0,0,0,0.3);font-size:x-large;
+    position:relative;z-index:1;">
+              <div style="width:100%;height:100%;position:absolute;z-index:-10;opacity:0.7;overflow: hidden;">
+                <img id = "img{{x.div}}" src="{{x.imageurl}}" ng-init="OnImageLoad(x.div, x.type === 0);" style="position:absolute;">
+              </div>
+
+              <div style="color:#000066;padding-top:10px;padding-left:20px;">{{x.name}} ({{x.activitytype}})</div>
+              <div style="padding-top:0;padding-left:20px;">{{x.duration}}</div>
+              <div style="padding-top:0;padding-left:20px;">{{x.location}}</div>
+              <div><br><br><br><br></div>
+
+            </div>
+          </div>
+
+          <div class="col-xs-12"><br></div>
+
+
+        </div>
+
+        <div ng-show="x.type === 1" class="col-xs-12" style="overflow: hidden;padding:0;" >
+          <div class="col-xs-2" style="display:flex;justify-content:center;align-items:center;bottom:0;top:0;position: absolute">
+            <div>
+              <p class="text-center" style="font-size: x-large;margin-bottom:0;color:#0066bb">{{x.time}}</p>
+
+              <p class="text-center">{{x.date}}</p>
+            </div>
+          </div>
+
+
+          <div class="col-xs-10 col-xs-offset-2">
+            <div style="width:100%;box-shadow: 0px 8px 10px 6px rgba(0,0,0,0.3);overflow: hidden;">
+              <div class="col-xs-3" style="bottom:0;top:0;position: absolute;padding:0">
+                <img src="{{x.imageurl}}" style="object-fit:cover;width:100%;height:100%;">
+              </div>
+              <div class="col-sm-9 col-sm-offset-3 col-xs-12" style="background-color:{{x.color}}">
+                <div>
+                  <br><br>
+                  <div style="font-size: x-large;color:#FFFFFF">{{x.mealtype}}</div>
+
+                  <div style="font-size: xx-large;color:#FFFFFF">{{x.duration}}</div>
+
+                  <br><br>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-xs-12"><br></div>
+
+
+        </div>
+
+
+        <div ng-show="x.type === 2" class="col-xs-12" style="padding:0;" >
+
+          <!--<div class="col-xs-2" style="display:flex;justify-content:center;align-items:center;height:250px;">-->
+          <!--<div>-->
+          <!--<p class="text-center" style="font-size: xx-large;margin-bottom:0;color:#0066bb">{{x.date}}</p>-->
+          <!--</div>-->
+          <!--</div>-->
+
+
+          <div class="col-xs-10 col-xs-offset-2">
+            <div style="width:100%;box-shadow: 0px 8px 10px 6px rgba(0,0,0,0.3);position:relative;z-index:1;">
+
+              <div style="width:100%;height:100%;position:absolute;z-index:-1;background:black;overflow: hidden;">
+                <img id = "imgh{{x.div}}" src="{{x.imageurl}}" ng-init="OnImageLoad2(x.div, x.type === 2);" style="position:absolute;opacity: 0.5">
+              </div>
+              <div style="padding-left:20px;padding-top:10px;color:yellow;font-size:xx-large">{{x.name}}<span>&nbsp
+        <div ng-show="x.star > 0" class="glyphicon glyphicon-star" style="font-size:large">
+          <div ng-show="x.star > 1" class="glyphicon glyphicon-star" style="font-size:large">
+            <div ng-show="x.star > 2" class="glyphicon glyphicon-star" style="font-size:large">
+              <div ng-show="x.star > 3" class="glyphicon glyphicon-star" style="font-size:large">
+                <div ng-show="x.star > 4" class="glyphicon glyphicon-star" style="font-size:large"></div>
+              </div>
+            </div>
+          </div>
+        </div></span>
+              </div>
+              <div style="padding-left:20px;color:white;font-size:x-large">{{x.address}}</div>
+              <div style="padding-left:20px;color:yellow;font-size:x-large">{{x.roomtype}}</div>
+            <span ng-show="x.roomonly === true"
+                  style="padding-left:20px;color:yellow;font-size:x-large">Room Only</span>
+              <span class="hidden-xs" style="float:right;padding-top:6px;padding-right:20px;color:yellow;font-size:large">{{x.date}}</span>
+              <div class="hidden-lg hidden-md hidden-sm" style="padding-left:20px;color:yellow;font-size:large">{{x.date}}</div>
+              <div><br><br><br></div>
+              <div style="padding-left:20px;padding-bottom:10px;color:yellow;font-size:large">{{x.phone}}</div>
+
+
+            </div>
+          </div>
+          <div class="col-xs-12"><br></div>
+
+
+        </div>
+
+        <div ng-show="x.type === 3" class="col-xs-12" style="overflow: hidden;padding:0;" >
+
+          <div class="col-xs-2" style="display:flex;justify-content:center;align-items:center;bottom:0;top:0;position: absolute">
+            <div>
+              <p class="text-center" style="font-size: x-large;margin-bottom:0;color:#0066bb">{{x.startTime}}</p>
+
+              <p class="text-center">{{x.datesmall}}</p>
+            </div>
+          </div>
+
+
+          <div class="col-xs-10 col-xs-offset-2">
+            <div
+              style="width:100%;overflow: hidden;box-shadow: 0px 6px 10px 4px rgba(0,0,0,0.3);background-color:lightseagreen">
+              <div class="text-center" style="padding-top:10px;font-size:large;color:#FFFFFF"><label>{{x.name}}</label>
+              </div>
+              <div class="text-center" style="font-size:large;">{{x.date}}</div>
+              <!--<div class="col-sm-10 col-sm-offset-1 text-center">-->
+              <div class="col-xs-5 text-center" style="padding:0;">
+                <div style="padding-top:10px;font-size:xx-large;color:yellow">{{x.startcitycode}}</div>
+                <div style="font-size:large;color:#FFFFFF">{{x.startcity}}</div>
+                <div style="font-size:large;">{{x.startTime}}</div>
+              </div>
+              <div class="col-xs-2" style="padding:0;">
+                <!--<div class="col-lg-12 col-md-12 col-xs-12 col-sm-10 col-sm-offset-1">-->
+                <br>
+                <img src="{{x.imageurl}}" style="width:100%">
+                <!--</div>-->
+              </div>
+              <div class="col-xs-5 text-center" style="padding:0;">
+                <div style="padding-top:10px;font-size:xx-large;color:yellow">{{x.endcitycode}}</div>
+                <div style="font-size:large;color:#FFFFFF">{{x.endcity}}</div>
+                <div style="font-size:large;">{{x.endTime}}</div>
+              </div>
+              <!--</div>-->
+              <div class="col-xs-12"><br></div>
+
+            </div>
+
+          </div>
+
+          <div class="col-xs-12"><br></div>
+
+
+        </div>
+
+        <div ng-show="x.type === 4" class="col-xs-12" style="overflow: hidden;padding:0;" >
+          <div class="col-xs-2" style="display:flex;justify-content:center;align-items:center;bottom:0;top:0;position: absolute">
+            <div>
+              <p class="text-center" style="font-size: x-large;margin-bottom:0;color:#0066bb">{{x.time}}</p>
+
+              <p class="text-center">{{x.date}}</p>
+            </div>
+          </div>
+
+
+          <div class="col-xs-10 col-xs-offset-2">
+            <div style="width:100%;box-shadow: 0px 8px 10px 6px rgba(0,0,0,0.3);overflow: hidden;">
+              <div class="col-xs-3" style="bottom:0;top:0;position: absolute;padding:0">
+                <img src="{{x.imageurl}}" style="object-fit:cover;width:100%;height:100%;">
+              </div>
+              <div class="col-sm-9 col-sm-offset-3 col-xs-12" style="background-color:{{x.color}}">
+                <div>
+
+                  <br><br>
+
+                  <div style="font-size: x-large;color:#FFFFFF">{{x.transfer}}</div>
+
+                  <div style="font-size: xx-large;color:#FFFFFF">{{x.duration}}</div>
+
+                  <br><br>
+
+
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-xs-12"><br></div>
+
+
+        </div>
+
+        <div ng-show="x.type === 5" class="col-xs-12" style="padding:0;" >
+          <div class="col-xs-10 col-xs-offset-2">
+
+            <img src="{{x.imageurl}}"
+                 style="width:100%;">
+
+
+          </div>
+
+          <div class="col-xs-12"><br></div>
+
+        </div>
+
+
+
+
+      </div>
+    </div>
+
+
+  </div>
+
+</div>
+
+
+

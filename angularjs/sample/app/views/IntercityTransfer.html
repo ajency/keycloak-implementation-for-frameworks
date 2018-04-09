@@ -1,0 +1,172 @@
+<div class="col-lg-12 col-md-12" ng-controller="intercityController" ng-init="getActiveCities();getintercity(0);getActiveCountries();">
+  <h3 class="text-center">Intercity transfers</h3>
+
+
+    <button style="position:relative;z-index:30" class="btn btn-success pull-right" ng-click="redirect();">
+  Intercity Transfer Prices
+    </button>
+
+
+  <br><br>
+
+
+  <div style="position:relative;z-index:10" >
+    <table class="table table-striped table-bordered">
+      <thead>
+      <tr>
+        <th class="text-center" ng-click="sort('id')">Id
+          <span class="glyphicon sort-icon" ng-show="sortKey=='id'"
+                ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+        </th>
+
+        <th class="text-center">Source City</th>
+        <th class="text-center">Destination City</th>
+        <th class="text-center">Mode</th>
+        <th class="text-center">Update</th>
+        <th class="text-center">Status</th>
+
+      </tr>
+      </thead>
+      <tbody>
+      <tr dir-paginate="transfer in intercity |orderBy:sortKey:reverse|filter:searchValue|itemsPerPage:8">
+        <td class="text-center">{{ transfer.id}}</td>
+
+        <td>
+          <div align="center">
+            <dropdownsingleselect model="transfer.source_city" options="cities" ></dropdownsingleselect>
+          </div>
+        </td >
+        <td>
+          <div align="center">
+            <dropdownsingleselect model="transfer.destination_city" options="cities" ></dropdownsingleselect>
+            </div>
+        </td>
+        <td>
+          <div align="center">
+            <dropdownsingleselect model="transfer.mode" options="modes" ></dropdownsingleselect>
+            </div>
+        </td>
+
+
+        <td class="text-center">
+          <button class="btn btn-success btn-sm statusBtn" ng-disabled="checkupdate(transfer.sequence-1)"
+                  ng-click="updatetransfer(transfer.sequence-1)" >
+            UPDATE
+          </button>
+
+        </td>
+        <td class="text-center">
+          <button class="btn btn-danger btn-sm statusBtn" ng-show="transfer.active" ng-click="statustransfer(transfer.sequence-1)" >
+            Deactivate
+          </button>
+          <button class="btn btn-success btn-sm statusBtn" ng-hide="transfer.active" ng-click="statustransfer(transfer.sequence-1)" >
+            Activate
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <dir-pagination-controls
+      max-size="25"
+      direction-links="true"
+      boundary-links="true">
+    </dir-pagination-controls>
+  </div>
+
+
+  <button style="position:relative;z-index:8;margin-bottom:10px;" class="btn btn-success" ng-click="addNewTransfer();">
+    <span class="glyphicon glyphicon-"></span> Add new
+  </button>
+
+
+<br>
+
+    <button style="position:relative;z-index:8;margin-top:10px;" class="btn btn-success" ng-click="getMoreintercity();">
+      <span class="glyphicon glyphicon-"></span> Get More
+    </button>
+
+  <modal title="transfer Form" dikhao="showModal">
+
+    <form class="form-horizontal" name="myForm">
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Source:<span style="color:red">*</span></label>
+
+
+        <div class="col-sm-3">
+          <select class="form-control" ng-model="intercityController.sourcecountry"
+                  ng-options="item.id as item.country for item in countries" ng-change="getActiveStatesByCountries(1)">
+            <option value="" >Select country</option>
+          </select>
+        </div>
+
+        <div class="col-sm-3">
+          <select class="form-control" ng-model="intercityController.sourcestate"
+                  ng-options="item.id as item.state for item in states1" ng-change="getActiveCitiesByStates(1)">
+            <option value="" >Select state</option>
+          </select>
+        </div>
+
+        <div class="col-sm-3">
+          <select class="form-control" ng-model="intercityController.sourcecity"
+                  ng-options="item.id as item.city for item in cities1">
+            <option value="" >Select city</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Destination:<span style="color:red">*</span></label>
+
+        <div class="col-sm-3">
+          <select class="form-control" ng-model="intercityController.destinationcountry"
+                  ng-options="item.id as item.country for item in countries" ng-change="getActiveStatesByCountries(2)">
+            <option value="" >Select country</option>
+          </select>
+        </div>
+
+
+        <div class="col-sm-3">
+          <select class="form-control" ng-model="intercityController.destinationstate"
+                  ng-options="item.id as item.state for item in states2" ng-change="getActiveCitiesByStates(2)">
+            <option value="" >Select state</option>
+          </select>
+        </div>
+
+        <div class="col-sm-3">
+          <select class="form-control" ng-model="intercityController.destinationcity"
+                  ng-options="item.id as item.city for item in cities2">
+            <option value="" >Select city</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Mode:<span style="color:red">*</span></label>
+        <div class="col-sm-3">
+          <select class="form-control" ng-model="intercityController.mode"
+                  ng-options="item.id as item.name for item in modes">
+            <option value="" >Select mode</option>
+          </select>
+        </div>
+
+      </div>
+
+
+    </form>
+    <button class="btn btn-primary"
+            ng-disabled="intercityController.sourcecity==='' || intercityController.destinationcity==='' || intercityController.mode==='' ||
+            intercityController.sourcecity===null || intercityController.destinationcity===null || intercityController.mode===null ||
+            !intercityController.sourcecity || !intercityController.destinationcity || !intercityController.mode"
+            ng-click="savenewtype()" ng-hide="info">
+      <span class="glyphicon glyphicon-save"></span> Save Changes
+    </button>
+
+  </modal>
+
+
+
+
+
+</div>
+

@@ -1,0 +1,66 @@
+<!doctype html>
+<html class="no-js">
+
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="bower_components/angular-dialog-service/dist/dialogs.min.css" />
+    <link rel="stylesheet" href="bower_components/components-font-awesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="bower_components/open-sans-fontface/open-sans.css" />
+    <link rel="stylesheet" href="bower_components/angular-multi-select/isteven-multi-select.css" />
+    <link rel="stylesheet" href="bower_components/isteven-angular-multiselect/isteven-multi-select.css" />
+    <link rel="stylesheet" href="bower_components/angular-material/angular-material.css" />
+    <link rel="stylesheet" href="bower_components/slick-carousel/slick/slick.css" />
+    <link rel="stylesheet" href="bower_components/angucomplete-alt/angucomplete-alt.css" />
+    <link rel="stylesheet" href="bower_components/textAngular/dist/textAngular.css" />
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/style.css">
+    <!-- endbuild -->
+  </head>
+
+
+  <body ng-controller="MainCtrl">
+
+
+    <div ng-view></div>
+
+
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="bower_components/angular-translate/angular-translate.js"></script>
+    <!-- ..... -->
+    <script src="bower_components/ajency-keycloak-js/dist/aj-keycloak.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+
+
+
+    <script src="scripts/config.js"></script>
+    <script src="scripts/app.js"></script>
+    <script src="scripts/keycloak/bootstrap.js"></script>
+    <script src="scripts/keycloak/route-guard.js"></script>
+    <script src="scripts/keycloak/config/route-permissions.js"></script>
+    <script src="scripts/keycloak/config/ui-permissions.js"></script>
+    <script src="scripts/routes.js"></script>
+    <script src="scripts/controllers/main.js"></script>
+
+
+  </body>
+
+</html>

@@ -1,0 +1,273 @@
+<div style="position:relative;z-index:10;" class="col-lg-12 col-md-12" ng-controller="itineraryDayController">
+  <div class="leftthumbnails col-lg-4 col-md-5" id="links" style="overflow-y:auto; height:430px;">
+
+    <ul class="nav nav-pills">
+      <li ng-init="tabBar=tabBar" ng-repeat="tabBar in tabBars"
+          ng-click="populateDay(tabBar.id)">
+        <a style="color:{{tabBar.color}};">
+          {{ tabBar.name }}
+        </a>
+      </li>
+    </ul>
+
+    <div class="form-group">
+      <br><br>
+      <label class="col-sm-3 control-label">Start City:<span style="color:red">*</span></label>
+
+
+      <div class="col-sm-8">
+
+        <select class="form-control" ng-model="tabBars[tabIndex].startCity"
+                ng-options="item.id as item.name for item in dataFromHome.cities"
+          ng-change="setCurrentCityIndex()">
+          <option value="">Select City</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn btn-success col-lg-offset-1 col-md-offset-1 col-sm-offset-1"
+            style="margin-top: 50px ; width:350px;" ng-click="addLayout(0);"> &nbsp Add new minitour
+      &nbsp
+    </button>
+
+    <button class="btn btn-success col-lg-offset-1 col-md-offset-1 col-sm-offset-1"
+            style="margin-top: 50px ; width:350px;" ng-click="addLayout(1);"> &nbsp Add new activity
+      &nbsp
+    </button>
+
+    <button class="btn btn-success col-lg-offset-1 col-md-offset-1 col-sm-offset-1"
+            style="margin-top: 50px ; width:350px;" ng-click="addLayout(2);"> &nbsp Add intercity transport
+      &nbsp
+    </button>
+
+  </div>
+
+
+  <div class="col-lg-8" style="overflow-y:auto; height:430px;">
+    <h3 class="text-center">Itinerary Details</h3>
+
+    <div class="well" style="margin-top:20px;">
+      <form class="form-horizontal" name="myForm">
+
+
+        <div ng-repeat="object in tabBars[tabIndex].layout">
+
+          <ng-include src="object.template"></ng-include>
+
+        </div>
+
+        <script type="text/ng-template" id="minitourPage">
+          <div class="form-group">
+            <label class="col-sm-3 control-label">Add Minitour:</label>
+
+            <div class="col-sm-9">
+              <div>
+                <label class="col-sm-11 pull-left">Trip<span style="color:red">*</span></label>
+                <label class="col-sm-1">
+                  <a ng-click="itinerarydaydelete(object.id)"><span style="font-size:20px;cursor: pointer;" class="glyphicon glyphicon-remove-circle"></span></a>
+                </label>
+                <br>
+
+                <div class="col-sm-6">
+                  <select class="form-control" ng-model="tabBars[tabIndex].layout[object.id].cityIndex"
+                          ng-change="setCurrentCityIndex(object.id)"
+                          ng-options="item.index as item.name for item in dataFromHome.cities">
+                    <option value="">Select City</option>
+                  </select>
+                </div>
+
+                <div class="col-sm-6">
+                  <!--<input type="text" class="form-control"-->
+                         <!--ng-model="tabBars[tabIndex].layout[object.id].trip" placeholder="Trip">-->
+
+                  <select class="form-control" ng-model="tabBars[tabIndex].layout[object.id].trip"
+                          ng-options="item.id as item.name for item in activitiesAndTrips[tabBars[tabIndex].layout[object.id].cityIndex].minitrips">
+                    <option value="">Select Minitour</option>
+                  </select>
+                </div>
+                <div class="col-sm-6">
+                  <p>Start Time<span style="color:red">*</span></p>
+
+                  <ng-time-selector hours="tabBars[tabIndex].layout[object.id].startTimehours" minutes="tabBars[tabIndex].layout[object.id].startTimeminutes"
+                                    time="tabBars[tabIndex].layout[object.id].startTime"></ng-time-selector>
+
+                  <!--<input type="time" class="form-control"-->
+                         <!--ng-model="tabBars[tabIndex].layout[object.id].startTime" placeholder="Start time">-->
+                </div>
+                <div class="col-sm-6">
+                  <p>End Time<span style="color:red">*</span></p>
+                  <ng-time-selector hours="tabBars[tabIndex].layout[object.id].endtimehours" minutes="tabBars[tabIndex].layout[object.id].endtimeminutes"
+                                    time="tabBars[tabIndex].layout[object.id].endtime"></ng-time-selector>
+
+                  <!--<input type="time" class="form-control"-->
+                         <!--ng-model="tabBars[tabIndex].layout[object.id].endtime" placeholder="End Time">-->
+                </div>
+              </div>
+            </div>
+          </div>
+        </script>
+
+        <script type="text/ng-template" id="activityPage">
+          <div class="form-group">
+            <label class="col-sm-3 control-label">Add activity:</label>
+
+            <div class="col-sm-9">
+              <div>
+                <label class="col-sm-11 pull-left">Activity<span style="color:red">*</span></label>
+                <label class="col-sm-1">
+                  <a ng-click="itinerarydaydelete(object.id)"><span style="font-size:20px;cursor: pointer;" class="glyphicon glyphicon-remove-circle"></span></a>
+                </label>
+                <br>
+
+                <div class="col-sm-6">
+                  <select class="form-control" ng-model="tabBars[tabIndex].layout[object.id].cityIndex"
+                          ng-change="setCurrentCityIndex(object.id)"
+                          ng-options="item.index as item.name for item in dataFromHome.cities">
+                    <option value="">Select City</option>
+                  </select>
+                </div>
+
+                <div class="col-sm-6">
+
+                  <select class="form-control" ng-model="tabBars[tabIndex].layout[object.id].trip"
+                          ng-options="item.id as item.name for item in activitiesAndTrips[tabBars[tabIndex].layout[object.id].cityIndex].activities">
+                    <option value="">Select Activity</option>
+                  </select>
+                </div>
+                <div class="col-sm-6">
+                  <p>Start Time<span style="color:red">*</span></p>
+                  <ng-time-selector hours="tabBars[tabIndex].layout[object.id].startTimehours" minutes="tabBars[tabIndex].layout[object.id].startTimeminutes"
+                                    time="tabBars[tabIndex].layout[object.id].startTime"></ng-time-selector>
+
+                  <!--<input type="time" class="form-control"-->
+                         <!--ng-model="tabBars[tabIndex].layout[object.id].startTime" placeholder="Start time">-->
+                </div>
+                <div class="col-sm-6">
+                  <p>End Time<span style="color:red">*</span></p>
+                  <ng-time-selector hours="tabBars[tabIndex].layout[object.id].endtimehours" minutes="tabBars[tabIndex].layout[object.id].endtimeminutes"
+                                    time="tabBars[tabIndex].layout[object.id].endtime"></ng-time-selector>
+
+                  <!--<input type="time" class="form-control"-->
+                         <!--ng-model="tabBars[tabIndex].layout[object.id].endtime" placeholder="End Time">-->
+                </div>
+              </div>
+              <br><br>
+            </div>
+          </div>
+        </script>
+
+        <script type="text/ng-template" id="intercityPage">
+          <div class="form-group" style="margin-left:80px;">
+            <label class="control-label">Intercity Transfer:</label>
+            <label class="col-sm-11 pull-left"></label>
+            <label class="col-sm-1">
+              <a ng-click="itinerarydaydelete(object.id)"><span style="font-size:20px;cursor: pointer;" class="glyphicon glyphicon-remove-circle"></span></a>
+            </label>
+
+            <div style="margin-left:110px;">
+              <div class="col-sm-6">
+                <p>Departure City<span style="color:red">*</span></p>
+
+                <!--<select class="form-control" ng-model="tabBars[tabIndex].layout[object.id].startCity"-->
+                        <!--ng-options="item.id as item.city for item in allCities">-->
+                  <!--<option value="">Select City</option>-->
+                <!--</select>-->
+
+                <dropdownsingleselect model="tabBars[tabIndex].layout[object.id].startCity" options="allCities"></dropdownsingleselect>
+
+                <!--<ui-select ng-model="tabBars[tabIndex].layout[object.id].start" theme="select2" style="min-width: 200px;">-->
+                  <!--<ui-select-match placeholder="Select or search a city" >{{$select.selected.city}}</ui-select-match>-->
+                  <!--<ui-select-choices repeat="item in allCities | propsFilter: {city: $select.search}">-->
+                    <!--<div ng-bind-html="item.city | highlight: $select.search" style="color:#000000"></div>-->
+
+                  <!--</ui-select-choices>-->
+                <!--</ui-select>-->
+
+
+
+                <!--<input type="text" class="form-control"-->
+                       <!--ng-model="tabBars[tabIndex].layout[object.id].startCity" placeholder="Start City">-->
+              </div>
+
+              <div class="col-sm-6">
+                <p>Departure Time<span style="color:red">*</span></p>
+                <ng-time-selector hours="tabBars[tabIndex].layout[object.id].startTimehours" minutes="tabBars[tabIndex].layout[object.id].startTimeminutes"
+                                  time="tabBars[tabIndex].layout[object.id].startTime"></ng-time-selector>
+
+                <!--<input type="time" class="form-control"-->
+                       <!--ng-model="tabBars[tabIndex].layout[object.id].startTime" placeholder="Start Time"-->
+                       <!--required>-->
+              </div>
+              <div class="col-sm-6">
+                <p>Arrival City<span style="color:red">*</span></p>
+                <!--<select class="form-control" ng-model="tabBars[tabIndex].layout[object.id].endCity"-->
+                        <!--ng-options="item.id as item.city for item in allCities">-->
+                  <!--<option value="">Select City</option>-->
+                <!--</select>-->
+
+                <dropdownsingleselect model="tabBars[tabIndex].layout[object.id].endCity" options="allCities"></dropdownsingleselect>
+
+
+
+                <!--<ui-select ng-model="tabBars[tabIndex].layout[object.id].end" theme="select2" style="min-width: 200px;">-->
+                  <!--<ui-select-match placeholder="Select or search a city" >{{$select.selected.city}}</ui-select-match>-->
+                  <!--<ui-select-choices repeat="item in allCities | propsFilter: {city: $select.search}">-->
+                    <!--<div ng-bind-html="item.city | highlight: $select.search" style="color:#000000"></div>-->
+
+                  <!--</ui-select-choices>-->
+                <!--</ui-select>-->
+
+
+
+
+
+                <!--<input type="text" class="form-control"-->
+                       <!--ng-model="tabBars[tabIndex].layout[object.id].endCity" placeholder="End City"-->
+                       <!--required>-->
+              </div>
+              <div class="col-sm-6">
+                <p>Arrival Time<span style="color:red">*</span></p>
+                <ng-time-selector hours="tabBars[tabIndex].layout[object.id].endtimehours" minutes="tabBars[tabIndex].layout[object.id].endtimeminutes"
+                                  time="tabBars[tabIndex].layout[object.id].endtime"></ng-time-selector>
+
+                <!--<input type="time" class="form-control"-->
+                       <!--ng-model="tabBars[tabIndex].layout[object.id].endtime" placeholder="End Time"-->
+                       <!--required>-->
+              </div>
+              <div class="col-sm-6">
+                <p>Transport Type<span style="color:red">*</span></p>
+                <select class="form-control" ng-model="tabBars[tabIndex].layout[object.id].type"
+                        ng-options="item.id as item.name for item in transportTypes">
+                  <option value="">Select Type</option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+        </script>
+
+        <div class="form-group">
+          <br><br>
+          <label class="col-sm-3 control-label">Food:</label>
+
+          <div class="col-lg-6 col-md-6 col-sm-6">
+            <input type="checkbox" ng-model="tabBars[tabIndex].breakfast"> &nbsp&nbsp Breakfast &nbsp&nbsp
+            <input type="checkbox" ng-model="tabBars[tabIndex].lunch"> &nbsp&nbsp Lunch &nbsp&nbsp
+            <input type="checkbox" ng-model="tabBars[tabIndex].dinner"> &nbsp&nbsp Dinner
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+<div class="col-lg-12 col-md-12 col-sm-12" style="padding-bottom:10px;">
+  <button class="btn btn-success" style="float:left;"
+          ng-click="redirectback();">&nbsp<span class="glyphicon glyphicon-chevron-left"></span> Back &nbsp
+  </button>
+
+  <button class="btn btn-success" style="float:right;" ng-disabled="checkitineraryDay()"
+          ng-click="redirect();">&nbsp Next <span class="glyphicon glyphicon-chevron-right"></span>&nbsp
+  </button>
+</div>
+</div>

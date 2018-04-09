@@ -1,0 +1,101 @@
+<h3 class="text-center">Itinerary Description</h3>
+
+<div class="well col-lg-6 col-md-6 col-sm-12 col-xs-12 col-lg-offset-3 col-md-offset-3"
+     style="margin-top:20px;" ng-controller="itinerarydescController">
+
+  <form  style="position:relative;z-index:10;"  class="form-horizontal" name="myForm">
+
+    <div class="form-group">
+      <label class="col-sm-3 control-label">Cover Image:<span style="color:red">*</span></label>
+
+      <div class="col-sm-5">
+        <!--<input type="text" class="form-control" ng-model="itinerarydescController.coverImage" placeholder="Cover Image">-->
+        <button class="btn btn-success" ngf-select="selectFiles($file)" accept="image/*">Upload File</button>
+        <span>Or
+          <button class="btn btn-info" ng-click="addLink()"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Add Link</button>
+        </span>
+
+        <!--&nbsp;-->
+        <!--<button class="btn btn-success" ng-click="uploadFiles()">Upload Image</button>-->
+        <!--&nbsp;-->
+        <label>{{uploadedFile.name}}</label>
+      </div>
+
+      <div class="col-sm-4" ng-show="itinerarydescController.coverImage">
+        <img src={{itinerarydescController.coverImage}} style="height:120px;width:120px;object-fit: cover;"
+             ng-mouseover="hover()"
+             ng-mouseleave="hoverOff()">
+        <span ng-show="showbigimage" style="position: absolute;z-index:160;margin-top:100px;margin-left:-440px;">
+          <img src={{itinerarydescController.coverImage}} style="height:400px;width:400px;object-fit:contain;">
+        </span>
+
+        </div>
+    </div>
+
+    <div class="form-group" ng-class="{ 'has-error' : myForm.hotelName.$invalid && !myForm.hotelName.$pristine }">
+      <label class="col-sm-3 control-label">Additional Information:</label>
+      <div class="col-sm-8">
+        <textarea class="form-control" rows="5" name="" ng-model="itinerarydescController.info" placeholder="Additional Information"></textarea>
+      </div>
+    </div>
+    <div class="form-group" ng-class="{ 'has-error' : myForm.hotelName.$invalid && !myForm.hotelName.$pristine }">
+      <label class="col-sm-3 control-label">Description:</label>
+      <div class="col-sm-8">
+        <textarea class="form-control" rows="5" ng-model="itinerarydescController.desc" placeholder="Description"></textarea>
+      </div>
+    </div>
+    <div class="form-group" ng-class="{ 'has-error' : myForm.hotelName.$invalid && !myForm.hotelName.$pristine }">
+      <label class="col-sm-3 control-label">Inclusions:</label>
+      <div class="col-sm-8">
+        <textarea class="form-control" rows="5" ng-model="itinerarydescController.incl" placeholder="Description"></textarea>
+      </div>
+    </div>
+    <div class="form-group" ng-class="{ 'has-error' : myForm.hotelName.$invalid && !myForm.hotelName.$pristine }">
+      <label class="col-sm-3 control-label">Exclusions:</label>
+      <div class="col-sm-8">
+        <textarea class="form-control" rows="5" ng-model="itinerarydescController.exclu" placeholder="Description"></textarea>
+      </div>
+    </div>
+    <div class="form-group" ng-class="{ 'has-error' : myForm.hotelName.$invalid && !myForm.hotelName.$pristine }">
+      <label class="col-sm-3 control-label">Terms & Conditions:</label>
+      <div class="col-sm-8">
+        <textarea class="form-control" rows="8" ng-model="itinerarydescController.terms" placeholder="Terms & Conditions"></textarea>
+      </div>
+    </div>
+
+
+  </form>
+
+  <div class="col-lg-12 col-md-12 col-sm-12">
+    <button class="btn btn-success" style="float:left;position:relative;z-index:100;"
+            ng-click="redirectback();">&nbsp<span class="glyphicon glyphicon-chevron-left"></span> Back &nbsp
+    </button>
+
+    <button class="btn btn-success" style="float:right;position:relative;z-index:100;"
+            ng-click="redirect();" ng-disabled="(itinerarydescController.coverImage === null)
+          || (itinerarydescController.coverImage === '') || !itinerarydescController.coverImage ">&nbsp Next <span class="glyphicon glyphicon-chevron-right"></span> &nbsp</button>
+  </div>
+
+
+  <modal dikhao="showModal" class="container-fluid">
+    <div class="row">
+      <form class="form-horizontal">
+        <div class="form-group">
+          <label class="col-sm-4 control-label">Add Url:</label>
+          <div class="col-sm-5">
+            <input type="text" class="form-control" ng-model="itinerarydescController.imageurl" placeholder="Image Url">
+          </div>
+        </div>
+      </form>
+      <div class="col-sm-12">
+
+        <button type="button" class="btn btn-success" style="float:right;" ng-disabled="!itinerarydescController.imageurl"
+                ng-click="saveCoverImage()">Save
+        </button>
+
+      </div>
+
+
+    </div>
+
+</div>

@@ -1,0 +1,1071 @@
+<div class="row">
+  <div class="lead_view_wrapper">
+    <p class="lead_Filter">Filter by</p>
+    <div class="row">
+      <div class="col-md-8 nopad">
+        <div class="lead_Filter_buttons">
+          <ul class="lead_Filter_buttons_ul">
+            <li ng-show="ajkeycloak.hasAccess(KCuiPermissions['/leads']['ui_filter_status'])" class="lead_Filter_buttons_li">
+              <div class="lead_status_dropdown" dropdown is-open="status.isStatusOpen">
+                <button class="btn dropdown-toggle lead_staus" type="button" dropdown-toggle>Status</button>
+                <ul class="dropdown-menu lead_staus_options" ng-click="stopPropagation($event);">
+                  <li ng-repeat="status in leadStatus">
+                    <input type="checkbox" ng-checked="selectedLeadStatus.indexOf(status.id) != -1"
+                           ng-click="toggleStatusCheck($event, status.id, status.name);"><span>  {{status.name}}</span></input>
+                  </li>
+                  <div class="done_btn_wrap">
+                    <button class="btn departure_button lead_status_button status_button" ng-click="applyFilter(filter.statusFilter);">Done  </button>
+                  </div>
+                </ul>
+              </div>
+            </li>
+            <li ng-show="ajkeycloak.hasAccess(KCuiPermissions['/leads']['ui_filter_lead_date'])" class="lead_Filter_buttons_li">
+              <div class="lead_date_dropdown" dropdown is-open="status.isLeadDateOpen">
+                <button class="btn dropdown-toggle lead_date" type="button" dropdown-toggle>Lead Date</button>
+                <div class="dropdown-menu departure_drop_down" ng-click="stopPropagation($event);">
+                  <input type="date" ng-model="leadCreateStartDate" placeholder="Date" style="width:150px;">
+                  <input type="date" ng-model="leadCreateEndDate" placeholder="Date" style="width:150px;">
+                  <div class="done_btn_wrap">
+                    <button class="btn departure_button leaddate_button" ng-click="applyFilter(filter.leadDateFilter);">Done</button>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li ng-show="ajkeycloak.hasAccess(KCuiPermissions['/leads']['ui_filter_departure_date'])" class="lead_Filter_buttons_li">
+              <div class="depature_date_dropdown" dropdown is-open="status.isDepartureDateOpen">
+                <button class="btn dropdown-toggle depature_date" type="button" dropdown-toggle>Departure date</button>
+                <div class="dropdown-menu departure_drop_down" ng-click="stopPropagation($event);">
+                  <input type="date" ng-model="leadDepartureStartDate" placeholder="Date" style="width:150px;">
+                  <input type="date" ng-model="leadDepartureEndDate" placeholder="Date" style="width:150px;">
+                  <div class="done_btn_wrap">
+                    <button class="btn departure_button departuredate_button" ng-click="applyFilter(filter.departureDateFilter);">Done</button>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li ng-show="ajkeycloak.hasAccess(KCuiPermissions['/leads']['ui_filter_departure_city'])" class="lead_Filter_buttons_li">
+              <div class="lead_destination_dropdown" dropdown is-open="status.isDepartureCityOpen">
+                <button class="btn dropdown-toggle lead_destination" type="button" dropdown-toggle>Departure City</button>
+                <ul class="dropdown-menu  lead_destination_options" ng-click="stopPropagation($event);">
+                  <div class="form-group search_form">
+                    <input type="text" ng-model="departureCitySearch" class="form-control lead_search"
+                            placeholder="Search by Departure City">
+                    <img src="images/icons/close.jpg" ng-show="departureCitySearch" class="close_img" ng-click="clearDepartureCitySearch();">
+                  </div>
+                  <div class="dropdown_overflow destination_wrap">
+                    <li ng-repeat="departureCity in departureCities|filter:departureCitySearch">
+                      <input type="checkbox" ng-checked="selectedDepartureCityNames.indexOf(departureCity.name) != -1"
+                              ng-click="toggleDepartureCityCheck($event, departureCity);"><span>  {{departureCity.name}}</span></input>
+                    </li>
+                  </div>
+                  <div>
+                    <button class="btn departure_button lead_status_button branch_button" ng-click="applyFilter(filter.departureCityFilter);">Done</button>
+                  </div>
+                </ul>
+              </div>
+            </li>
+            <li ng-show="ajkeycloak.hasAccess(KCuiPermissions['/leads']['ui_filter_sales_channel'])" class="lead_Filter_buttons_li" ng-if="userType !== 'Uniglobe Agent' && userType !== 'Uniglobe Supervisor'">
+              <div class="lead_channel_dropdown" dropdown is-open="status.isChannelOpen">
+                <button class="btn dropdown-toggle lead_channel" type="button"  dropdown-toggle>Sales Channel</button>
+                <ul class="dropdown-menu lead_channel_options" ng-click="stopPropagation($event);" >
+                  <li ng-repeat="channel in channels">
+                     <input type="checkbox" ng-checked="selectedLeadChannel.indexOf(channel.id) != -1"
+                           ng-click="toggleChannelCheck($event, channel);" ><span>  {{channel.name}}</span></input>
+                  </li>
+                  <div class="done_btn_wrap">
+                    <button class="btn departure_button lead_status_button branch_button" ng-click="applyFilter(filter.channelfilter);">Done</button>
+                  </div>
+                </ul>
+              </div>
+            </li>
+            <li ng-show="ajkeycloak.hasAccess(KCuiPermissions['/leads']['ui_filter_sales_sub_channel'])" class="lead_Filter_buttons_li" ng-if="userType !== 'Uniglobe Agent' && userType !== 'Uniglobe Supervisor'">
+                <div class="lead_channel_dropdown" dropdown is-open="status.isSubChannelOpen">
+                  <button class="btn dropdown-toggle lead_sub_channel" type="button" ng-disabled ="selectedLeadChannel.length === 0 || subchannels.length ===0" dropdown-toggle>Sales Sub Channel</button>
+                  <ul class="dropdown-menu lead_channel_options" ng-click="stopPropagation($event);">
+                    <li ng-repeat="subchannel in subchannels">
+                       <input type="checkbox" ng-checked="selectedLeadSubChannel.indexOf(subchannel.id) != -1"
+                             ng-click="toggleSubChannelCheck($event, subchannel);"><span>  {{subchannel.name}}</span></input>
+                    </li>
+                    <div class="done_btn_wrap">
+                      <button class="btn departure_button lead_status_button branch_button" ng-click="applyFilter(filter.subchannelfilter);">Done</button>
+                    </div>
+                  </ul>
+                </div>
+            </li>
+            <li ng-show="ajkeycloak.hasAccess(KCuiPermissions['/leads']['ui_filter_product'])" class="lead_Filter_buttons_li" ng-if="userType !== 'Uniglobe Agent' && userType !== 'Uniglobe Supervisor'">
+                <div class="lead_product_dropdown" dropdown is-open="status.isProductOpen">
+                  <button class="btn dropdown-toggle lead_product" type="button" dropdown-toggle>Product</button>
+                  <ul class="dropdown-menu lead_channel_options" ng-click="stopPropagation($event);">
+                    <li ng-repeat="product in leadProducts">
+                      <input type="checkbox" ng-checked="selectedProductNames.indexOf(product.name) != -1"
+                             ng-click="toggleProductCheck($event, product);"><span>  {{product.name}}</span></input>
+                    </li>
+                    <div class="done_btn_wrap">
+                      <button class="btn departure_button lead_status_button branch_button" ng-click="applyFilter(filter.productFilter);">Done</button>
+                    </div>
+                  </ul>
+                </div>
+              </li>
+            <li ng-show="ajkeycloak.hasAccess(KCuiPermissions['/leads']['ui_filter_branch'])" class="lead_Filter_buttons_li" ng-if="userType !== 'Sales' && userType !== 'Uniglobe Agent' && userType !== 'Uniglobe Supervisor'">
+              <div class="lead_branch_dropdown" dropdown is-open="status.isBranchOpen">
+                <button class="btn dropdown-toggle lead_branch" type="button" dropdown-toggle>Branch</button>
+                <ul class="dropdown-menu  lead_branch_options" ng-click="stopPropagation($event);">
+                  <div class="dropdown_overflow">
+                    <li ng-repeat="branch in branches">
+                      <input type="checkbox" ng-checked="selectedLeadBranch.indexOf(branch.id) != -1"
+                             ng-click="toggleBranchCheck($event, branch.id, branch.name);"><span>  {{branch.name}}</span></input>
+                    </li>
+                  </div>
+                  <div>
+                    <button class="btn departure_button lead_status_button branch_button" ng-click="applyFilter(filter.branchFilter);">Done</button>
+                  </div>
+                </ul>
+              </div>
+            </li>
+            <li ng-show="ajkeycloak.hasAccess(KCuiPermissions['/leads']['ui_filter_employee'])" class="lead_Filter_buttons_li" ng-if="userType !== 'Sales' && userType !== 'Uniglobe Agent'">
+              <div class="lead_employee_dropdown" dropdown is-open="status.isEmployeeOpen">
+                <button class="btn dropdown-toggle lead_employee" type="button" ng-disabled ="selectedLeadBranch.length === 0 && userType !== 'Uniglobe Supervisor'" dropdown-toggle>Employee</button>
+                <ul class="dropdown-menu lead_employee_options" ng-click="stopPropagation($event);">
+                  <li ng-repeat="employee in employees">
+                    <input type="checkbox" ng-checked="selectedLeadEmployee.indexOf(employee.id) != -1"
+                           ng-click="toggleEmployeeCheck($event, employee.id, employee.name);"><span>  {{employee.name}}</span></input>
+                  </li>
+                  <div class="done_btn_wrap">
+                    <button class="btn departure_button lead_status_button employee_button" ng-click="applyFilter(filter.employeeFilter);">Done  </button>
+                  </div>
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-md-4 nopad">
+        <div style="padding-left:15px;">
+          <form ng-submit="applyFilter(null)" style="position:relative;z-index:30" class="form-inline lead_left" role="form">
+            <div ng-show="ajkeycloak.hasAccess(KCuiPermissions['/leads']['ui_input_search_leads'])" class="lead_Filter_buttons_li" class="form-group search_form">
+              <input type="text" ng-model="searchValue" class="form-control lead_search"
+                     placeholder="Search by Email Id / Name / Ref Number">
+              <img src="images/icons/close.jpg" ng-show="searchValue" class="close_img" ng-click="clearSearch()">
+              <span class="glyphicon glyphicon-search lead_search_icon" ng-click="applyFilter(null)"></span>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <p class="lead_Filter">Holidays/Tradefairs Filters</p>
+    <div class="row">
+      <div class="col-md-8 nopad">
+        <div class="lead_Filter_buttons">
+          <ul class="lead_Filter_buttons_ul">
+            <li ng-show="ajkeycloak.hasAccess(KCuiPermissions['/leads']['ui_filter_business_unit'])" class="lead_Filter_buttons_li">
+              <div class="lead_destination_dropdown" dropdown is-open="status.isBusinessUnitOpen">
+                <button class="btn dropdown-toggle lead_destination" type="button" dropdown-toggle>Business Unit</button>
+                <ul class="dropdown-menu  lead_destination_options" ng-click="stopPropagation($event);">
+                  <div class="form-group search_form">
+                    <input type="text" ng-model="businessUnitSearch" class="form-control lead_search"
+                           placeholder="Search by Business Unit">
+                    <img src="images/icons/close.jpg" ng-show="businessUnitSearch" class="close_img" ng-click="clearBusinessUnitSearch();">
+                  </div>
+                  <div class="dropdown_overflow destination_wrap">
+                    <li ng-repeat="businessUnit in businessUnits|filter:businessUnitSearch">
+                      <input type="checkbox" ng-checked="selectedBusinessUnitNames.indexOf(businessUnit.name) != -1"
+                             ng-click="toggleBusinessUnitCheck($event, businessUnit);"><span>  {{businessUnit.name}}</span></input>
+                    </li>
+                  </div>
+                  <div>
+                    <button class="btn departure_button lead_status_button branch_button" ng-click="applyFilter(filter.businessUnitFilter);">Done</button>
+                  </div>
+                </ul>
+              </div>
+            </li>
+            <li ng-show="ajkeycloak.hasAccess(KCuiPermissions['/leads']['ui_filter_sub_category'])" class="lead_Filter_buttons_li">
+              <div class="lead_destination_dropdown" dropdown is-open="status.isSubCategoryOpen">
+                <button class="btn dropdown-toggle lead_destination" type="button" dropdown-toggle>Sub Category</button>
+                <ul class="dropdown-menu  lead_destination_options" ng-click="stopPropagation($event);">
+                  <div class="form-group search_form">
+                    <input type="text" ng-model="subCategorySearch" class="form-control lead_search"
+                            placeholder="Search by Sub Category">
+                    <img src="images/icons/close.jpg" ng-show="subCategorySearch" class="close_img" ng-click="clearSubCategorySearch();">
+                  </div>
+                  <div class="dropdown_overflow destination_wrap">
+                    <li ng-repeat="subCategory in subCategories|filter:subCategorySearch">
+                      <input type="checkbox" ng-checked="selectedSubCategoryNames.indexOf(subCategory.name) != -1"
+                              ng-click="toggleSubCategoryCheck($event, subCategory);"><span>  {{subCategory.name}}</span></input>
+                    </li>
+                  </div>
+                  <div>
+                    <button class="btn departure_button lead_status_button branch_button" ng-click="applyFilter(filter.subCategoryFilter);">Done</button>
+                  </div>
+                </ul>
+              </div>
+            </li>
+            <li ng-show="ajkeycloak.hasAccess(KCuiPermissions['/leads']['ui_filter_region'])" class="lead_Filter_buttons_li">
+              <div class="lead_destination_dropdown" dropdown is-open="status.isRegionOpen">
+                <button class="btn dropdown-toggle lead_destination" type="button" dropdown-toggle>Region</button>
+                <ul class="dropdown-menu  lead_destination_options" ng-click="stopPropagation($event);">
+                  <div class="form-group search_form">
+                    <input type="text" ng-model="regionSearch" class="form-control lead_search"
+                            placeholder="Search by Region">
+                    <img src="images/icons/close.jpg" ng-show="regionSearch" class="close_img" ng-click="clearRegionSearch();">
+                  </div>
+                  <div class="dropdown_overflow destination_wrap">
+                    <li ng-repeat="region in regions|filter:regionSearch">
+                      <input type="checkbox" ng-checked="selectedRegionNames.indexOf(region.name) != -1"
+                              ng-click="toggleRegionCheck($event, region);"><span>  {{region.name}}</span></input>
+                    </li>
+                  </div>
+                  <div>
+                    <button class="btn departure_button lead_status_button branch_button" ng-click="applyFilter(filter.regionFilter);">Done</button>
+                  </div>
+                </ul>
+              </div>
+            </li>
+            <li ng-show="ajkeycloak.hasAccess(KCuiPermissions['/leads']['ui_filter_group'])" class="lead_Filter_buttons_li">
+              <div class="lead_destination_dropdown" dropdown is-open="status.isGroupOpen">
+                <button class="btn dropdown-toggle lead_destination" type="button" dropdown-toggle>Group</button>
+                <ul class="dropdown-menu  lead_destination_options" ng-click="stopPropagation($event);">
+                  <div class="form-group search_form">
+                    <input type="text" ng-model="groupSearch" class="form-control lead_search"
+                            placeholder="Search by Group">
+                    <img src="images/icons/close.jpg" ng-show="groupSearch" class="close_img" ng-click="clearGroupSearch();">
+                  </div>
+                  <div class="dropdown_overflow destination_wrap">
+                    <li ng-repeat="group in groups|filter:groupSearch">
+                      <input type="checkbox" ng-checked="selectedGroupNames.indexOf(group.name) != -1"
+                              ng-click="toggleGroupCheck($event, group);"><span>  {{group.name}}</span></input>
+                    </li>
+                  </div>
+                  <div>
+                    <button class="btn departure_button lead_status_button branch_button" ng-click="applyFilter(filter.groupFilter);">Done</button>
+                  </div>
+                </ul>
+              </div>
+            </li>
+            <li ng-show="ajkeycloak.hasAccess(KCuiPermissions['/leads']['ui_filter_package_name'])" class="lead_Filter_buttons_li">
+              <div class="lead_destination_dropdown" dropdown is-open="status.isPackageNameOpen">
+                <button class="btn dropdown-toggle lead_destination" type="button" dropdown-toggle>Package Name</button>
+                <ul class="dropdown-menu  lead_destination_options" ng-click="stopPropagation($event);">
+                  <div class="form-group search_form">
+                    <input type="text" ng-model="packageNameSearch" class="form-control lead_search"
+                            placeholder="Search by Package Name">
+                    <img src="images/icons/close.jpg" ng-show="packageNameSearch" class="close_img" ng-click="clearPackageNameSearch();">
+                  </div>
+                  <div class="dropdown_overflow destination_wrap">
+                    <li ng-repeat="packageName in packageNames|filter:packageNameSearch">
+                      <input type="checkbox" ng-checked="selectedPackageNames.indexOf(packageName.name) != -1"
+                              ng-click="togglePackageNameCheck($event, packageName);"><span>  {{packageName.name}}</span></input>
+                    </li>
+                  </div>
+                  <div>
+                    <button class="btn departure_button lead_status_button branch_button" ng-click="applyFilter(filter.packageNameFilter);">Done</button>
+                  </div>
+                </ul>
+              </div>
+            </li>
+            <li ng-show="ajkeycloak.hasAccess(KCuiPermissions['/leads']['ui_filter_destination'])" class="lead_Filter_buttons_li" ng-show="userType !== 'Uniglobe Agent' && userType !== 'Uniglobe Supervisor'">
+              <div class="lead_destination_dropdown" dropdown is-open="status.isDestinationOpen">
+                <button class="btn dropdown-toggle lead_destination" type="button" dropdown-toggle>Destination</button>
+                <ul class="dropdown-menu  lead_destination_options" ng-click="stopPropagation($event);">
+                  <div class="form-group search_form">
+                    <input type="text" ng-model="destinationSearch" class="form-control lead_search"
+                           placeholder="Search by Destination">
+                    <img src="images/icons/close.jpg" ng-show="destinationSearch" class="close_img" ng-click="clearDestinationSearch();">
+                  </div>
+                  <div class="dropdown_overflow destination_wrap">
+                    <li ng-repeat="destination in leadDestinations|filter:destinationSearch">
+                      <input type="checkbox" ng-checked="selectedLeadDestinationNames.indexOf(destination.name) != -1"
+                             ng-click="toggleDestinationCheck($event, destination);"><span>  {{destination.name}}</span></input>
+                    </li>
+                  </div>
+                  <div>
+                    <button class="btn departure_button lead_status_button branch_button" ng-click="applyFilter(filter.destinationFilter);">Done</button>
+                  </div>
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <p class="applied_filters">{{appliedFilter}}</p>
+
+    <div class="row clearfix">
+      <div class="col-md-6 nopad" style="position:relative;">
+        <button style="margin-top: 0px;position: absolute;left: 0px;" class="btn departure_button lead_status_button branch_button" ng-click="resetFilter();">Reset Filter</button>
+      </div>
+      <div class="col-md-6 nopad">
+        <div class="buttons_wrap">
+          <button ng-show="ajkeycloak.hasAccess(KCuiPermissions['/leads']['ui_button_create_new_lead'])" style="position:relative;z-index:20;" class="btn lead_button lead_left" ng-click="editLeads('new','')">
+            Create New Lead
+          </button>
+          <button ng-show="ajkeycloak.hasAccess(KCuiPermissions['/leads']['ui_button_download_report'])" style="position:relative;z-index:20;left:12px;" class="btn lead_button lead_left" ng-click="downloadLeads()">
+            Download Report
+          </button>
+        </div>
+      </div>
+    </div>
+    <ul class="lead_status" >
+      <li class="lead_status_block lead_status_lossUpblock" ng-click="filterLeadCards(counters[counters.length-1])">
+        <p class="lead_status_block_heading">{{counters[counters.length-1].name}}</p>
+        <p class="lead_count_block">
+          <span class="lead_status_followUpblock_count">{{counters[counters.length-1].count}}</span>
+          <span class="glyphicon glyphicon-plus lead_status_block_icon"></span>
+        </p>
+      </li>
+      <li ng-repeat="counter in counters | limitTo: (counters.length > 7 ? 7 : counters.length -1): 0" class="lead_status_block lead_status_lossUpblock" ng-click="filterLeadCards(counter)">
+        <p class="lead_status_block_heading">{{counter.name}}</p>
+        <p class="lead_count_block">
+          <span class="lead_status_followUpblock_count">{{counter.count}}</span>
+          <span class="glyphicon glyphicon-plus lead_status_block_icon"></span>
+        </p>
+      </li>
+    </ul>
+    <div class="row table-responsive lead_table">
+      <table class="table">
+        <thead>
+        <tr class="lead_table_heading">
+          <!-- <th ng-click="sort('id')">
+            Lead id
+            <span class="glyphicon sort-icon" ng-show="sortKey=='id'"
+                  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+          </th> -->
+          <th>Reference ID</th>
+          <th ng-click="sort('leadName')">
+            Name
+            <span class="glyphicon sort-icon" ng-show="sortKey=='user_id.leadName'"
+                  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+          </th>
+          <th ng-click="sort('createdAt')">
+            Query Date
+            <span class="glyphicon sort-icon" ng-show="sortKey=='createdAt'"
+                  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+          </th>
+          <th>
+            Query Time
+          </th>
+          <th>
+            Destination
+          </th>
+          <th>
+            Assigned To
+          </th>
+          <th>
+            Product
+          </th>
+          <th>
+            Channel
+          </th>
+          <th>
+            Sub Channel
+          </th>
+          <th>
+            Sub Category
+          </th>
+          <th>Status</th>
+          <!--th ng-click="sort('email')">
+            Email
+            <span class="glyphicon sort-icon" ng-show="sortKey=='lead.email'"
+                  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+          </th-->
+          <!--th ng-click="sort('phone')" class="lead_number">
+            Phone Number
+            <span class="glyphicon sort-icon" ng-show="sortKey=='lead.phone'"
+                  ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+          </th-->
+        </tr>
+        </thead>
+        <tbody>
+        <tr pagination-id="leads"
+            dir-paginate="lead in leads|itemsPerPage:8 "
+            class="open_lead_result lead_table_row"
+            ng-click="editLeads(lead.sequence, 'show')">
+          <!-- <td class="lead_manegment_id">{{ lead.id }}</td> -->
+          <td>{{ lead.reference_number}}</td>
+          <td>{{ lead.leadName}}</td>
+          <td><p>{{lead.createdAt | formatDate}}</p></td>
+          <td><p>{{lead.createdAt | formatTimeTwelveHrs}}</p></td>
+          <td>{{lead.destination}}</td>
+          <td>{{getAssigneeName(lead.assign_to)}}</td>
+          <td>{{lead.product}}</td>
+          <td>{{lead.channel}}</td>
+          <td>{{lead.sub_channel}} {{lead.retail_agent_id?'('+lead.retail_agent_id+')':''}}</td>
+          <td>{{lead.sub_category}}</td>
+          <td>{{lead.lead_status}}</td>
+          <!--td>{{ lead.email}}</td-->
+          <!--td class="lead_number">{{ lead.phone}}</td-->
+        </tr>
+        </tbody>
+      </table>
+      </dir>
+      <dir-pagination-controls pagination-id="leads" max-size="20" direction-links="true" boundary-links="true">
+      </dir-pagination-controls>
+    </div>
+    <button style="position:relative;z-index:10" class="btn btn-success" ng-click="getMoreLeads();" ng-if="leads.length >= 200">
+      <span class="glyphicon glyphicon-"></span> Get More
+    </button>
+    <!--model for edit-->
+    <div id="lead_Modal" class="modal fade" role="dialog">
+      <div class="modal-dialog edit_dialog">
+        <div class="modal-header quotation_header">
+          <div class="row clearfix">
+            <div class="col-md-3 nopad" ng-show='showNote'>
+              <p>
+                <span class="id_heading">ID:</span>
+                <span class="id_content">{{ LeadController.leadId }}</span>
+              </p>
+            </div>
+            <div class="col-md-3 nopad" ng-show='showNote'>
+              <p>
+                <span class="id_heading">Reference Number:</span>
+                <span class="id_content">{{ LeadController.referenceNumber }}</span>
+              </p>
+            </div>
+            <div class="col-md-4 nopad" ng-show='showNote'>
+              <p>
+                <span class="id_heading">Package Name:</span>
+                <span class="id_content">{{ LeadController.campaignName }}</span>
+              </p>
+            </div>
+            <div class="col-md-10 nopad" ng-hide='showNote'>
+              <p>New Lead</p>
+            </div>
+            <div class="col-md-2 nopad">
+              <button type="button" class="close quotation_close_button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          </div>
+          <div class="row clearfix" ng-show='showNote'>
+            <p class="lead_source">
+              <span class="id_heading">Source Url</span>
+              <span class="id_content">{{ LeadController.sourceUrl }}</span>
+            </p>
+          </div>
+        </div>
+        <div class="modal-content edit_content">
+          <section class="edit_details">
+            <form>
+              <div class="row edit_header">
+                <div class="col-md-3 col-sm-3 col-xs-6 edit_block">
+                  <p class="edit-caption edit-caption_departure_city"> Lead Status<span style="color:red">*</span></p>
+                  <p>
+                    <select class="form-control" ng-model="LeadController.leadStatus"
+                            ng-options="item.id as item.name for item in leadStatus">
+                    </select>
+                  </p>
+                </div>
+                <div class="col-md-3 col-sm-3 col-xs-6 edit_block">
+                  <p class="edit-caption edit-caption_departure_city"> Branch</p>
+                  <p>
+                    <select class="form-control" ng-model="LeadController.branch"
+                            ng-options="item.id as item.name for item in branches"
+                            ng-change="getEmployees()">
+                      <option value="">Select Branch</option>
+                    </select>
+                  </p>
+                </div>
+                <div class="col-md-3 col-sm-3 col-xs-6 edit_block">
+                  <p class="edit-caption edit-caption_departure_city"> Employee</p>
+                  <p>
+                    <select class="form-control" ng-model="LeadController.assignTo"
+                            ng-options="item.id as item.name for item in employees">
+                      <option value="">Select Employee</option>
+                    </select>
+                  </p>
+                </div>
+                <div class="col-md-3 col-sm-3 col-xs-6 edit_block">
+                  <p class="edit-caption edit-caption_departure_city"> Source<span style="color:red">*</span></p>
+                  <p>
+                    <select class="form-control" ng-model="LeadController.leadSourceId"
+                            ng-options="item.id as item.name for item in leadSources">
+                      <option value="">Select Source</option>
+                    </select>
+                  </p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-3 col-sm-3 col-xs-6 edit_block">
+                  <md-input-container class="md-block feild_title" flex-gt-sm>
+                    <label>Full name<span style="color:red">*</span></label>
+                    <input ng-model="LeadController.leadName">
+                  </md-input-container>
+                </div>
+                <div class="col-md-3 col-sm-3 col-xs-6 edit_block">
+                  <md-input-container class="md-block feild_title" flex-gt-sm>
+                    <label>Email<span style="color:red">*</span></label>
+                    <input type="text" ng-model="LeadController.email">
+                  </md-input-container>
+                </div>
+                <div class="col-md-3 col-sm-3 col-xs-6 edit_block">
+                  <md-input-container class="md-block feild_title" flex-gt-sm>
+                    <label>Mobile<span style="color:red">*</span></label>
+                    <input type="text" ng-model="LeadController.phone" ng-minlength="10" ng-maxlength="10">
+                  </md-input-container>
+                </div>
+                <div class="col-md-3 col-sm-3 col-xs-6 edit_block">
+                  <p class="edit-caption edit-caption_departure_city"> User City</p>
+                  <div angucomplete-alt id="exUserCity" placeholder="Select User City" pause="300"
+                       selected-object="selectedUserCityFunction" remote-url="{{destinationSearchUrl}}"
+                       remote-url-request-formatter="remoteUrlRequestFn" remote-url-data-field="response.message"
+                       search-field="name" title-field="name" description-field="type" minlength="1"
+                       focus-in="resetUserCityData()" input-class="form-control form-control-small"
+                       match-class="highlight" ng-model="LeadController.userCityInitialValue" class="departure_city">
+                  </div>
+                </div>
+              </div>
+              <div class="row" >
+                <p class="edit-caption">User Notes</p>
+                <textarea ng-model="LeadController.userNotes" ng-disabled="isNew">{{LeadController.userNotes}}</textarea>
+              </div>
+              <div class="pax_details">
+                <p class="pax_title">Pax details</p>
+                <div class="row clearfix">
+                  <div class="row clearfix edit_block">
+                    <div class="col-md-6 edit_block">
+                      <div class="row">
+                        <p class="edit-caption_main">Select Travellers</p>
+                        <div class="col-md-4 nopad edit_block">
+                          <div class="dropdown">
+                            <input type="number" class="form-control mod" min="{{minAdults}}" max="{{maxAdults}}"
+                                   ng-model="LeadController.noAdults" placeholder="Adults" ng-change="checkAdults();"/>
+                          </div>
+                        </div>
+                        <div class="col-md-4 edit_block">
+                          <div class="dropdown">
+                            <input type="number" class="form-control mod" min="{{minChildren}}" max="{{maxChildren}}"
+                                   ng-model="LeadController.noChild" placeholder="Child" ng-change="addChildAgePax(3)"/>
+                          </div>
+                        </div>
+                        <div class="col-md-4 edit_block">
+                          <div class="dropdown">
+                            <input type="number" class="form-control mod" min=0 ng-model="LeadController.noKid"
+                                   placeholder="Infant" ng-change="checkInfants()"/>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-5 edit_block child_count" ng-show="childAge.length > 0">
+                      <div class="row">
+                        <div class="col-md-6 edit_block" ng-repeat="age in childAge track by $index"
+                             ng-init="position=$index">
+                          <p class="edit-caption">Child{{$index+1}} Age</p>
+                          <div class="dropdown" ng-if="childAge.length > 0">
+                            <select class="form-control" ng-selected="age" ng-model="childAge[$index]"
+                                    ng-options="x for x in childAges"></select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="travel_details">
+                  <p class="edit-caption_main">Travel details</p>
+                  <div class="row clearfix edit_block">
+                    <div class="col-md-3 edit_block">
+                      <div class="row">
+                        <div angucomplete-alt id="exUserPrefCity" placeholder="Select Departure City" pause="300"
+                             selected-object="selectedDepartureCityFunction" remote-url="{{destinationSearchUrl}}"
+                             remote-url-request-formatter="remoteUrlRequestFn" remote-url-data-field="response.message"
+                             search-field="name" title-field="name" description-field="type" minlength="1"
+                             focus-in="resetDepartureCityData()" input-class="form-control form-control-small"
+                             match-class="highlight" ng-model="LeadController.userPrefCityInitialValue"
+                             class="departure_city">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3 edit_block">
+                      <div>
+                        <input type="date" ng-model="LeadController.departureDate" placeholder="Departure Date"
+                               min="{{minDate}}">
+                      </div>
+                      <div>
+                        <md-input-container class="md-block">
+                          <md-checkbox name="tos" ng-model="LeadController.isFlexible" required>
+                            <p class="edit-caption"> Dates Flexible</p>
+                          </md-checkbox>
+                        </md-input-container>
+                      </div>
+                    </div>
+                    <div class="col-md-2 edit_block">
+                      <div class="dropdown">
+                        <select class="form-control" ng-model="LeadController.noOfDays"
+                                ng-options="x for x in noOfDays">
+                          <option value="">No. of Days</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-2 edit_block travel_budget">
+                      <md-input-container class="md-block feild_title" flex-gt-sm>
+                        <label>Budget</label>
+                        <input ng-model="LeadController.userPrefBudget">
+                      </md-input-container>
+                    </div>
+                    <div class="col-md-2 edit_block">
+                      <div>
+                        <dropdown-multiselect model="LeadController.hotelPreferences" options="hotelPreferences"
+                                              class="hotel_preference"  templatetext="dropDownText">
+                        </dropdown-multiselect>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="destination_block" ng-repeat="destination in LeadDestinations track by $index"
+                     ng-init="position=$index">
+                <span class="location_caption">&nbsp;
+                  <span style="float:right">
+                    <img src="images/icons/close.jpg" ng-if="LeadDestinations.length > 1 "
+                         ng-click="deleteLeadDestination(position)">
+                  </span>
+                </span>
+                  <div angucomplete-alt id="{{'ex_lead_' + position}}" style="border-bottom: 1px solid #ccc;"
+                       placeholder="Select Destination City" pause="300"
+                       selected-object="selectedLeadDestinationCityFunction" remote-url="{{destinationSearchUrl}}"
+                       remote-url-request-formatter="remoteUrlRequestFn" remote-url-data-field="response.message"
+                       search-field="name" title-field="name" initial-value="{id:destination.id, name:destination.name}"
+                       description-field="type" minlength="1" focus-in="resetLeadDestinationCityData(position)"
+                       input-class="form-control form-control-small" match-class="highlight" ng-model="destination">
+                  </div>
+                </div>
+                <div class="row clearfix">
+                  <button type="button" ng-click="addLeadDestinations();" class="add_location">+ Add more location
+                  </button>
+                </div>
+                <div class="agents_block" ng-show="act=='update'">
+                  <p class="pax_title">Agent Comments</p>
+                  <div class="row clearfix">
+                    <div class="col-md-2 edit_block">
+                      <p class="edit-caption">Add notes</p>
+                    </div>
+                    <div class="col-md-4 col-sm-0"></div>
+                  </div>
+                  <div class="add_notes">
+                    <textarea placeholder="Add notes if any..." ng-model="LeadController.addedNote"></textarea>
+                    <button type="button" value="DONE" class="done_btn" ng-click="addNote($index)">DONE</button>
+                  </div>
+                  <div class="author_info" ng-show="showNote">
+                    <div ng-repeat="note in leadNotes">
+                      <div class="row clearfix">
+                        <div class="col-md-6 col-sm-0"></div>
+                        <div class="col-md-6 nopad">
+                          <p class="editor_info">Added by
+                            <span>{{note.employee_data.user_id.name}}</span>
+                            {{note.createdAt | formatDate}} | {{note.createdAt | formatTimeTwelveHrs}}
+                          </p>
+                        </div>
+                      </div>
+                      <p class="editor_comment">{{ note.notes }}<br></p>
+                    </div>
+                  </div>
+                </div>
+                <div class="popup_buttons">
+                  <button type="button" data-dismiss="modal" class="close_btn">CLOSE</button>
+                  <button type="button" ng-click="saveLeads()" class="save_btn">SAVE CHANGES</button>
+                </div>
+              </div>
+            </form>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--endhere->
+
+<!- model for Quotation-->
+<script type="text/ng-template" id="viewQuotation.tmpl.html">
+  <md-dialog class="dialog_size quotation_dialog" aria-label="Dates for Another Hotel" ng-cloak
+             style="z-index: 99998; max-height:100% !important;">
+    <md-dialog-content>
+      <div class="md-dialog-content" style="padding: 0px;">
+        <!-- Modal content-->
+        <div class="quotation_content">
+          <div class="modal-header quotation_header">
+            <button type="button" class="close quotation_close_button" ng-click="ctrl.parent.cancelDialog();">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <p class="modal-title">Quotation</p>
+          </div>
+          <div class="modal-body quotation_body">
+            <table class="table quotation_table_content" ng-if="ctrl.parent.leadQuotations.length>0">
+              <tbody>
+              <tr pagination-id="quotation" dir-paginate="leadQuotation in ctrl.parent.leadQuotations | itemsPerPage: 5"
+                  class="open_leadQuotation_result leadQuotation_table_row">
+                <!--tr ng-repeat="leadQuotation in leadQuotations"-->
+                <td>{{leadQuotation.id}}</td>
+                <td>
+                  <p>
+                    <span>{{leadQuotation.createdAt | formatDate}} {{leadQuotation.createdAt | formatTimeTwelveHrs}}</span>
+                  </p>
+                </td>
+                <td>
+                  <p class="quotation_days">{{leadQuotation.destinations}}</p>
+                </td>
+                <td>Rs. {{leadQuotation.priceBreakup | cur}}</td>
+                <td>
+                  <div class="quotation_button">
+                    <a ng-click="ctrl.parent.viewQuotation(leadQuotation.id, leadQuotation.lead_id);">View/Edit</a>
+                    <a ng-click="ctrl.parent.sendEmail(leadQuotation.id, leadQuotation.leadID);">Resend Quotation</a>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+            <dir-pagination-controls
+              ng-if="ctrl.parent.leadQuotations.length>0"
+              pagination-id="quotation"
+              max-size="5"
+              direction-links="true"
+              boundary-links="true">
+            </dir-pagination-controls>
+            <p ng-if="ctrl.parent.leadQuotations.length==0">No records found</p>
+          </div>
+        </div>
+      </div>
+    </md-dialog-content>
+  </md-dialog>
+</script>
+<!-- Modal end here-->
+
+<!--- Model for suceesful quotation-->
+<!-- Modal content-->
+<div class="modal-content quotation_content hide">
+  <div class="modal-header quotation_success_header">
+    <button type="button" class="close quotation_success_close" data-dismiss="modal" aria-label="Close"><span
+      aria-hidden="true">&times;</span></button>
+  </div>
+  <div class="modal-body quotation_success_body">
+    <div class="quotation_success_content">
+      <p class="quotation_success_icon"><span class="glyphicon glyphicon-ok-sign"></span></p>
+      <p class="quotation_success_email">Your email sent successfully at <span
+        class="user_email_color">abc@gmail.com</span></p>
+      <div class="quotation_success_buttons">
+        <input type="button" value="OK" class="btn quotation_success_btn">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="findpackage_Modal-{{LeadController.findPackage.sequence}}" class="modal fade" role="dialog">
+  <div class="modal-dialog find_dialog">
+    <div class="modal-content find_content">
+      <div class="modal-header find_header">
+        <button type="button" class="close find_close_button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <p class="modal-title">Find Itinerary</p>
+      </div>
+      <section class="edit_details find_package">
+        <form>
+          <div class="row">
+            <div class="col-md-4 col-sm-3 col-xs-6 edit_block">
+              <p class="edit-caption"> Departure City</p>
+              <div>
+                <div angucomplete-alt id="exFindPackageDepartureCity" placeholder="Select Departure City" pause="300"
+                     selected-object="selectedPackageDepartureCityFunction"
+                     remote-url="{{destinationSearchUrl}}" remote-url-request-formatter="remoteUrlRequestFn"
+                     remote-url-data-field="response.message"
+                     search-field="name" title-field="name" description-field="type"
+                     minlength="1" focus-in="resetFindPackageDepartureCityData()"
+                     input-class="form-control form-control-small" match-class="highlight"
+                     ng-model="LeadController.findPackage.userPrefboardingCity" class="departure_city">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-sm-3 col-xs-6 edit_block">
+              <p class="edit-caption"> Departure Date</p>
+              <input type="date" ng-model="LeadController.findPackage.departureDate" placeholder="Departure date"
+                     min="{{minDate}}">
+            </div>
+            <p class="edit-caption"></p>
+            <div class="col-md-4 col-sm-3 col-xs-6 edit_block">
+              <md-input-container class="md-block">
+                <md-checkbox name="tos" ng-model="LeadController.findPackage.isFlexible" required
+                             class="find_package_checkbox">
+                  <p class="edit-caption"> Dates Flexible</p>
+                </md-checkbox>
+              </md-input-container>
+            </div>
+          </div>
+          <div class="row clearfix"><br/></div>
+          <div class="designation_block" ng-repeat="destination in Destinations track by $index"
+               ng-init="position=$index">
+            <div class="designation_block">
+              <md-input-container class="md-block feild_title" flex-gt-sm>
+                      <span style="float:right">
+                        <img src="images/icons/close.jpg" ng-if="Destinations.length > 1 && position > 0"
+                             ng-click="deleteDestination(position)">
+                      </span>
+                <label>Add Location</label>
+                <div angucomplete-alt id="{{'exFindPackageDestinationCity_' + $index}}"
+                     style="border-bottom: 1px solid #ccc;" placeholder="Select Destination City"
+                     pause="300" selected-object="selectedDestinationCityFunction" remote-url="{{destinationSearchUrl}}"
+                     remote-url-request-formatter="remoteUrlRequestFn" remote-url-data-field="response.message"
+                     search-field="name" title-field="name" initial-value="destination" description-field="type"
+                     minlength="1" focus-in="resetFindPackageDestinationCityData($index)"
+                     input-class="form-control form-control-small" match-class="highlight" ng-model="destination">
+                </div>
+              </md-input-container>
+            </div>
+          </div>
+          <div class="row clearfix">
+            <button type="button" ng-click="addMoreDestination();" class="add_location">+ Add more locations</button>
+          </div>
+          <div class="row">
+            <div class="col-md-4 col-sm-3 col-xs-6 edit_block">
+              <p class="edit-caption">(Pax details as per Lead ) </p>
+              <label class="edit-caption" ng-if="LeadController.findPackage.travellers[0].adult_count > 0">{{LeadController.findPackage.travellers[0].adult_count }} Adult(s)</label>
+              <label class="edit-caption" ng-if="LeadController.findPackage.travellers[0].child_count > 0">{{LeadController.findPackage.travellers[0].child_count}} Child(ren) </label>
+              <label class="edit-caption" ng-if="LeadController.findPackage.travellers[0].infant_count >0">{{LeadController.findPackage.travellers[0].infant_count}} Infant(s) </label>
+            </div>
+          </div>
+          <div class="pax_details">
+            <div class="row clearfix">
+              <div class="row clearfix edit_block">
+                <div class="col-md-2 edit_block">
+                  <p class="edit-caption">Select Rooms</p>
+                  <div class="dropdown">
+                    <select class="form-control" ng-model="LeadController.findPackage.noRooms"
+                            ng-change="addTravellers()" ng-options="x for x in noOfDays"></select>
+                  </div>
+                </div>
+                <div class="col-md-10 edit_block">
+                  <div class="row traveller_details"
+                       ng-repeat="traveller in LeadController.findPackage.travellers track by $index"
+                       ng-init="position=$index">
+                    <div class="col-md-8 child_count_border" style="padding-right:0;">
+                      <p class="edit-caption">Select Travellers</p>
+                      <div class="col-md-4 edit_block">
+                        <div class="dropdown">
+                          <select class="form-control" ng-model="traveller.adult_count"
+                                  ng-options="item.id as item.name for item in adults">
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-md-4 edit_block">
+                        <div class="dropdown">
+                          <select class="form-control" ng-model="traveller.child_count"
+                                  ng-options="item.id as item.name for item in child" ng-change="addChildAge(position)">
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-md-4 edit_block ">
+                        <div class="dropdown">
+                          <select class="form-control" ng-model="traveller.infant_count"
+                                  ng-options="item.id as item.name for item in infant">
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4 edit_block " ng-show="traveller.child_count > 0">
+                      <p class="edit-caption" style="padding-left:15px;">Age of child</p>
+                      <div class="dropdown col-md-6 traveller_child"
+                           ng-repeat="child in traveller.children_array track by $index">
+                        <select class="form-control" ng-model="child.age" ng-options="x for x in childAges">
+                          <option value="">Age</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="budget_block">
+            <div class="row clearfix">
+              <div class="row clearfix edit_block">
+                <div class="col-md-4 edit_block travel_budget">
+                  <md-input-container class="md-block feild_title" flex-gt-sm>
+                    <label>Budget</label>
+                    <input type="number" class="form-control mod" min="0" name="budget"
+                           ng-model="LeadController.findPackage.userPrefBudget" placeholder="Enter Budget" min=0>
+                  </md-input-container>
+                </div>
+                <div class="col-md-8 edit_block child_count">
+                  <md-input-container class="md-block feild_title" flex-gt-sm>
+                    <label>Select hotels by ratings</label>
+                    <dropdown-multiselect model="LeadController.findPackage.hotelPreferences" options="hotelPreferences"
+                                          class="hotal_rating">
+                    </dropdown-multiselect>
+                  </md-input-container>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="popup_buttons" id="findItinerary">
+            <input type="button" value="FIND PACKAGES" ng-click="findItinerary(LeadController.findPackage.sequence);"
+                   class="save_btn">
+          </div>
+
+        </form>
+      </section>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog create_dialog">
+    <div class="modal-content create_content">
+      <section class="edit_details find_package create_package">
+        <div class="package_title">
+          <h4>Book Domestic & International Holiday packages</h4>
+        </div>
+        <form>
+          <div class="row">
+            <div class="col-md-5 col-sm-3 col-xs-6 edit_block">
+              <p class="feild_title">Leaving From</p>
+              <input type="text" name="leavingfrom" value="Mumbai">
+            </div>
+            <div class="col-md-5 col-sm-3 col-xs-6 edit_block">
+              <p class="feild_title">Start Date</p>
+              <input type="text" name="startdate" value="Sat, 29 Jul 2017">
+            </div>
+          </div>
+          <div class="row clearfix">
+            <div class="row clearfix">
+              <div class=" designation_block">
+                <div class="location_block">
+                  <div class="addlocaation_block">
+                    <p class="feild_title">Add Location</p>
+                    <input type="text" name="location" value="Dubai, United Arab Emirates">
+                  </div>
+                  <div class="inout_block">
+                    <div class="in_block">
+                      <p class="feild_title">Add Location</p>
+                      <p class="time_in">Sat, 29 Jul </p>
+                    </div>
+                    <div class="out_block">
+                      <p class="feild_title">Add Location</p>
+                      <p class="time_out">Sat, 29 Jul </p>
+                    </div>
+                  </div>
+                  <div class="night_block">
+                    <p class="feild_title">night</p>
+                    <div class="dropdown">
+                      <button class="btn  dropdown-toggle night_block_margin" type="button" data-toggle="dropdown">2
+                        <span class="glyphicon glyphicon-chevron-down"></span></button>
+                      <ul class="dropdown-menu">
+                        <li><a>3</a></li>
+                        <li><a>4</a></li>
+                        <li><a>5</a></li>
+                      </ul>
+                    </div>
+
+                  </div>
+                  <div class="move_arrow">
+                    <p><img src="images/icons/move.svg"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="cross_arrow">
+                <p><img src="images/icons/close.jpg"></p>
+              </div>
+            </div>
+            <div class="row clearfix">
+              <button type="button" class="add_location">+ Add more location</button>
+            </div>
+          </div>
+          <div class="pax_details">
+            <div class="row clearfix">
+              <div class="row clearfix edit_block">
+                <div class="col-md-2 edit_block">
+                  <p class="edit_subtitle">Select Rooms</p>
+                  <div class="dropdown">
+                    <button class="btn  dropdown-toggle" type="button" data-toggle="dropdown">1
+                      <span class="glyphicon glyphicon-chevron-down"></span></button>
+                    <ul class="dropdown-menu">
+                      <li><a>2 Adults</a></li>
+                      <li><a>3 Adults</a></li>
+                      <li><a>4 Adults</a></li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="col-md-6 edit_block child_count">
+                  <div class="row">
+                    <p class="edit_subtitle">Select Travellers</p>
+                    <div class="col-md-4 nopad edit_block">
+                      <div class="dropdown">
+                        <button class="btn  dropdown-toggle" type="button" data-toggle="dropdown">1 Adult
+                          <span class="glyphicon glyphicon-chevron-down"></span></button>
+                        <ul class="dropdown-menu">
+                          <li><a>2 Adults</a></li>
+                          <li><a>3 Adults</a></li>
+                          <li><a>4 Adults</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="col-md-4 edit_block">
+                      <div class="dropdown">
+                        <button class="btn  dropdown-toggle" type="button" data-toggle="dropdown">0 Child
+                          <span class="glyphicon glyphicon-chevron-down"></span></button>
+                        <ul class="dropdown-menu">
+                          <li><a>2 Adults</a></li>
+                          <li><a>3 Adults</a></li>
+                          <li><a>4 Adults</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="col-md-4 edit_block">
+                      <div class="dropdown">
+                        <button class="btn  dropdown-toggle" type="button" data-toggle="dropdown">0 Infant
+                          <span class="glyphicon glyphicon-chevron-down"></span></button>
+                        <ul class="dropdown-menu">
+                          <li><a>2 Adults</a></li>
+                          <li><a>3 Adults</a></li>
+                          <li><a>4 Adults</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="budget_block">
+            <div class="row clearfix edit_block">
+              <div class="col-md-4 edit_block">
+                <input type="text" name="location" placeholder="Enter Budget" value="&#8377 50,000/-"
+                       class="budget_filed">
+              </div>
+              <div class="col-md-8 edit_block child_count">
+                <div class="row">
+                  <p class="edit_subtitle">Select hotels by ratings</p>
+                  <div class="col-md-4 nopad edit_block">
+                    <p class="date_text">
+                      <img src="images/icons/checked.svg"><span>2 Star Hotels</span>
+                    </p>
+                  </div>
+                  <div class="col-md-4 edit_block">
+                    <p class="date_text">
+                      <img src="images/icons/checked.svg"><span>3 Star Hotels</span>
+                    </p>
+                  </div>
+                  <div class="col-md-4 edit_block">
+                    <p class="date_text">
+                      <img src="images/icons/checked.svg"><span>4 Star Hotels +</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="popup_buttons">
+              <button type="button" class="save_btn">CREATE ITINERARY</button>
+            </div>
+          </div>
+        </form>
+      </section>
+    </div>
+  </div>
+</div>
+<!--- model end here-->
+<!-- find package model -->
+
+<!---model end here-->
+</div>
+</div>

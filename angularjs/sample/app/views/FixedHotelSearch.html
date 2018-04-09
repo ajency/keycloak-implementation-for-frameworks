@@ -1,0 +1,140 @@
+<style>
+  .md-scroll-mask {
+    position: initial !important;
+  }
+  .info_hotel {
+    width: 100%;
+  }
+  .title_bar {
+    width: 100%;
+  }
+  .hotel img {
+    margin: 0 auto;
+    width:300px;
+    float: left;
+  }
+  .hotelDetails {
+    flex:2;
+    text-align: center;
+  }
+  .hotelDetailsMiddle {
+    flex:4;
+    text-align: center;
+  }
+  .result_hotel {
+    background: #fff;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+    color: rgba(0,0,0,.7);
+    cursor: pointer;
+    display: flex;
+    padding: 0px;
+    position: relative;
+    margin-bottom:20px;
+}
+.showing_price_label {
+    color: #7f7f7f;
+    font-family: Museo Sans Rounded\ 300;
+}
+.trip_advisor {
+    position: relative;
+    float: left;
+    background-color: #fff;
+    width: 150px;
+}
+.separator {
+    position: relative;
+    float: left;
+    background-color: #fff;
+    width: 26px;
+}
+.dashed_separator {
+    border: 1px dashed rgba(0,0,0,.1);
+    position: absolute;
+    left: 45%;
+    right: 50%;
+    height: 95%;
+}
+.input_white {
+    color:#000;
+    border: none;
+    height: 35px;
+    width: 210px;
+    font-size: 15px;
+    padding: 0 5px 0 10px;
+    outline: none;
+}
+
+h6 span {
+  color: #000;
+  font-size:15px;
+}
+</style>
+<div class="col-lg-12 col-md-12" ng-controller="FixedHotelSearchController" ng-init="initData()">
+  <md-toolbar class="md-hue-2" style="padding: 0px;">
+    <div class="md-toolbar-tools" style="padding-top: 6px;">
+      <h2>
+        <span style="overflow: hidden; white-space: nowrap;color: #fff;"> Hotels in {{city_name}}</span>
+      </h2>
+      <span flex></span>
+        <input id="hotel_search_text" type="text" ng-model="search.name" placeholder="hotel search" class="input_white">&nbsp;
+      <span class="ellipse_search_icon" aria-label="Search" ng-click="showSearch = !showSearch; search.name=''">
+        <i class="fa fa-search"></i>
+      </span>
+    </div>
+  </md-toolbar>
+  <div ng-if="error" style="text-align: center;margin-top:20vh;margin-bottom:20vh;font-size: 18px;">
+    <p>Something went wrong</p>
+    <p>Please try again</p>
+  </div>
+  <div ng-hide="error" class="col-xs-12" ng-if="showLoader" style="margin-top: 20vh;margin-bottom:20vh;text-align: center;z-index: 999999;">
+    <div class="loader_text">Finding awesome hotel(s) that fit in your budget</div>
+  </div>
+  <div style="height: 100%;
+   padding-top: 15px;padding-bottom: 24px;">
+    <div ng-hide="error || !changeHotelData.length"><h6><span>{{changeHotelData.length}} </span> Results Found</h6></div>
+    <div ng-show="changeHotelData.length===0" class="col-xs-12" style="margin-top: 20vh;margin-bottom:20vh;text-align: center;z-index: 999999;">
+    <div class="loader_text">No hotel(s) found for the selected location</div>
+  </div>
+    <div style="height: auto;">
+      <div class="result_hotel" ng-repeat="hotel in changeHotelData |filter:search" ng-if="showHotels" ng-click="hotelDetails(hotel._source.id)">
+        <div class="hotel hotelDetails">
+          <img ng-src="{{'https://www.goomo.com/hotel-images' + hotel._source.default_image}}" src="loaders/image_loading.png" on-error-src="loaders/image_loading.png"/>
+        </div>
+        <div class="hotelDetailsMiddle" style="color:#00556f; width:500px;">
+          <h3>{{hotel._source.name}}</h3>
+          <span ng-if="hotel._source.star_rating">
+            <div>
+              <img ng-repeat="n in range(hotel._source.star_rating) track by $index" src="images/icons/fullstar.png" style="width: 13px;display: inline"/>
+              <img ng-if="isFloat(hotel._source.star_rating)" src="images/icons/halfstar.png" style="width: 13px;display: inline"/>
+            </div>
+          </span><br/>
+          <span>{{hotel._source.address}}</span>
+          <div class="category" style="position:absolute;bottom:50px;text-align: center;padding-left: 50px;">
+            <div style="float:left;">Free:</div>
+            <div style="float:left" ng-repeat="free in hotel._source.free_amenities track by $index">
+              {{free.name}}
+              <div ng-if="$index != 0" style="font-size=25px;float:left;">&nbsp;-&nbsp;</div>
+            </div>
+          </div>
+          <div class="category" style="position:absolute;bottom:20px;text-align: center;padding-left: 50px;">
+            <div style="float:left;color: #7f7f7f;font-size:13px;" ng-repeat="other in hotel._source.other_amenities track by $index">
+              {{other.name}}
+              <div ng-if="$index != 0" style="font-size=25px;float:left;">&nbsp;-&nbsp;</div>
+            </div>
+          </div>
+        </div>
+        <div class="trip_advisor">
+          <div ng-if="hotel.tripadvisor.rating">
+            <div>{{hotel._source.tripadvisor.rating}}<span>/5</span><span>&nbsp;{{getTripAdvisorReviewRating(hotel._source.tripadvisor.rating)}}</span></div>
+            <img ng-src="{{hotel._source.tripadvisor.rating_image_url}}" />
+            <span style="color: #5ca7be">{{hotel._source.tripadvisor.num_reviews}} &nbsp; Reviews</span>
+          </div>
+        </div>
+        <div class="separator"><div class="dashed_separator"></div></div>
+        <div class="hotelDetails">
+          <h3>&#8377; {{hotel._source.price_per_night.amount}}</h3>
+          <span class="showing_price_label">Room/Night</span>
+        </div>
+      </div>
+  </div>
+</div>

@@ -1,0 +1,363 @@
+<!-- ng-controller="templatesController -->
+<div class="col-lg-12 col-md-12">
+  <h3 class="text-center">Templates</h3>
+
+  <div style="position:relative;z-index:20" class="form-group pull-right">
+    <input type="text" ng-model="searchValue" class="form-control" placeholder="Search">
+  </div>
+
+  </br></br>
+  <div style="position:relative;z-index:10" class="table-responsive">
+    <table class="table table-striped table-bordered">
+      <thead>
+      <tr>
+        <th ng-click="sort('encoded_id')">Template Id
+          <span class="glyphicon sort-icon" ng-show="sortKey=='encoded_id'"
+                ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+        </th>
+        <th ng-click="sort('name')">Template name
+          <span class="glyphicon sort-icon" ng-show="sortKey=='name'"
+                ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+        </th>
+        <th ng-click="sort('name')">Template type
+          <span class="glyphicon sort-icon" ng-show="sortKey=='type_name'"
+                ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+        </th>
+        <th>Editable</th>
+        <th>Copy to new template</th>
+        <th>Edit template</th>
+        <th>Edit</th>
+        <th>Status</th>
+      </tr>
+      </thead>
+      <tbody>
+
+      <tr dir-paginate="type in touristTypes |orderBy:sortKey:reverse|filter:searchValue|itemsPerPage:50">
+
+        <td ng-click="getTemplateDetails(type.encoded_id)"
+            style="text-decoration: underline;color: #0b58a2;">{{ type.encoded_id}}</td>
+        <td>{{ type.name}}</td>
+        <td>{{ type.type_name}}</td>
+        <td>{{ type.is_editable}}</td>
+        <td>
+          <button style="position:relative;z-index:10" class="btn" ng-click="openTemplate(type.encoded_id, 'copy')">
+            <span class="glyphicon glyphicon-"></span> Copy Template
+          </button>
+        </td>
+        <td>
+          <button style="position:relative;z-index:10" class="btn" ng-disabled="!type.is_editable" ng-click="openTemplate(type.encoded_id, 'edit')">
+            <span class="glyphicon glyphicon-"></span> Edit Template
+          </button>
+        </td>
+        <td>
+          <button style="position:relative;z-index:10" class="btn" ng-click="editTemplate(type.encoded_id)">
+            <span class="glyphicon glyphicon-"></span> Edit
+          </button>
+        </td>
+        <td class="text-center">
+          <button class="btn btn-success btn-sm statusBtn" ng-show="type.status"
+                  ng-click="statustemplate(type.sequence)">
+            Active
+          </button>
+          <button class="btn btn-danger btn-sm statusBtn" ng-hide="type.status"
+                  ng-click="statustemplate(type.sequence)">
+            Deactive
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <dir-pagination-controls
+      max-size="20"
+      direction-links="true"
+      boundary-links="true">
+    </dir-pagination-controls>
+  </div>
+
+  <button style="position:relative;z-index:10" class="btn btn-success" ng-click="getMoreTemplates();">
+    <span class="glyphicon glyphicon-"></span> Get More
+  </button>
+</div>
+
+<script type="text/ng-template" id="editCustomTemplate.tmpl.html">
+  <md-dialog aria-label="Template Details" id="editfixed" ng-cloak style="z-index: 99998; max-height:100% !important;max-width: 80% !important;">
+    <md-dialog-content >
+      <div class="quotation_content">
+        <div class="modal-header quotation_header">
+          <button type="button" class="close quotation_close_button" ng-click="ctrl.parent.cancelDialog();">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <p class="modal-title">Edit Custom Template</p>
+        </div>
+        <div class="modal-body quotation_body">
+          <section class="edit_details">
+            <form>
+              <div class="col-xs-12">
+                <md-input-container md-no-float class="md-block feild_title edit_block">
+                  <div class="col-xs-12" style="padding: 0px;">
+                    <label>Select Template Type</label>
+                    <dropdown-multiselect id="template_type" options="ctrl.parent.templateTypeData" 
+                    model="ctrl.parent.templateToEdit.template_type_id" templatetext="ctrl.parent.templateTypeCustomTexts"></dropdown-multiselect>
+                    <span style="color:red" ng-show="(ctrl.parent.templateToEdit.template_type_id === 0)">Choose atleast one.</span>
+                  </div>
+                </md-input-container>
+                <md-input-container md-no-float class="md-block feild_title edit_block">
+                  <div class="col-xs-12" style="padding: 0px;">
+                    <label>Select Tourist Type</label>
+                    <dropdown-multiselect id="tourist_types_string" options="ctrl.parent.touristTypeData" 
+                    model="ctrl.parent.templateToEdit.tourist_types_string" templatetext="ctrl.parent.touristTypeCustomTexts"></dropdown-multiselect>
+                    <span style="color:red" ng-show="(ctrl.parent.touristTypeModel === 0)">Choose atleast one.</span>
+                  </div>
+                </md-input-container>
+                <md-input-container md-no-float class="md-block feild_title edit_block" style="width: 100%;margin: 25px 0px 0px;min-height: 50px;position: relative;">
+                  <div id="cover_image" class="col-xs-12" style="padding: 0px;">
+                    <label style="position: absolute;top: -20px;">Select Cover Image</label>
+                    <div style="float:left;width:575px;">
+                      <input ng-model="ctrl.parent.templateToEdit.cover_image" ng-enter="ctrl.parent.handleEnterClickOnForm('cover_image', 'tourist_types_string')" type="text" placeholder="Cover image url"><br>
+                    </div>
+                    <div style="float:left;margin-top:-25px;margin-left: 20px;">
+                      <br>
+                      <button ngf-select="ctrl.parent.selectFiles($file)" accept="image/*">Select File</button>
+                      &nbsp;
+                      <button class="btn btn-success" ng-click="ctrl.parent.uploadFiles()">Upload Image</button>
+                      &nbsp; 
+                    </div> 
+                  </div>
+                </md-input-container>
+                <md-input-container md-no-float class="md-block feild_title edit_block" style="width: 100%;">
+                  <div class="col-xs-12" style="padding: 0px;">
+                    <label>Template Name</label>
+                    <input id="template_name" ng-model="ctrl.parent.templateToEdit.name" ng-enter="ctrl.parent.handleEnterClickOnForm('template_name', null)" type="text" placeholder="Template name">
+                  </div>
+                </md-input-container>
+                <md-input-container md-no-float class="md-block feild_title edit_block">
+                  <div class="col-xs-12" style="padding: 0px;">
+                    <label>Inclusion</label>
+                    <textarea id="inclusions" rows="3" ng-model="ctrl.parent.templateToEdit.inclusions" type="text"placeholder="Inclusions" style="overflow-y: scroll;resize: none;max-height:75px;min-height:75px;"></textarea>
+                  </div>
+                </md-input-container>
+                <md-input-container md-no-float class="md-block feild_title edit_block">
+                  <div class="col-xs-12" style="padding: 0px;">
+                    <label>Exclusion</label>
+                    <textarea id="exclusions" rows="4" ng-model="ctrl.parent.templateToEdit.exclusions" type="text"placeholder="Exclusions" style="overflow-y: scroll;resize: none;max-height:75px;min-height:75px;"></textarea>
+                  </div>
+                </md-input-container>
+                <div class="row clearfix" style="padding: 0px 15px;">
+                  <div class="col-xs-4 clearfix">
+                    <div class="col-xs-12 itinerary_transfer_name" style="padding: 0px 0px 20px;">
+                      <md-checkbox name="tos" ng-model="ctrl.parent.templateToEdit.visa_included" required>
+                        <p class="edit-caption"> Visa Included</p>
+                      </md-checkbox>
+                    </div>
+                  </div>
+                  <div class="col-xs-4">
+                    <div class="col-xs-12 itinerary_transfer_name" style="padding: 0px 0px 20px;">
+                      <md-checkbox name="tos" ng-model="ctrl.parent.templateToEdit.or_similar" required>
+                        <p class="edit-caption"> This or similar hotels</p>
+                      </md-checkbox>
+                    </div>
+                  </div>
+                  <div class="col-xs-4">
+                    <div class="col-xs-12 itinerary_transfer_name" style="padding: 0px 0px 20px;">
+                      <md-checkbox name="tos" ng-model="ctrl.parent.templateToEdit.hot_deal" required>
+                        <p class="edit-caption"> Hot deal</p>
+                      </md-checkbox>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xs-12" style="padding: 8px 0px;margin: 20px 0px;">
+                  <input type="button" value="UPDATE TEMPLATE" ng-click="ctrl.parent.updateTemplate();" class="save_btn">
+                </div>
+              </div>
+            </form>
+          </section>
+        </div>
+    </div>
+    </md-dialog-content>
+  </md-dialog>
+</script>
+
+<script type="text/ng-template" id="editFixedTemplate.tmpl.html">
+  <md-dialog aria-label="Template Details" id="editfixed" ng-cloak style="z-index: 99998; max-height:100% !important;max-width: 80% !important;">
+    <md-dialog-content >
+      <!-- Modal content-->
+      <div class="quotation_content">
+        <div class="modal-header quotation_header">
+          <button type="button" class="close quotation_close_button" ng-click="ctrl.parent.cancelDialog();">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <p class="modal-title">Edit Fixed Template</p>
+        </div>
+        <div class="modal-body quotation_body">
+          <section class="edit_details">
+            <form>
+              <div class="col-xs-12">
+                <md-input-container md-no-float class="md-block feild_title edit_block">
+                  <div class="col-xs-12" style="padding: 0px;">
+                    <label>Select Template Type</label>
+                    <dropdown-multiselect id="template_type" options="ctrl.parent.templateTypeData" 
+                    model="ctrl.parent.templateToEdit.template_type_id" templatetext="ctrl.parent.templateTypeCustomTexts"></dropdown-multiselect>
+                    <span style="color:red" ng-show="(ctrl.parent.templateToEdit.template_type_id === 0)">Choose atleast one.</span>
+                  </div>
+                </md-input-container>
+
+                <md-input-container md-no-float class="md-block feild_title edit_block">
+                  <div class="col-xs-12" style="padding: 0px;">
+                    <label>Select Tourist Type</label>
+                    <dropdown-multiselect id="tourist_types_string" options="ctrl.parent.touristTypeData" 
+                    model="ctrl.parent.templateToEdit.tourist_types_string" templatetext="ctrl.parent.touristTypeCustomTexts"></dropdown-multiselect>
+                    <span style="color:red" ng-show="(ctrl.parent.touristTypeModel === 0)">Choose atleast one.</span>
+                  </div>
+                </md-input-container>
+                <md-input-container md-no-float class="md-block feild_title edit_block" style="width: 100%;margin: 25px 0px 0px;min-height: 50px;position: relative;">
+                  <div id="cover_image" class="col-xs-12" style="padding: 0px;">
+                    <label style="position: absolute;top: -20px;">Select Cover Image</label>
+                    <div style="float:left;width:575px;">
+                      <input ng-model="ctrl.parent.templateToEdit.cover_image" ng-enter="ctrl.parent.handleEnterClickOnForm('cover_image', 'tourist_types_string')" type="text" placeholder="Cover image url"><br>
+                    </div>
+                    <div style="float:left;margin-top:-25px;margin-left: 20px;">
+                      <br>
+                      <button ngf-select="ctrl.parent.selectFiles($file)" accept="image/*">Select File</button>
+                      &nbsp;
+                      <button class="btn btn-success" ng-click="ctrl.parent.uploadFiles()">Upload Image</button>
+                      &nbsp; 
+                    </div> 
+                  </div>
+                </md-input-container>
+                <md-input-container md-no-float class="md-block feild_title edit_block">
+                  <div class="col-xs-12" style="padding: 0px;">
+                    <label>Template Name</label>
+                    <input id="template_name" ng-model="ctrl.parent.templateToEdit.name" ng-enter="ctrl.parent.handleEnterClickOnForm('template_name', null)" type="text" placeholder="Template name">
+                  </div>
+                </md-input-container>
+                <md-input-container md-no-float class="md-block feild_title edit_block">
+                  <div class="col-xs-12" style="padding: 0px;">
+                    <label>Price per Adult (Single Sharing)</label>
+                    <input id="price_single_deal" ng-model="ctrl.parent.templateToEdit.price_single" ng-enter="ctrl.parent.handleEnterClickOnForm('price_single_deal', 'price_double_deal')" type="number" placeholder="Price per adult for single sharing" min=0>
+                  </div>
+                </md-input-container>
+                <md-input-container md-no-float class="md-block feild_title edit_block">
+                  <div class="col-xs-12" style="padding: 0px;">
+                    <label>Price per Adult (Double Sharing)</label>
+                    <input id="price_double_deal" ng-model="ctrl.parent.templateToEdit.price_double" ng-enter="ctrl.parent.handleEnterClickOnForm('price_double_deal', 'price_triple_deal')" type="number" placeholder="Price per adult for double" min=0>
+                  </div>
+                </md-input-container>
+                <md-input-container md-no-float class="md-block feild_title edit_block feild_title edit_block">
+                  <div class="col-xs-12" style="padding: 0px;">
+                    <label>Price per Adult (Triple Sharing)</label>
+                    <input id="price_triple_deal" ng-model="ctrl.parent.templateToEdit.price_triple" ng-enter="ctrl.parent.handleEnterClickOnForm('price_triple_deal', 'price_cwb_deal')" type="number" placeholder="Price per adult for triple" min=0>
+                  </div>
+                </md-input-container>
+                <md-input-container md-no-float class="md-block feild_title edit_block">
+                  <div class="col-xs-12" style="padding: 0px;">
+                    <label>Price for child with bed</label>
+                    <input id="price_cwb_deal" ng-model="ctrl.parent.templateToEdit.price_cwb" ng-enter="ctrl.parent.handleEnterClickOnForm('price_cwb_deal', 'price_cnb_deal')" type="number" placeholder="Price for child with bed" min=0>
+                  </div>
+                </md-input-container>
+                <md-input-container md-no-float class="md-block feild_title edit_block">
+                  <div class="col-xs-12" style="padding: 0px;">
+                    <label>Price for child without bed</label>
+                    <input id="price_cnb_deal" ng-model="ctrl.parent.templateToEdit.price_cnb" ng-enter="ctrl.parent.handleEnterClickOnForm('price_cnb_deal', 'price_infant_deal')" type="number" placeholder="Price for child without bed" min=0>
+                  </div>
+                </md-input-container>
+                <md-input-container md-no-float class="md-block feild_title edit_block">
+                  <div class="col-xs-12" style="padding: 0px;">
+                    <label>Price for Infant</label>
+                    <input id="price_infant_deal" ng-model="ctrl.parent.templateToEdit.price_infant" ng-enter="ctrl.parent.handleEnterClickOnForm('price_infant_deal', null)" type="number" placeholder="Price for infant" min=0>
+                  </div>
+                </md-input-container>
+                <md-input-container md-no-float class="md-block feild_title edit_block">
+                  <div class="col-xs-12" style="padding: 0px;">
+                    <label>Price for extra bed</label>
+                    <input id="price_extra_bed" ng-model="ctrl.parent.templateToEdit.price_extra_bed" ng-enter="ctrl.parent.handleEnterClickOnForm('price_extra_bed')" type="number" placeholder="Price for extra bed" min=0>
+                  </div>
+                </md-input-container>
+                <md-input-container md-no-float class="md-block feild_title edit_block">
+                  <div class="col-xs-12" style="padding: 0px;">
+                    <label>Inclusion</label>
+                    <textarea id="inclusions" rows="4" ng-model="ctrl.parent.templateToEdit.inclusions" type="text"placeholder="Inclusions" style="overflow-y: scroll;resize: none;max-height:75px;min-height:75px;"></textarea>
+                  </div>
+                </md-input-container>
+                <md-input-container md-no-float class="md-block feild_title edit_block">
+                  <div class="col-xs-12" style="padding: 0px;">
+                    <label>Exclusion</label>
+                    <textarea id="exclusions" rows="4" style="overflow-y: scroll;resize: none;max-height:75px;min-height:75px;" ng-model="ctrl.parent.templateToEdit.exclusions" type="text"placeholder="Exclusions"></textarea>
+                  </div>
+                </md-input-container>
+                <div class="row clearfix" style="padding: 0px 15px;">
+                  <div class="col-xs-4">
+                    <div class="col-xs-12 itinerary_transfer_name" style="padding: 0px 0px 20px;">
+                      <md-checkbox name="tos" ng-model="ctrl.parent.templateToEdit.visa_included" required>
+                        <p class="edit-caption"> Visa Included</p>
+                      </md-checkbox>
+                    </div>
+                  </div>
+                  <div class="col-xs-4">
+                    <div class="col-xs-12 itinerary_transfer_name" style="padding: 0px 0px 20px;">
+                      <md-checkbox name="tos" ng-model="ctrl.parent.templateToEdit.or_similar" required>
+                        <p class="edit-caption"> This or similar hotels</p>
+                      </md-checkbox>
+                    </div>
+                  </div>
+                  <div class="col-xs-4">
+                    <div class="col-xs-12 itinerary_transfer_name" style="padding: 0px 0px 20px;">
+                      <md-checkbox name="tos" ng-model="ctrl.parent.templateToEdit.hot_deal" required>
+                        <p class="edit-caption"> Hot deal</p>
+                      </md-checkbox>
+                    </div>
+                  </div>
+                </div>
+              </div>
+                <div class="col-xs-3">
+                  <p class="edit-caption" style="padding-left:15px;"> Deal start date</p>
+                  <md-datepicker ng-model="ctrl.parent.templateToEdit.deal_start_date" md-placeholder="Enter date" ng-click="ctrl.openCalendarPane($event);" md-open-on-focus></md-datepicker>
+                </div>
+                <div class="col-xs-3">
+                  <p class="edit-caption" style="padding-left:15px;"> Deal end date</p>
+                  <md-datepicker ng-model="ctrl.parent.templateToEdit.deal_end_date" md-placeholder="Enter date" ng-click="ctrl.openCalendarPane($event);" md-open-on-focus></md-datepicker>
+                </div>
+                <div class="col-xs-12" style="padding: 8px 0px;margin: 20px 0px;">
+                  <input type="button" value="UPDATE TEMPLATE" ng-click="ctrl.parent.updateTemplate();" class="save_btn">
+                </div>
+              </div>
+            </form>
+          </section>
+        </div>
+      </div>
+    </md-dialog-content>
+  </md-dialog>
+</script>
+
+<script type="text/ng-template" id="templateDetails.tmpl.html">
+  <md-dialog aria-label="Template Details" ng-cloak>
+    <div class="col-xs-12">
+      <div style="padding-top: 15px;padding-bottom: 10px;font-size: 16px;">
+        <div>Name: {{ctrl.parent.templateDetails.name}}</div>
+      </div>
+
+      <div ng-repeat="city in ctrl.parent.templateDetails.cities">
+        <div>City Name: {{city.city_id.name}}, {{city.template_city_days.length-1}} nights, {{city.template_city_days.length}} days</div>
+        <br>
+        <div ng-repeat="day in city.template_city_days" style="padding-left: 24px;">
+          <div>Day: {{day.day_id}}</div>
+          <div ng-repeat="activity in day.activities" style="padding-left: 24px;">
+              <span ng-if="activity.is_activity_minitour===false && activity.is_transfer===false">Activity: {{activity.activity_id.name}}</span>
+              <span ng-if="activity.is_activity_minitour===true">Minitour: {{activity.mnitour_id.name}}</span>
+          </div>
+          <div ng-repeat="hotel in day.hotels" style="padding-left: 24px;">
+            <span>Hotel: {{hotel.hotel_id.name}}, {{hotel.room_type.name}} room</span>
+          </div>
+        </div>
+        </div>
+      </br>
+
+      <md-dialog-actions layout="row">
+        <md-button ng-click="ctrl.parent.cancelMdDialog()" type="button"
+                   class="btn btn-secondary tour_explorebtn"
+                   style="height: 40px;line-height: 0.3;background-color: #0FBCE7;">Done
+        </md-button>
+      </md-dialog-actions>
+    </div>
+  </md-dialog>
+</script>

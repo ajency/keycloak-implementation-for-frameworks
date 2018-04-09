@@ -1,0 +1,232 @@
+<div class="col-lg-12 col-md-12" ng-controller="transferPriceController" ng-init="getAllConstants();">
+  <h3 class="text-center">Airport Transfer Prices</h3>
+
+  <button style="position:relative;z-index:10" class="btn btn-success"
+          ng-click="showDetails(activity.sequence);toggleModal();">
+    <span class="glyphicon glyphicon-"></span> Add new Price
+  </button>
+
+  <form style="position:relative;z-index:20" class="form-inline pull-left" role="form">
+    <div class="form-group">
+      <select class="form-control" ng-model="transferPriceController.agent"
+              ng-options="item.id as item.name for item in agents" ng-change="searchActivities(0)">
+        <option value="">Select Agent</option>
+      </select>
+    </div>
+  </form>
+
+  </br></br>
+  <div style="position:relative;z-index:10" class="table-responsive">
+    <table class="table table-striped table-bordered">
+      <thead>
+      <tr>
+        <th class="text-center" ng-click="sort('airport_id')">Airport Id
+          <span class="glyphicon sort-icon" ng-show="sortKey=='airport_id'"
+                ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+        </th>
+        <th class="text-center" ng-click="sort('airport_name')">Airport Name
+          <span class="glyphicon sort-icon" ng-show="sortKey=='airport_name'"
+                ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+        </th>
+        <th class="text-center" ng-click="sort('City')">City
+          <span class="glyphicon sort-icon" ng-show="sortKey=='City'"
+                ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+        </th>
+        <th class="text-center" ng-click="sort('priceAvailable')">Price Submitted
+          <span class="glyphicon sort-icon" ng-show="sortKey=='priceAvailable'"
+                ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+        </th>
+        <th class="text-center">Price</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr dir-paginate="activity in activities |orderBy:sortKey:reverse|filter:searchValue|itemsPerPage:50">
+        <td class="text-center">{{ activity.airport}}</td>
+        <td class="text-center">{{ activity.airport_name}}</td>
+        <td class="text-center">{{ activity.city}}</td>
+        <td class="text-center">{{ activity.priceAvailable}}</td>
+
+        <td class="text-center">
+          <button class="btn" ng-click="showDetails(activity.sequence);toggleModal();">
+            <span class="glyphicon glyphicon-pencil"></span> Edit
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <dir-pagination-controls
+      max-size="20"
+      direction-links="true"
+      boundary-links="true">
+    </dir-pagination-controls>
+  </div>
+
+  <button style="position:relative;z-index:10" class="btn btn-success" ng-click="getMoreActivities();">
+    <span class="glyphicon glyphicon-"></span> Get More
+  </button>
+
+  <modal title="Activity Details" dikhao="showModal">
+    <form class="form-horizontal" name='activityPriceForm'>
+      <div class="form-group" ng-show="isNew">
+        <label class="col-sm-3 control-label">Country:</label>
+
+        <div class="col-sm-4">
+          <select ng-disabled="(act === 'update')" class="form-control" ng-model="transferPriceController.country"
+                  ng-options="item.id as item.name for item in countries" ng-change="getActiveStatesByCountries(1)">
+            <option value="">Select country</option>
+
+          </select>
+        </div>
+      </div>
+      <div class="form-group" ng-show="isNew">
+        <label class="col-sm-3 control-label">State:</label>
+
+        <div class="col-sm-4">
+          <select ng-disabled="(act === 'update')" class="form-control" ng-model="transferPriceController.state"
+                  ng-options="item.id as item.state for item in states" ng-change="getActiveCitiesByStates(1)">
+            <option value="">Select state</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group" ng-show="isNew">
+        <label class="col-sm-3 control-label">City:<span style="color:red">*</span></label>
+
+        <div class="col-sm-4">
+          <select ng-disabled="(act === 'update')" class="form-control" ng-model="transferPriceController.city"
+                  ng-options="item.id as item.city for item in cities" ng-change="getAirports()">
+            <option value="">Select city</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group" ng-hide="isNew">
+        <label class="col-sm-3 control-label">City</label>
+
+        <div class="col-sm-8">
+          <p>{{activities[sequenceForEdit].city}}</p>
+        </div>
+      </div>
+
+      <h3 class="col-sm-12">Prices:</h3>
+
+      <div class="form-group" ng-if="isNew">
+        <label class="col-sm-3 control-label">Airport :<span style="color:red">*</span></label>
+
+        <div class="col-sm-4">
+          <select class="form-control" ng-model="activities[sequenceForEdit].airportId" ng-change = "createAirportsArray()"
+                  ng-options="item.id as item.name for item in airportsOfCity">
+            <option value="">Select Option</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group" ng-repeat="airport in airports track by $index"
+           ng-init="position=$index">
+        <div class="col-sm-12">
+          <div class="col-sm-11">
+            <hr style="background-color:darkslategray;height:1px">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-6 control-label" >{{airport.airport_name}} ({{airport.airport_code}})</label>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label">Currency<span style="color:red">*</span></label>
+
+          <div class="col-sm-4">
+            <select class="form-control" ng-model="airport.currency"
+                    ng-options="item.id as item.name for item in currencies">
+              <option value="">Select Option</option>
+            </select>
+          </div>
+        </div>
+
+        <div ng-repeat="price in airport.price_details  track by $index">
+          <div class="col-sm-9 col-sm-offset-2">
+            <div class="col-sm-10 col-sm-offset-1">
+              <hr style="background-color:darkslategray;height:1px">
+            </div>
+            <div class="col-sm-1"
+                 style="position:relative;z-index:100;font-size:20px;color:red;cursor: pointer;"
+                 ng-click="deletePrices(position,$index)">
+              <span class="col-sm-2 glyphicon glyphicon-remove"></span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-3 control-label">Transfer Type<span style="color:red">*</span></label>
+
+            <div class="col-sm-7">
+              <select class="form-control" ng-model="price.type_transfer"
+                      ng-options="item.id as item.fullName for item in transferTypes">
+                <option value="">Select Type</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-sm-6 col-sm-offset-3">
+            <div class="col-sm-4">
+              <br>
+              <label class="col-sm-12 text-center">Price Adult</label>
+              <input class="form-control mod" type="number" step="0.01" min="0"
+                     ng-model="price.price_adult"
+                     placeholder="Adult">
+            </div>
+            <div class="col-sm-4">
+              <br>
+              <label class="col-sm-12 text-center">Price Child</label>
+              <input class="form-control mod" type="number" step="0.01" min="0"
+                     ng-model="price.price_child"
+                     placeholder="Child">
+            </div>
+            <div class="col-sm-4" ng-show="isPrivateTransfer(price.type_transfer);">
+              <br>
+              <label class="col-sm-12 text-center">Vehicle Price</label>
+              <input class="form-control mod" type="number" step="0.01" min="0"
+                     ng-model="price.vehicle_price"
+                     placeholder="Adult">
+            </div>
+          </div>
+
+          <!--<div class="col-sm-6 col-sm-offset-3" ng-show="isPrivateTransfer(price.type_transfer);">-->
+            <!-- -->
+          <!--</div>-->
+        </div>
+
+        <div class="col-sm-6 col-sm-offset-3" ng-click="addAnotherPrice(position)">
+          <div align="center">
+            <br>
+            <button class="btn btn-info">Add Another Price</button>
+          </div>
+        </div>
+
+        <div class="form-group col-sm-12">
+          <label class="col-sm-3 control-label"><br>Inclusions</label>
+
+          <div class="col-sm-6"><br>
+          <textarea class="form-control" rows="10" ng-model="airport.inclusions"
+                    placeholder="Tips"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="form-group col-sm-12">
+          <label class="col-sm-3 control-label">Exclusions</label>
+
+          <div class="col-sm-6">
+          <textarea class="form-control" rows="10" ng-model="airport.exclusions"
+                    placeholder="Tips"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+
+    </form>
+
+    <button class="btn btn-primary" ng-click="savePrices()" ng-disabled="checkSaveActivity()">
+      <span class="glyphicon glyphicon-save"></span> Save Changes
+    </button>
+
+  </modal>
+
+</div>

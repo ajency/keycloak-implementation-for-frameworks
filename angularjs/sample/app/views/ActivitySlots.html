@@ -1,0 +1,123 @@
+
+<div class="col-lg-12 col-md-12" ng-controller="ActivitySlotsController">
+<h3 class="text-center">Activity Slots</h3>
+
+<button  style="position:relative;z-index:10" class="btn btn-success" ng-click="edit('new');toggleModal();">
+  Create New Activity Slots
+</button>
+  <div style="position:relative;z-index:20" class="form-group pull-right">
+    <input type="text" ng-model="searchValue" class="form-control" placeholder="Search">
+  </div>
+
+</br></br>
+<div  style="position:relative;z-index:10" class="table-responsive">
+<table class="table table-striped table-bordered">
+  <thead><tr>
+    <th ng-click="sort('id')">Slot Id
+        <span class="glyphicon sort-icon" ng-show="sortKey=='id'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+    </th>
+    <th ng-click="sort('start_time')">Start Time
+        <span class="glyphicon sort-icon" ng-show="sortKey=='start_time'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+    </th>
+    <th ng-click="sort('duration')">Duration
+        <span class="glyphicon sort-icon" ng-show="sortKey=='duration'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+    </th>
+    <th ng-click="sort('is_fixed_slot')">Fixed Slot
+        <span class="glyphicon sort-icon" ng-show="sortKey=='is_fixed_slot'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+    </th>
+    <th>Edit</th>
+    <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+  <tr dir-paginate="activitySlot in activitySlots |orderBy:sortKey:reverse|filter:searchValue|itemsPerPage:8">
+    <td>{{ activitySlot.id}}</td>
+    <td>{{ activitySlot.start_time}}</td>
+    <td>{{ activitySlot.duration}}</td>
+    <td>{{ activitySlot.is_fixed_slot ? 'Yes' : 'No'}}</td>
+    <td>
+      <button class="btn" ng-click="edit(activitySlot.sequence,'edit');toggleModal();" >
+      <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Edit
+      </button>
+    </td>
+    <td class="text-center">
+      <button class="btn btn-success btn-sm statusBtn" ng-show="activitySlot.active" ng-click="status(activitySlot.sequence)" >
+        Active
+      </button>
+      <button class="btn btn-danger btn-sm statusBtn" ng-hide="activitySlot.active" ng-click="status(activitySlot.sequence)" >
+        Deactive
+      </button>
+    </td>
+  </tr></tbody>
+</table>
+  <dir-pagination-controls
+    max-size="20"
+    direction-links="true"
+    boundary-links="true">
+  </dir-pagination-controls>
+</div>
+
+  <button  style="position:relative;z-index:10" class="btn btn-success" ng-click="getMore();">
+    <span class="glyphicon glyphicon-"></span> Get More
+  </button>
+
+<modal title="Activity Slots Form" dikhao="showModal">
+
+<form class="form-horizontal" name="myForm">
+<div class="form-group" ng-class="{ 'has-error' : myForm.activitySlot.$invalid && !myForm.activitySlot.$pristine }">
+  <label class="col-sm-4 control-label">Start Time:<span style="color:red">*</span></label>
+  <div class="col-sm-4">
+    <!--<input type="text" class="form-control" name="start_Time" ng-model="ActivitySlotsController.start_time"
+            placeholder="Start Time" ng-disabled="info">-->
+    <ng-time-selector hours="ActivitySlotsController.start_time_hour"
+                                minutes="ActivitySlotsController.start_time_minute"
+                                time="ActivitySlotsController.timing"></ng-time-selector>
+  </div>
+  <div class="col-sm-4">
+    <span style="color:red" ng-show="(ActivitySlotsController.start_time_hour === null ||  ActivitySlotsController.start_time_minute === null)">Start Time is required.</span>
+  </div>
+</div>
+
+<div class="form-group" ng-class="{ 'has-error' : myForm.activitySlot.$invalid && !myForm.activitySlot.$pristine }">
+  <label class="col-sm-4 control-label">Duration:<span style="color:red">*</span></label>
+  <!--<div class="col-sm-4">
+     <input type="text" class="form-control" name="duration" ng-model="ActivitySlotsController.duration"
+            placeholder="Duration" ng-disabled="info">
+  </div>-->
+  <div class="col-sm-2">
+        <input type="number" class="form-control mod" min=0 ng-model="ActivitySlotsController.durationHours"
+                placeholder="Hours">
+      </div>
+      <span class="col-sm-1">hrs.</span>
+
+      <div class="col-sm-2">
+        <input type="number" class="form-control mod" min=0 ng-model="ActivitySlotsController.durationMinutes"
+                placeholder="Minutes">
+      </div>
+      <span class="col-sm-1">mins.</span>
+  <div class="col-sm-4">
+    <span style="color:red" ng-show="(ActivitySlotsController.duration === '')">Duration is required.</span>
+  </div>
+</div>
+
+<div class="form-group" ng-class="{ 'has-error' : myForm.activitySlot.$invalid && !myForm.activitySlot.$pristine }">
+  <label class="col-sm-4 control-label">Fixed Slot:</label>
+  <div class="col-sm-4 col-sm-offset--1">
+     <input type="checkbox" ng-model="ActivitySlotsController.is_fixed_slot">
+  </div>
+</div>
+
+</form>
+<hr>
+ <button class="btn btn-primary" ng-disabled="error || incomplete
+ || (ActivitySlotsController.start_time_hour === null) || (ActivitySlotsController.start_time_hour === '')
+ || (ActivitySlotsController.start_time_minute === null) || (ActivitySlotsController.start_time_minute === '')
+ || (ActivitySlotsController.durationHours === null) || (ActivitySlotsController.durationHours === '')"
+  ng-click="save()" ng-hide="info">
+    <span class="glyphicon glyphicon-save"></span> Save Changes
+  </button>
+  <button class="btn" ng-click="edit(activitySlot.id,'edit');toggleModal();" ng-show="info">
+      <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Edit
+      </button>
+</modal>
+</div>

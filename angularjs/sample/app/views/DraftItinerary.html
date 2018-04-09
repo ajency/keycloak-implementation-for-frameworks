@@ -1,0 +1,2250 @@
+<!--Page div-->
+<style>
+  .slick-initialized .slick-slide {
+    /*width: 280px !important;;*/
+    left: -50px;
+    width: 100%;
+  }
+
+  .top_bar p {
+    font-size: 3.8vw;
+    font-weight: bold;
+    margin: 0px !important;
+    min-height: 5vh;
+    padding-top: 6px;
+  }
+
+  .sort_boxes i:hover,
+  i:active {
+    color: #0ebce7;
+  }
+
+  .md-datepicker-input-container {
+    margin-left: 0px;
+  }
+
+  .md-datepicker-input {
+    color: #0f0a03 !important;
+  }
+
+  #mdtab md-tabs-wrapper {
+    display: none !important;
+  }
+
+  md-tabs md-ink-bar {
+    color: #ff8500;
+    background: #ff8500;
+  }
+
+  #mdtab .md-stretch-tabs {
+    display: none;
+  }
+
+  .btn_close {
+    border: 0 transparent;
+    background: 0 0;
+    float: right;
+  }
+
+  .airline {
+    text-align: justify;
+    width: 75px;
+  }
+  .airline img {
+      margin: 0 auto;
+      width:33px;
+      height:33px;
+  }
+  .flightDetails {
+    flex:2;
+    text-align: center;
+  }
+  .flightDetailstab {
+    flex:3;
+    text-align: center;
+  }
+  .result_flight {
+    background: #fff;
+    color: rgba(0,0,0,.7);
+    cursor: pointer;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    padding: 10px 0;
+    position: relative;
+  }
+
+  .details {
+    cursor: pointer;
+    float:right;
+    margin-right:10px;
+  }
+
+  .md-button.md-fab,.md-button.nextItnBtn, .md-button.itinerary_transport_name {
+    background: #0FBCE7!important;
+    float:right;
+  }
+
+  .card_title_padding_left {
+      padding: 15px 0 12px 15px;
+  }
+  .ellipse {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+    max-width: 280px;
+    font-size: 16px;
+    color: #000;
+    font-family: Roboto-Regular;
+  }
+
+  .itinerary_transfer_duration {
+    font-size: 12px;
+    font-family: Roboto-Regular;
+    line-height: 1.2;
+    color: #939393;
+    outline: 0;
+  }
+  .col-xs-2 {
+    width: 16.66666667%;
+  }
+  .card_title_padding_right {
+    padding: 15px 12px 15px 0;
+  }
+
+
+  .room_config_actions {
+    padding: 8px;
+    height: 40px;
+    background: #ffa32c;
+    color: #fff;
+    text-align: center;
+    text-transform: uppercase;
+    outline: 0;
+    cursor:pointer;
+}
+
+md-toast {
+  z-index: 10000;
+}
+
+  /*** Sort cities css ****/
+</style>
+<!--ng-controller="DraftItineraryController"-->
+<div class="col-lg-12 col-md-12" ng-init="getDraft()" style="max-width:75%; margin-left: 12%;margin-right:12%;">
+  <md-toolbar class="md-hue-2" style="padding: 0px;">
+    <div class="md-toolbar-tools" style="padding-top: 6px;">
+      <h2>
+    <span style="overflow: hidden;
+    white-space: nowrap;">My Holiday </span>
+    </h2>
+      <span flex></span>
+    </div>
+  </md-toolbar>
+  <md-tabs md-stretch-tabs="auto" md-dynamic-height md-border-bottom md-selected="data.selectedIndex" style="outline: none; margin-top: 20px;" id="mdtab1" ng-click="outsideClick()">
+    <md-tab id="tab11" ng-disabled="" style="height: 100%;">
+      <md-tab-label>Itinerary</md-tab-label>
+    </md-tab>
+    <md-tab id="tab12" ng-if="displayFlightsTab" style="height: 100%;">
+      <md-tab-label>Flights</md-tab-label>
+    </md-tab>
+    <md-tab id="tab21" ng-disabled="" style="height: 100%; ">
+      <md-tab-label>Hotels</md-tab-label>
+    </md-tab>
+  </md-tabs>
+  <div style="height: 100%; padding-bottom: 20px;margin-top:20px;">
+    <div style="" ng-class="body_image">
+      <md-tabs md-stretch-tabs="auto" md-dynamic-height md-border-bottom md-selected="data.selectedIndex" style="outline: none;" id="mdtab" ng-click="outsideClick()">
+        <md-tab id="tab1" ng-disabled="" style="height: 100%;">
+          <md-tab-label>Itinerary</md-tab-label>
+          <md-tab-body>
+            <div style="text-align: center;margin-top: 40vh;" ng-if="itinerary.cities.length === 0">
+              No activities
+            </div>
+            <!--Activity Card-->
+            <div>
+              <md-card class="cardmargin" style="box-shadow: none;" ng-if="itinerary.cities.length > 0">
+                <div class="col-xs-12" style="padding-top: 15px;">
+                  <img src="images/icons/map-marker.png" style="width: 16px;height: 16px; display: inline;vertical-align: middle;" />
+                  <span class="itinerary_transfer_name" style="padding-left: 4px;">{{itinerary.cities[0].name}} </span>
+                  <img src="images/icons/calendar_icon.png" style="width: 16px;height: 16px; display: inline;margin-left: 16px; vertical-align: middle;" />
+                  <span class="itinerary_transfer_name" style="padding-left: 4px;">{{itinerary.date_string}}</span>
+                </div>
+                <div class="col-xs-12" style="padding-bottom: 15px;padding-top: 4px;">
+                  <img src="images/icons/people.png" style="width: 16px;height: 16px; display: inline;vertical-align: middle;" />
+                  <span class="itinerary_transfer_name" style="padding-left: 4px;">{{itinerary.num_people_string}} </span>
+                </div>
+              </md-card>
+            </div>
+            <div style="padding-bottom: 20px;">
+              <div ng-repeat="city in itinerary.cities track by $index" ng-init="index1 = $index">
+                <div ng-if="index1>0">
+                  <md-card class="cardmargin" style="box-shadow: none;" ng-if="itinerary.cities[index1 - 1].has_intercity===false && itinerary.cities[index1-1].is_boarding===false">
+                    <div class="col-xs-12 card_title_padding_left">
+                      <div class="col-xs-1" style="padding: 0px;">
+                        <img src="images/icons/transfer_icon.png" style="width: 18px;height: 18px; display: inline;" />
+                      </div>
+                      <div class="col-xs-11" style="padding: 0px;padding-left: 4px;">
+                        <span class="ellipse" style="display: block;">
+                  <span>{{itinerary.cities[index1 - 1].name}} to {{city.name}}</span>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-xs-12" style="border-top:1px solid #b6b6b6;padding: 0px;margin-top: 16px;">
+                      <md-button ng-click="addInterCityTransfer(index1)" style="background-color: white;width: 100%;height: 100%; font-family: Roboto-Regular;
+              text-align: center;padding: 0px;margin:0px; color: #b6b6b6; font-size: 14px;">
+                        Add Inter-City Transfers
+                      </md-button>
+                    </div>
+                  </md-card>
+                  <md-card style="margin: 11px;box-shadow: none;" ng-if="itinerary.cities[index1 - 1].has_intercity===true && itinerary.cities[index1-1].is_boarding===false">
+                    <div class="col-xs-12 card_title_padding_left">
+                      <div class="col-xs-1" style="padding: 0px;">
+                        <img src="images/icons/transfer_icon.png" style="width: 18px;height: 18px; display: inline;" />
+                      </div>
+                      <div class="col-xs-11" style="padding: 0px;padding-left: 4px;">
+                        <span class="ellipse" style="display: block;">
+                  <span>{{itinerary.cities[index1 - 1].name}} to {{city.name}}</span>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-xs-12" style="padding: 0px;">
+                      <div class="col-xs-2" style="padding-right: 0px;">
+                        <img ng-src="{{itinerary.cities[index1 - 1].intercity_object.imageUrl}}" style="width: 32px;" />
+                      </div>
+                      <div class="col-xs-6">
+                        <span class="itinerary_transfer_name" style="max-width: 100%;text-transform: capitalize;">
+                  <span
+                  ng-if="itinerary.cities[index1 - 1].intercity_object.activity_details.default_transfer_type.is_private">Private</span>
+                        <span ng-if="!itinerary.cities[index1 - 1].intercity_object.activity_details.default_transfer_type.is_private">Shared</span> {{itinerary.cities[index1 - 1].intercity_object.activity_details.default_transfer_type.name}}</span>
+                        <br>
+                        <span class="itinerary_transfer_duration" style="max-width: 100%;text-transform: capitalize;">
+                          {{itinerary.cities[index1 - 1].intercity_object.start_time}} - {{itinerary.cities[index1 - 1].intercity_object.end_time}} | {{itinerary.cities[index1 - 1].intercity_object.slot.durationString}}
+                        </span>
+                      </div>
+                      <div class="col-xs-6" ng-if="itinerary.non_editable_deal" style="padding-top:12px;">
+                      </div>
+                      <div class="col-xs-4" style="padding: 0px;text-align: right; padding-right: 15px;" ng-if="itinerary.non_editable_deal===false">
+                        <span class="itinerary_transfer_name" style="position:relative;
+                  font-size:16px">
+                  &#8377; {{itinerary.cities[index1 - 1]['intercity_object'].activity_price.total_price_INR | cur}}
+                </span>
+                        <br>
+                        <span class="itinerary_transfer_duration">Total</span>
+                      </div>
+                    </div>
+                    <div class="col-xs-12" style="border-top:1px solid #e0e0e0;padding: 0px;margin-top: 16px;">
+                      <div class="col-xs-6" style="padding: 0px;">
+                        <md-button ng-click="addInterCityTransfer(index1)" style="background-color: white;width: 100%;height: 100%; font-family: Roboto-Regular;
+                text-align: center;padding: 0px;margin:0px; color: #b6b6b6; font-size: 14px;">
+                          Change
+                        </md-button>
+                      </div>
+                      <div class="col-xs-6" style="padding: 0px;border-left:1px solid #e0e0e0;">
+                        <md-button ng-click="removeInterCityTransfer(index1)" style="background-color: white;width: 100%;height: 100%; font-family: Roboto-Regular;
+                text-align: center;padding: 0px;margin:0px; color: #b6b6b6; font-size: 14px;">
+                          Remove
+                        </md-button>
+                      </div>
+                    </div>
+                  </md-card>
+                  <!--md-card style="margin: 11px;box-shadow: none;" ng-if="itinerary.cities[index1 - 1].has_intercity===false && itinerary.cities[index1-1].is_boarding===false && itinerary.cities[index1 - 1].has_flight===true">
+                    <div class="col-xs-12 card_title_padding_left">
+                      <div class="col-xs-1" style="padding: 0px;">
+                        <img src="images/icons/flight_icon.png" style="width: 18px;height: 18px; display: inline;" />
+                      </div>
+                      <div class="col-xs-11" style="padding: 0px;padding-left: 4px;">
+                        <span class="ellipse" style="display: block;">
+                  <span>{{itinerary.cities[index1 - 1].name}} to {{city.name}}</span>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-xs-12" style="padding: 0px;">
+                      <div class="col-xs-4" style="padding-right: 0px;text-align: center;">
+                        <img ng-src="{{itinerary.cities[index1 - 1]['flight_data'].Segments[0].Carrier.ImageUrl}}" style="width: 100%;" />
+                      </div>
+                      <div class="col-xs-8" style="text-align: center;">
+                        <span class="itinerary_transfer_name" style="max-width: 100%;text-transform: capitalize;">
+                  {{itinerary.cities[index1 - 1]['flight_data'].departureTime}}
+                - {{itinerary.cities[index1 - 1]['flight_data'].arrivalTime}}</span>
+                        <br>
+                        <span class="itinerary_transfer_duration" style="max-width: 100%;text-transform: capitalize;">
+                  {{itinerary.cities[index1 - 1]['flight_data'].departureDate}}
+                - {{itinerary.cities[index1 - 1]['flight_data'].arrivalDate}}</span>
+                        <br>
+                        <span class="itinerary_transfer_duration" style="max-width: 100%;text-transform: capitalize;">
+                {{itinerary.cities[index1 - 1]['flight_data'].durationString}} | {{itinerary.cities[index1 - 1]['flight_data'].stopsString}}</span>
+                      </div>
+                    </div>
+                    <div class="col-xs-12" style="border-top:1px solid #e0e0e0;padding: 0px;margin-top: 8px;">
+                      <div class="col-xs-6" style="padding: 0px;">
+                        <md-button ng-click="addFlight(index1)" style="background-color: white;width: 100%;height: 100%; font-family: Roboto-Regular;
+                text-align: center;padding: 0px;margin:0px; color: #b6b6b6; font-size: 14px;">
+                          Change
+                        </md-button>
+                      </div>
+                      <div class="col-xs-6" style="padding: 0px;border-left:1px solid #e0e0e0;">
+                        <md-button ng-click="removeFlight(index1)" style="background-color: white;width: 100%;height: 100%; font-family: Roboto-Regular;
+                text-align: center;padding: 0px;margin:0px; color: #b6b6b6; font-size: 14px;">
+                          Remove
+                        </md-button>
+                      </div>
+                    </div>
+                  </md-card-->
+                  <md-card class="cardmargin" style="box-shadow: none;background-color: #0FBCE7;">
+                    <div class="col-xs-12" style="padding: 0px;position: relative;">
+                      <div class="col-xs-9 card_title_padding_left">
+                        <div class="col-xs-1" style="padding: 0px;">
+                          <img src="images/icons/map-marker-white.png" style="width: 18px;height: 18px; display: inline;" />
+                        </div>
+                        <div class="col-xs-11" style="padding: 0px;padding-left: 4px;">
+                          <span class="ellipse" style="max-width: 150px;text-transform: capitalize;color: white;">{{city.name}}</span>
+                          <span class="itinerary_transfer_duration" style="color: white;">{{city.date_string}} </span>
+                        </div>
+                      </div>
+                      <div class="col-xs-3" style="text-align: right; padding: 0px;" ng-if="itinerary.non_editable_deal===false">
+                        <div style="text-align: right;display: block; height: 36px;" ng-if="itinerary.non_editable_deal===false">
+                          <button ng-click="removeCity(index1)" class="btn_close" style="padding: 12px;padding-bottom: 4px;float:right;">
+                            <!--<img src="images/icons/ic_close.png" style="width: 18px;"/>-->
+                            <i class="fa fa-times" aria-hidden="true" style="width: 18px;color: white;"></i>
+                          </button>
+                        </div>
+                        <div style="text-align: right; display: block;">
+                          <div style="vertical-align: middle;">
+                            <span class="itinerary_transfer_duration" style="color:white;">{{city.days.length}} Days</span>
+                            <i ng-click="increaseNumberOfDays(index1);" style="font-size: 14px;margin-left: 5px; padding: 8px;
+                    padding-left: 2px;padding-right: 16px; color: white;" class="fa fa fa-plus" aria-hidden="true"></i>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-xs-3" style="text-align: right; padding: 0px;postion:absolute;
+                top:50%; right: 0px;transform: translateY(50%);" ng-if="itinerary.non_editable_deal !==false">
+                        <div style="text-align: right;display: block; height: 36px;" ng-if="itinerary.non_editable_deal===false">
+                          <button ng-click="removeCity(index1)" class="btn_close" style="padding: 12px;padding-bottom: 4px;">
+                            <!--<img src="images/icons/ic_close.png" style="width: 18px;"/>-->
+                            <i class="fa fa-times" aria-hidden="true" style="width: 18px;color: white;"></i>
+                          </button>
+                        </div>
+                        <div style="text-align: right; display: block;">
+                          <div style="vertical-align: middle;padding: 8px;" ng-if="itinerary.non_editable_deal!==false">
+                            <span class="itinerary_transfer_duration" style="color:white;">{{city.days.length}} Days</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </md-card>
+                  <div ng-repeat="day in city.days track by $index" ng-init="index2 = $index">
+                    <md-card class="cardmargin" style="box-shadow: none;">
+                      <div class="col-xs-12" style="padding: 0px;">
+                        <div class="col-xs-10" style="padding: 0px;">
+                          <div class="col-xs-4 card_title_padding_left">
+                            <span class="ellipse" style="display: block;">
+                      Day {{day.city_day_counter+1}}
+                    </span>
+                          </div>
+                          <div class="col-xs-8 card_title_padding_left itinerary_transfer_name" style="opacity: 0.6;padding-left: 0px;" ng-click="day.activityCardVisible = !day.activityCardVisible">
+                            <span style="vertical-align: middle;">
+                      <span style="display: inline;vertical-align: middle;">{{day.activityCount}}</span>
+                            <img src="images/icons/activity.png" style="width: 20px;display: inline;vertical-align: middle;" />
+                            </span>
+                            <span style="outline: none;height: auto; padding-left: 16px; vertical-align: middle;">
+                      <i style="color: #0ebce7;margin-right: 5px;" ng-if="day.activityCardVisible"
+                      class="fa fa-chevron-up activities_added"></i>
+                      <i style="color: #0ebce7;margin-right: 5px;" class="fa fa-chevron-down activities_added"
+                      ng-if="!day.activityCardVisible"></i>
+                    </span>
+                          </div>
+                        </div>
+                        <div class="col-xs-2" style="padding: 0px;" ng-if="itinerary.non_editable_deal===false">
+                          <div style="text-align: right;display: block; height: 36px;min-height: 36px;">
+                            <button ng-click="removeDay(index1, index2)" class="btn_close" style="padding: 12px;padding-bottom: 4px;" ng-if="index2 !== 0 && index2 !== (city.days.length-1)">
+                              <!--<img src="images/icons/ic_close.png" style="width: 18px;"/>-->
+                              <i class="fa fa-times" aria-hidden="true" style="width: 18px;opacity: 0.4;"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </md-card>
+                    <md-card class="cardmargin" style="box-shadow: none;" ng-if="day.has_airport_transfer===false && index2 === 0 && day.activityCardVisible
+              && itinerary.cities[index1 - 1].has_intercity===false
+              && itinerary.non_editable_deal===false">
+                      <div class="col-xs-12 card_title_padding_left">
+                        <div class="col-xs-1" style="padding: 0px;">
+                          <img src="images/icons/transfer_icon.png" style="width: 18px;height: 18px; display: inline;" />
+                        </div>
+                        <div class="col-xs-11" style="padding: 0px;padding-left: 4px;">
+                          <span class="ellipse" style="display: block;">
+                    <span>Airport to Hotel</span>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="col-xs-12" style="border-top:1px solid #b6b6b6;padding: 0px;margin-top: 16px;">
+                        <md-button ng-click="addAirportTransfer(index1, index2)" style="background-color: white;width: 100%;height: 100%; font-family: Roboto-Regular;
+                text-align: center;padding: 0px;margin:0px; color: #b6b6b6; font-size: 14px;">
+                          Add Transfer
+                        </md-button>
+                      </div>
+                    </md-card>
+                    <md-card style="margin: 11px;box-shadow: none;" ng-if="day.has_airport_transfer===true && index2 === 0 && day.activityCardVisible
+              && itinerary.cities[index1 - 1].has_intercity===false">
+                      <div class="col-xs-12 card_title_padding_left">
+                        <div class="col-xs-1" style="padding: 0px;">
+                          <img src="images/icons/transfer_icon.png" style="width: 18px;height: 18px; display: inline;" />
+                        </div>
+                        <div class="col-xs-11" style="padding: 0px;padding-left: 4px;">
+                          <span class="ellipse" style="display: block;">
+                    <span>Airport to Hotel</span>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="col-xs-12" style="padding: 0px;">
+                        <div class="col-xs-2" style="padding-right: 0px;">
+                          <img ng-src="{{day.airport_object.imageUrl}}" style="width: 32px;" />
+                        </div>
+                        <div class="col-xs-6">
+                          <span class="itinerary_transfer_name" style="max-width: 100%;text-transform: capitalize;">
+                    <span
+                    ng-if="day.airport_object.slot.type_transfer.is_private">Private</span>
+                          <span ng-if="!day.airport_object.slot.type_transfer.is_private">Shared</span> {{day.airport_object.slot.type_transfer.name}}
+                          </span>
+                          <br>
+                          <span class="itinerary_transfer_duration">
+                    {{day.airport_object.activity_details.airport_id.name}}
+                  ({{day.airport_object.activity_details.airport_id.code}})</span>
+                          <br>
+                          <span class="itinerary_transfer_duration" ng-if="itinerary.non_editable_deal===false">
+                  {{day.airport_object.slot.start_time}} - {{day.airport_object.slot.end_time}}</span>
+                        </div>
+                        <div class="col-xs-6" ng-if="itinerary.non_editable_deal" style="padding-top:12px;">
+                        </div>
+                        <div class="col-xs-4" style="padding: 0px;text-align: right; padding-right: 15px;" ng-if="itinerary.non_editable_deal===false">
+                          <span class="itinerary_transfer_name" style="position:relative;
+                    font-size:16px">
+                    &#8377; {{day['airport_object'].transferTotalPrice | cur}}
+                  </span>
+                          <br>
+                          <span class="itinerary_transfer_duration">Total</span>
+                        </div>
+                      </div>
+                      <div class="col-xs-12" style="border-top:1px solid #e0e0e0;padding: 0px;margin-top: 16px;" ng-if="itinerary.non_editable_deal===false">
+                        <div class="col-xs-6" style="padding: 0px;">
+                          <md-button ng-click="addAirportTransfer(index1, index2)" style="background-color: white;width: 100%;height: 100%; font-family: Roboto-Regular;
+                  text-align: center;padding: 0px;margin:0px; color: #b6b6b6; font-size: 14px;">
+                            Change
+                          </md-button>
+                        </div>
+                        <div class="col-xs-6" style="padding: 0px;border-left:1px solid #e0e0e0;">
+                          <md-button ng-click="removeTransfer(day['airport_object'])" style="background-color: white;width: 100%;height: 100%; font-family: Roboto-Regular;
+                  text-align: center;padding: 0px;margin:0px; color: #b6b6b6; font-size: 14px;">
+                            Remove
+                          </md-button>
+                        </div>
+                      </div>
+                    </md-card>
+                    <md-card class="cardmargin" style="box-shadow: none;" ng-if="day.hotelChange===true && index2 > 0
+              && !day.inter_hotel_object && day.activityCardVisible
+              && itinerary.non_editable_deal===false">
+                      <div class="col-xs-12 card_title_padding_left">
+                        <div class="col-xs-1" style="padding: 0px;">
+                          <img src="images/icons/transfer_icon.png" style="width: 18px;height: 18px; display: inline;" />
+                        </div>
+                        <div class="col-xs-11" style="padding: 0px;padding-left: 4px;">
+                          <span class="ellipse" style="display: block;">
+                    <!--<span>{{day.interHotelTransferString}}</span>-->
+                          <span>Inter Hotel Transfer</span>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="col-xs-12" style="border-top:1px solid #b6b6b6;padding: 0px;margin-top: 16px;">
+                        <md-button ng-click="addInterHotelTransfer(index1, index2)" style="background-color: white;width: 100%;height: 100%; font-family: Roboto-Regular;
+                text-align: center;padding: 0px;margin:0px; color: #b6b6b6; font-size: 14px;">
+                          Add Transfer
+                        </md-button>
+                      </div>
+                    </md-card>
+                    <md-card style="margin: 11px;box-shadow: none;" ng-if="day.hotelChange===true && index2 > 0
+              && day.inter_hotel_object && day.activityCardVisible">
+                      <div class="col-xs-12 card_title_padding_left">
+                        <div class="col-xs-1" style="padding: 0px;">
+                          <img src="images/icons/transfer_icon.png" style="width: 18px;height: 18px; display: inline;" />
+                        </div>
+                        <div class="col-xs-11" style="padding: 0px;padding-left: 4px;">
+                          <span class="ellipse" style="display: block;">
+                    <span>Inter Hotel Transfer</span>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="col-xs-12" style="padding: 0px;">
+                        <div class="col-xs-2" style="padding-right: 0px;">
+                          <img ng-src="{{day.inter_hotel_object.imageUrl}}" style="width: 32px;" />
+                        </div>
+                        <div class="col-xs-6">
+                          <span class="itinerary_transfer_name" style="max-width: 100%;text-transform: capitalize;">
+                    <span
+                    ng-if="day.inter_hotel_object.slot.type_transfer.is_private">Private</span>
+                          <span ng-if="!day.inter_hotel_object.slot.type_transfer.is_private">Shared</span> {{day.inter_hotel_object.slot.type_transfer.name}}
+                          </span>
+                          <br>
+                          <span class="itinerary_transfer_duration" ng-if="itinerary.non_editable_deal===false">
+                  {{day.inter_hotel_object.slot.start_time}} - {{day.inter_hotel_object.slot.end_time}}</span>
+                        </div>
+                        <div class="col-xs-6" ng-if="itinerary.non_editable_deal" style="padding-top:12px;">
+                        </div>
+                        <div class="col-xs-4" style="padding: 0px;text-align: right; padding-right: 15px;" ng-if="itinerary.non_editable_deal===false">
+                          <span class="itinerary_transfer_name" style="position:relative;
+                    font-size:16px">
+                    &#8377; {{day['inter_hotel_object'].transferTotalPrice | formatAmount | cur}}
+                  </span>
+                          <br>
+                          <span class="itinerary_transfer_duration">Total</span>
+                        </div>
+                      </div>
+                      <div class="col-xs-12" style="border-top:1px solid #e0e0e0;padding: 0px;margin-top: 16px;" ng-if="itinerary.non_editable_deal===false">
+                        <div class="col-xs-6" style="padding: 0px;">
+                          <md-button ng-click="addInterHotelTransfer(index1, index2)" style="background-color: white;width: 100%;height: 100%; font-family: Roboto-Regular;
+                  text-align: center;padding: 0px;margin:0px; color: #b6b6b6; font-size: 14px;">
+                            Change
+                          </md-button>
+                        </div>
+                        <div class="col-xs-6" style="padding: 0px;border-left:1px solid #e0e0e0;">
+                          <md-button ng-click="removeTransfer(day['inter_hotel_object'])" style="background-color: white;width: 100%;height: 100%; font-family: Roboto-Regular;
+                  text-align: center;padding: 0px;margin:0px; color: #b6b6b6; font-size: 14px;">
+                            Remove
+                          </md-button>
+                        </div>
+                      </div>
+                    </md-card>
+                    <div style="margin: 11px;" ng-if="day.activityCardVisible && day.activities.length===0 && itinerary.non_editable_deal">
+                      <!--Description-->
+                      <span style="font-family: Roboto-Regular; font-size: 11px;padding-left: 8px;padding-right: 8px;">Free time: Go shopping, visit cafes, pubs and explore the city</span>
+                    </div>
+                    <div ng-repeat="activity in day.activities track by $index" ng-init="index3 = $index" ng-if="day.activityCardVisible">
+                      <md-card style="margin: 11px;box-shadow: none;" ng-if="activity.is_activity_minitour === false && activity.is_transfer===false">
+                        <!--Description-->
+                        <div class="col-xs-12" style="padding: 0px;">
+                          <div class="col-xs-10 card_title_padding_left" style="outline: none;" ng-click="showactivitydetails(activity.activity_details.id,activity.activity_details.name,
+                    city.name)">
+                            <span class="ellipse" style="display: block;">
+                      <span class="itinerary_city_name"
+                      style="max-width: 150px;text-transform: capitalize;">{{activity.activity_details.name}}</span>
+                            <br>
+                            <span class="itinerary_city_date" ng-if="activity.activity_type.name" style="font-size: 14px;">{{activity.activity_type.name}} &nbsp;</span>
+                            <div class="mustdobtn" ng-if="activity.activity_details.is_common === true">
+                              Must Do
+                            </div>
+                            <span ng-if="activity.activity_details.is_common === true">&nbsp;</span>
+                            <span class="itinerary_transfer_duration">Duration: {{activity.durationString}}</span>
+                            </span>
+                          </div>
+                          <div ng-click="removeActivity(index1,index2, index3)" ng-if="itinerary.non_editable_deal===false" class="col-xs-2 card_title_padding_right">
+                            <button class="btn_close">
+                              <i class="fa fa-times" aria-hidden="true" style="width: 18px;opacity: 0.4;"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <!--Image-->
+                        <div class="col-xs-12" style="padding: 0px;outline: none;" ng-click="showactivitydetails(activity.activity_id,activity.activity_details.name,
+                  city.name)">
+                          <div class="gradient-effect" style=" position: relative; float: left;width:100%; height: 200px;">
+                            <img ng-src='{{activity.activity_details.cover_image}}' src="loaders/image_loading.png" style="height: 200px;z-index: -1;object-fit: cover;object-position: center;">
+                            <div>
+                              <div class="trip_div" style="bottom:45px;">
+                                <div ng-if="activity.activity_details.rating_image_url">
+                                  <img ng-if="activity.activity_details.rating_image_url" ng-src="{{activity.activity_details.rating_image_url}}" style="width: 100px;float: left;">
+                                  <span ng-if="activity.activity_details.num_reviews" style="margin-left: 10px;opacity: 1;font-size: 11px;" class="tour_review">{{activity.activity_details.num_reviews}} Reviews</span>
+                                </div>
+                              </div>
+                              <div style="position: relative;margin-left: 190px; margin-bottom: 41px; color: white;  bottom: 45px; left: -180px;">
+                                <div ng-if="activity.activity_details.rating_image_url">
+                                  <span ng-if="activity.activity_inclusions" style="margin-left: 8px;
+                          opacity: 1;font-size: 14px;margin-top:2px; " class="tour_review">Includes:</span>
+                                  <span ng-if="activity.activity_inclusions" style="margin-left: 8px;opacity: 1;font-size: 15px; display: inline-block;
+                          text-transform: capitalize;">{{activity.activity_inclusions}}</span>
+                                </div>
+                              </div>
+                              <div style=" color: white; position: absolute;bottom: 38px; right:2px;" ng-if="itinerary.non_editable_deal===false">
+                                <div style=" position: relative; bottom: -32px;margin-right: 11px;">
+                                  <span class="activity_price" style="position:relative;color: white;font-size:22px">&#8377; {{activity.activity_price.total_price_INR?activity.activity_price.total_price_INR:0 | cur}}</span>
+                                </div>
+                                <!--end of price adults-->
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </md-card>
+                      <md-card style="margin: 11px;box-shadow: none;" ng-if="activity.is_activity_minitour === true">
+                        <!--Description-->
+                        <div class="col-xs-12" style="padding: 0px;">
+                          <div class="col-xs-10 card_title_padding_left" ng-click="showminitourdetails(activity.minitour_id,activity.activity_details.name,
+                    city.name)" style="outline: none;">
+                            <span class="ellipse" style="display: block;">
+                      <span ng-click="showminitourdetails(activity.minitour_id,activity.activity_details.name,
+                        city.name)"
+                        class="itinerary_city_name"
+                      style="max-width: 150px;text-transform: capitalize;">{{activity.activity_details.name}}</span>
+                            <br>
+                            <div class="mustdobtn" ng-if="activity.activity_details.is_common === true">
+                              Must Do
+                            </div>
+                            <div class="combobtn">
+                              Combo
+                            </div>
+                            &nbsp; <span class="itinerary_transfer_duration">Duration: {{activity.durationString}}</span>
+                            </span>
+                          </div>
+                          <div ng-click="removeActivity(index1,index2, index3)" ng-if="itinerary.non_editable_deal===false" class="col-xs-2 card_title_padding_right">
+                            <button class="btn_close">
+                              <!--<img src="images/icons/ic_close.png" style="width: 18px;"/>-->
+                              <i class="fa fa-times" aria-hidden="true" style="width: 18px;opacity: 0.4;"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <!--Image-->
+                        <div ng-click="showminitourdetails(activity.minitour_id,activity.activity_details.name,
+                  city.name)">
+                          <slick settings="slickConfig" slidesToShow=1 init-onload=true>
+                            <div class="gradient-effect" ng-repeat="innerActivity in activity.activities" style="margin-right:10px;">
+                              <img ng-src='{{innerActivity.cover_image}}' src="loaders/image_loading.png" style="height: 170px;width: 100%;object-fit: cover;object-position: center;" />
+                              <!--<img image-lazy-src="{{innerActivity.cover_image}}"-->
+                              <!--image-lazy-distance-from-bottom-to-load="100"-->
+                              <!--style="height: 170px;width: 100%;object-fit: cover;object-position: center;">-->
+                              <div style="position: absolute;bottom:  7%;padding-left: 8px;">
+                                <img ng-show="innerActivity.rating_image_url" ng-src="{{innerActivity.rating_image_url}}" alt="" style="width: 80px;float: left;margin-right: 5px;display: inline;margin-top:3px;" />
+                                <span ng-hide="innerActivity.num_review === null" class="tour_review">{{innerActivity.num_reviews}} Reviews
+                      </span>
+                                <div>
+                                  <div class="ellipse" style=" max-width: 180px; color: white; /* max-height: 17px; */ font-family: Roboto-regular; font-size: 15px; text-transform: capitalize; padding-left: 5px;">
+                                    {{innerActivity.name}}
+                                  </div>
+                                  <div ng-if="innerActivity.activity_type.name">
+                                    <span style="color: #FFFFFF; font-family: Roboto-light; font-size: 12px; padding-left: 6px; display: block;">
+                            {{innerActivity.activity_type.name}}
+                          </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </slick>
+                        </div>
+                        <div class="col-xs-12" style="padding-top:4px; padding-bottom: 8px;" ng-click="showminitourdetails(activity.minitour_id,activity.activity_details.name,
+                  city.name)">
+                          <div ng-if="activity.activity_inclusions != ''" class="col-xs-7" style=" white-space: nowrap; text-transform: capitalize; padding-left: 0px;
+                    font-family: Roboto-regular;padding-top:10px;  overflow: hidden; text-overflow: ellipsis;">
+                            <!--<img src="images/icons/discount-tag.png" width="20" style="display: inline;width: 20px;"/>-->
+                            Includes: {{activity.activity_inclusions}}
+                          </div>
+                          <div class="col-xs-5 pull-right" style="font-family: Roboto-Regular;padding: 0px; margin: 0px;
+                    font-size: 22px;text-align:right;" ng-if="itinerary.non_editable_deal===false">
+                            <span class="activity_price">&#8377; {{activity.activity_price.total_price_INR?activity.activity_price.total_price_INR:0 | cur}}</span>
+
+                          </div>
+                        </div>
+                      </md-card>
+                    </div>
+                    <md-card class="cardmargin" style="box-shadow: none;" ng-if="day.has_airport_transfer===false && index2===(city.days.length-1)
+              && day.activityCardVisible && itinerary.cities[index1].has_intercity===false
+              && itinerary.non_editable_deal===false">
+                      <div class="col-xs-12 card_title_padding_left">
+                        <div class="col-xs-1" style="padding: 0px;">
+                          <img src="images/icons/transfer_icon.png" style="width: 18px;height: 18px; display: inline;" />
+                        </div>
+                        <div class="col-xs-11" style="padding: 0px;padding-left: 4px;">
+                          <span class="ellipse" style="display: block;">
+                    <span>Hotel to Airport</span>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="col-xs-12" style="border-top:1px solid #b6b6b6;padding: 0px;margin-top: 16px;">
+                        <md-button ng-click="addAirportTransfer(index1, index2)" style="background-color: white;width: 100%;height: 100%; font-family: Roboto-Regular;
+                text-align: center;padding: 0px;margin:0px; color: #b6b6b6; font-size: 14px;">
+                          Add Transfer
+                        </md-button>
+                      </div>
+                    </md-card>
+                    <md-card style="margin: 11px;box-shadow: none;" ng-if="day.has_airport_transfer===true && index2===(city.days.length-1)
+              && day.activityCardVisible && itinerary.cities[index1].has_intercity===false">
+                      <div class="col-xs-12 card_title_padding_left">
+                        <div class="col-xs-1" style="padding: 0px;">
+                          <img src="images/icons/transfer_icon.png" style="width: 18px;height: 18px; display: inline;" />
+                        </div>
+                        <div class="col-xs-11" style="padding: 0px;padding-left: 4px;">
+                          <span class="ellipse" style="display: block;">
+                    <span>Hotel to Airport</span>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="col-xs-12" style="padding: 0px;">
+                        <div class="col-xs-2" style="padding-right: 0px;">
+                          <img ng-src="{{day.airport_object.imageUrl}}" style="width: 32px;" />
+                        </div>
+                        <div class="col-xs-6">
+                          <span class="itinerary_transfer_name" style="max-width: 100%;text-transform: capitalize;">
+                    <span
+                    ng-if="day.airport_object.slot.type_transfer.is_private">Private</span>
+                          <span ng-if="!day.airport_object.slot.type_transfer.is_private">Shared</span> {{day.airport_object.slot.type_transfer.name}}
+                          </span>
+                          <br>
+                          <span class="itinerary_transfer_duration">
+                    {{day.airport_object.activity_details.airport_id.name}}
+                  ({{day.airport_object.activity_details.airport_id.code}})</span>
+                          <br>
+                          <span class="itinerary_transfer_duration" ng-if="itinerary.non_editable_deal===false">
+                  {{day.airport_object.slot.start_time}} - {{day.airport_object.slot.end_time}}</span>
+                        </div>
+                        <div class="col-xs-6" ng-if="itinerary.non_editable_deal" style="padding-top:12px;">
+                        </div>
+                        <div class="col-xs-4" style="padding: 0px;text-align: right; padding-right: 15px;" ng-if="itinerary.non_editable_deal===false">
+                          <span class="itinerary_transfer_name" style="position:relative;
+                    font-size:16px">
+                    &#8377; {{day['airport_object'].transferTotalPrice | cur}}
+                  </span>
+                          <br>
+                          <span class="itinerary_transfer_duration">Total</span>
+                        </div>
+                      </div>
+                      <div class="col-xs-12" style="border-top:1px solid #e0e0e0;padding: 0px;margin-top: 16px;" ng-if="itinerary.non_editable_deal===false">
+                        <div class="col-xs-6" style="padding: 0px;">
+                          <md-button ng-click="addAirportTransfer(index1, index2)" style="background-color: white;width: 100%;height: 100%; font-family: Roboto-Regular;
+                  text-align: center;padding: 0px;margin:0px; color: #b6b6b6; font-size: 14px;">
+                            Change
+                          </md-button>
+                        </div>
+                        <div class="col-xs-6" style="padding: 0px;border-left:1px solid #e0e0e0;">
+                          <md-button ng-click="removeTransfer(day['airport_object'])" style="background-color: white;width: 100%;height: 100%; font-family: Roboto-Regular;
+                  text-align: center;padding: 0px;margin:0px; color: #b6b6b6; font-size: 14px;">
+                            Remove
+                          </md-button>
+                        </div>
+                      </div>
+                    </md-card>
+                    <div style="margin-left: 11px;margin-right:11px;
+                display: flex;" ng-if="day.activityCardVisible && itinerary.non_editable_deal===false">
+                      <div class="col-xs-9"></div>
+                      <div class="col-xs-3" ng-click="addActivity(index1,index2);" style="float:right;padding: 8px;border: 1px solid #737373;text-align: center;">
+                        <span style="font-family: Roboto-Regular; font-size: 14px; color: #737373;cursor:pointer;">ADD ACTIVITY</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!--md-card class="cardmargin" style="box-shadow: none;" ng-if="itinerary.cities[itinerary.cities.length - 1].has_intercity===false && itinerary.cities[itinerary.cities.length - 1].has_flight===false">
+                <div class="col-xs-12 card_title_padding_left">
+                  <div class="col-xs-1" style="padding: 0px;">
+                    <img src="images/icons/flight_icon.png" style="width: 18px;height: 18px; display: inline;" />
+                  </div>
+                  <div class="col-xs-11" style="padding: 0px;padding-left: 4px;">
+                    <span class="ellipse" style="display: block;">
+              <span>{{itinerary.cities[itinerary.cities.length - 1].name}} to {{itinerary.cities[0].name}}</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-xs-12" style="border-top:1px solid #b6b6b6;padding: 0px;margin-top: 16px;">
+                  <md-button ng-click="addFlight(0)" style="background-color: white;width: 100%;height: 100%; font-family: Roboto-Regular;
+          text-align: center;padding: 0px;margin:0px; color: #b6b6b6; font-size: 14px;">
+                    Add Flight/ Transfers
+                  </md-button>
+                </div>
+              </md-card-->
+              <!--md-card style="margin: 11px;box-shadow: none;" ng-if="itinerary.cities[itinerary.cities.length - 1].has_intercity===false && itinerary.cities[itinerary.cities.length - 1].has_flight===true">
+                <div class="col-xs-12 card_title_padding_left">
+                  <div class="col-xs-1" style="padding: 0px;">
+                    <img src="images/icons/flight_icon.png" style="width: 18px;height: 18px; display: inline;" />
+                  </div>
+                  <div class="col-xs-11" style="padding: 0px;padding-left: 4px;">
+                    <span class="ellipse" style="display: block;">
+              <span>{{itinerary.cities[itinerary.cities.length - 1].name}} to {{itinerary.cities[0].name}}</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-xs-12" style="padding: 0px;">
+                  <div class="col-xs-4" style="padding-right: 0px;text-align: center;">
+                    <img ng-src="{{itinerary.cities[itinerary.cities.length - 1]['flight_data'].Segments[0].Carrier.ImageUrl}}" style="width: 100%;" />
+                  </div>
+                  <div class="col-xs-8" style="text-align:center;">
+                    <span class="itinerary_transfer_name" style="max-width: 100%;text-transform: capitalize;">
+              {{itinerary.cities[itinerary.cities.length - 1]['flight_data'].departureTime}}
+            - {{itinerary.cities[itinerary.cities.length - 1]['flight_data'].arrivalTime}}</span>
+                    <br>
+                    <span class="itinerary_transfer_duration" style="max-width: 100%;text-transform: capitalize;">
+              {{itinerary.cities[itinerary.cities.length - 1]['flight_data'].departureDate}}
+            - {{itinerary.cities[itinerary.cities.length - 1]['flight_data'].arrivalDate}}</span>
+                    <br>
+                    <span class="itinerary_transfer_duration" style="max-width: 100%;text-transform: capitalize;">
+            {{itinerary.cities[itinerary.cities.length - 1]['flight_data'].durationString}} | {{itinerary.cities[itinerary.cities.length - 1]['flight_data'].stopsString}}</span>
+                  </div>
+                </div>
+                <div class="col-xs-12" style="border-top:1px solid #e0e0e0;padding: 0px;margin-top: 8px;">
+                  <div class="col-xs-6" style="padding: 0px;">
+                    <md-button ng-click="addFlight(0)" style="background-color: white;width: 100%;height: 100%; font-family: Roboto-Regular;
+            text-align: center;padding: 0px;margin:0px; color: #b6b6b6; font-size: 14px;">
+                      Change
+                    </md-button>
+                  </div>
+                  <div class="col-xs-6" style="padding: 0px;border-left:1px solid #e0e0e0;">
+                    <md-button ng-click="removeFlight(0)" style="background-color: white;width: 100%;height: 100%; font-family: Roboto-Regular;
+            text-align: center;padding: 0px;margin:0px; color: #b6b6b6; font-size: 14px;">
+                      Remove
+                    </md-button>
+                  </div>
+                </div>
+              </md-card-->
+            </div>
+          </md-tab-body>
+        </md-tab>
+        <md-tab id="tab3" ng-if="displayFlightsTab" ng-disabled="" style="height:100%">
+          <md-tab-label>Flights</md-tab-label>
+          <md-tab-body>
+            <md-card class="cardmargin" style="box-shadow: none;" ng-show="itinerary.flight_details.length > 0">
+              <div class="col-xs-12" style="border:1px solid #b6b6b6;padding: 0px;margin-top:0;">
+                <md-card-header>
+                  <div style="width:100%;float:left;padding-right: 25px;font-size:15px;font-weight:700;color:#b6b6b6;border-bottom: 1px solid lightgray;">
+                    <div style="display:flex;width:100%;">
+                      <div class="flightDetails">Airline</div>
+                      <div class="flightDetails">Departure</div>
+                      <div class="flightDetails">Arrival</div>
+                      <div class="flightDetails">Duration</div>
+                      <div class="flightDetails">Price</div>
+                    </div>
+                  </div>
+                </md-card-header>
+                <div ng-repeat="flight in itinerary.flight_details track by $index" style="width:100%">
+                  <div style="margin-left:10px;">
+                    <input type="radio" id="flightongoing{{$index}}" class="mdl-radio__button" name="nameongoing" value="{{$index}}" ng-checked="$index==0?true:false" ng-click="changeSelectedFlight($index)">
+                    <span ng-if="flight.tripType == 'oneway' || (flight.tripType == 'return' && flight.flight_type == 'DOMESTIC')" style="margin-left: 30px;font-weight: 700;">
+                      <span>{{flight.ongoing_travel_plans.flights[0].origin_city}}</span> - <span>{{flight.ongoing_travel_plans.flights[flight.ongoing_travel_plans.flights.length -1].destination_city}} </span><span ng-if="flight.tripType == 'oneway'"> | {{flight.ongoing_travel_plans.flights[0].departure_datetime | formatDate}}</span>
+                      <span ng-show="flight.tripType == 'return'">
+                        - <span>{{flight.return_travel_plans.flights[flight.return_travel_plans.flights.length - 1].destination_city}} | {{flight.ongoing_travel_plans.flights[0].departure_datetime | formatDate}} -  {{flight.return_travel_plans.flights[flight.return_travel_plans.flights.length - 1].departure_datetime | formatDate}}</span>
+                      </span>
+                      <span class="details">
+                        <a ng-click="viewDetails($index);toggleModal();">Details</a>
+                      </span>
+                    </span>
+                    <span ng-if="flight.tripType == 'return' && flight.flight_type == 'INTERNATIONAL'" style="margin-left: 30px;font-weight: 700;">
+                      <span>{{flight.full_travel_plans.ongoing.flights[0].origin_city}}</span> - <span>{{flight.full_travel_plans.ongoing.flights[flight.full_travel_plans.ongoing.flights.length - 1].destination_city}}</span> - <span>{{flight.full_travel_plans.return.flights[flight.full_travel_plans.return.flights.length - 1].destination_city}} | {{flight.full_travel_plans.ongoing.flights[0].departure_datetime | formatDate}} - {{flight.full_travel_plans.return.flights[flight.full_travel_plans.return.flights.length - 1].departure_datetime | formatDate}}</span>
+                      <span class="details">
+                        <a ng-click="viewDetails($index);toggleModal();">Details</a>
+                      </span>
+                    </span>
+                  </div>
+                  <div ng-if="flight.tripType == 'oneway'">
+                    <div class="result_flight" ng-repeat="flightRoute in flight.ongoing_travel_plans.flights" style="display:flex;width:100%;padding: 10px 0;">
+                      <div class="airline flightDetails" >
+                        <img ng-src="{{flight.ongoing_travel_plans.tripAirlines.length===1?flightRoute.small_image_url:'loaders/multi_airlines.png'}}" alt="Airline Name" ng-if="$index==0" />
+                        <p ng-repeat="airline in flight.ongoing_travel_plans.tripAirlines track by $index" ng-if="$parent.$index==0">{{airline}}</p>
+                      </div>
+                      <div class="flightDetails">{{flightRoute.departure_datetime | formatDepartureTime}}<br/>
+                        <span>{{ongoing_travel_plans.stops}}</span><br/>
+                        <span>{{flightRoute.origin}} > {{flightRoute.destination}}</span>
+                      </div>
+                      <div class="flightDetails">{{flightRoute.arrival_datetime | formatDepartureTime}}<span ng-if="flight.ongoing_travel_plans.onFlight > 0" class="onFlight">+{{flight.ongoing_travel_plans.onFlight}}d</span></div>
+                      <div class="flightDetails"><p  ng-if="$index==0">{{flight.ongoing_travel_plans.travel_duration_string}}</p></div>
+                      <div class="flightDetails"><p ng-if="$index==0">&#8377; {{flight.ongoing_travel_plans.pricing.adult.price.gross_amount | formatAmount | cur}}</p></div>
+                    </div>
+                  </div>
+                  <div ng-if="flight.tripType == 'return' && flight.flight_type == 'DOMESTIC'">
+                    <div class="result_flight" style="display:flex;width:100%;padding: 5px 0;">
+                      <div class="airline flightDetails">
+                        <img ng-src="{{flight.ongoing_travel_plans.tripAirlines.length===1?flight.ongoing_travel_plans.flights[0].small_image_url:'loaders/multi_airlines.png'}}" alt="Airline Name" />
+                        <p ng-repeat="airline in flight.ongoing_travel_plans.tripAirlines track by $index">{{airline}}</p>
+                      </div>
+                      <div class="flightDetails">{{flight.ongoing_travel_plans.departureDatetime}}<br/>
+                        <span>{{flight.ongoing_travel_plans.stopDetails}}</span>
+                      </div>
+                      <div class="flightDetails">{{flight.ongoing_travel_plans.arrivalDatetime}}<span ng-if="flight.ongoing_travel_plans.onFlight > 0" class="onFlight">+{{flight.ongoing_travel_plans.onFlight}}d</span></div>
+                      <div class="flightDetails">{{flight.ongoing_travel_plans.travel_duration_string}}<br/>
+                        <span>{{flight.ongoing_travel_plans.stops}}</span><br/>
+                      </div>
+                      <div class="flightDetails">&#8377; {{flight.ongoing_travel_plans.pricing.adult.price.gross_amount | formatAmount | cur}}</div>
+                    </div>
+                    <div class="result_flight" style="display:flex;width:100%;padding: 5px 0;">
+                      <div class="airline flightDetails">
+                        <img ng-src="{{flight.return_travel_plans.tripAirlines.length===1?flight.return_travel_plans.flights[0].small_image_url:'loaders/multi_airlines.png'}}" alt="Airline Name" />
+                        <p ng-repeat="airline in flight.return_travel_plans.tripAirlines track by $index">{{airline}}</p>
+                      </div>
+                      <div class="flightDetails">{{flight.return_travel_plans.departureDatetime}}<br/>
+                        <span>{{flight.return_travel_plans.stopDetails}}</span>
+                      </div>
+                      <div class="flightDetails">{{flight.return_travel_plans.arrivalDatetime}}<span ng-if="flight.return_travel_plans.onFlight > 0" class="onFlight">+{{flight.return_travel_plans.onFlight}}d</span></div>
+                      <div class="flightDetails">{{flight.return_travel_plans.travel_duration_string}}<br/>
+                        <span>{{flight.return_travel_plans.stops}}</span><br/>
+                      </div>
+                      <div class="flightDetails">&#8377;  {{flight.return_travel_plans.pricing.adult.price.gross_amount | formatAmount | cur}}
+                      </div>
+                    </div>
+                  </div>
+                  <div ng-if="flight.tripType == 'return' && flight.flight_type == 'INTERNATIONAL'">
+                    <div class="result_flight" style="display:flex;width:100%;padding: 5px 0;">
+                      <div class="airline flightDetails">
+                        <img ng-src="{{flight.full_travel_plans.tripAirlines.length===1?flight.full_travel_plans.ongoing.flights[0].small_image_url:'loaders/multi_airlines.png'}}" alt="Airline Name" />
+                        <p ng-repeat="airline in flight.full_travel_plans.tripAirlines track by $index">{{airline}}</p>
+                      </div>
+                      <div class="flightDetails">
+                        <span>{{flight.full_travel_plans.ongoing.departureDatetime}}</span><br/>
+                        <span>{{flight.full_travel_plans.ongoing.stopDetails}}</span><br/>
+                        <span>{{flight.full_travel_plans.return.departureDatetime}}</span><br/>
+                        <span>{{flight.full_travel_plans.return.stopDetails}}</span>
+                      </div>
+                      <div class="flightDetails">
+                        <span>{{flight.full_travel_plans.ongoing.arrivalDatetime}}</span>
+                        <span ng-if="flight.full_travel_plans.ongoing.onFlight > 0" class="onFlight">+{{flight.full_travel_plans.ongoing.onFlight}}d</span><br/><br/><br/>
+                        <span>{{flight.full_travel_plans.return.arrivalDatetime}}</span>
+                        <span ng-if="flight.full_travel_plans.return.onFlight > 0" class="onFlight">+{{flight.full_travel_plans.return.onFlight}}d</span>
+                      </div>
+                      <div class="flightDetails">
+                        <span>{{flight.full_travel_plans.ongoing.travel_duration_string}}<span><br/>
+                        <span>{{flight.full_travel_plans.ongoing.stops}}</span><br/>
+                        <span>{{flight.full_travel_plans.return.travel_duration_string}}<span><br/>
+                        <span>{{flight.full_travel_plans.return.stops}}</span><br/>
+                      </div>
+                      <div class="flightDetails">&#8377; {{flight.full_travel_plans.pricing.adult.price.gross_amount | formatAmount | cur}}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </md-card>
+            <md-card>
+              <div ng-show="!itinerary.flight_details || itinerary.flight_details.length === 0">
+                <md-button ng-click="addFlight()" ng-disabled="fixed" style="background-color: white;width: 100%;height: 100%; font-family: Roboto-Regular;
+                text-align: center;padding: 0px;margin:0px; color: #b6b6b6; font-size: 14px;">
+                Add Flights
+                </md-button>
+              </div>
+              <div>
+                <md-button ng-click="removeFlightFromItinerary($index)" ng-show="itinerary.flight_details.length > 0" style="background-color: white;width: 100%;height: 100%; font-family: Roboto-Regular;
+                text-align: center;padding: 0px;margin:0px; color: #b6b6b6; font-size: 14px;">
+                Remove Flights
+                </md-button>
+                <md-button ng-click="changeFlight($index)" ng-show="itinerary.flight_details.length > 0" style="background-color: white;width: 100%;height: 100%; font-family: Roboto-Regular;
+                text-align: center;padding: 0px;margin:0px; color: #b6b6b6; font-size: 14px;">
+                Add Flights
+                </md-button>
+              </div>
+            </md-card>
+          </md-tab-body>
+        </md-tab>
+        <md-tab id="tab2" ng-disabled="" style="height: 100%; ">
+          <md-tab-label>Hotels</md-tab-label>
+          <md-tab-body>
+            <div ng-if="itinerary.cities.length <= 1" style="text-align: center;margin-top:20vh;margin-bottom:20vh;font-size: 18px;">
+              <p>Add a destination city to add a hotel for that city</p>
+            </div>
+            <div style="padding-bottom: 20px;">
+              <div ng-repeat="city in itinerary.cities track by $index" ng-init="index1 = $index">
+                <div ng-if="index1>0">
+                  <md-card class="cardmargin" style="box-shadow: none;">
+                    <div class="col-xs-12" style="padding: 0px;position: relative;">
+                      <div class="col-xs-8 card_title_padding_left">
+                        <span class="ellipse" style="display: block;">
+                  <span
+                    class="itinerary_city_name"
+                  style="max-width: 150px;text-transform: capitalize;">{{city.name}}</span>
+                        <br>
+                        <span class="itinerary_transfer_name" style="max-width: 150px;">{{city.days.length-1}} night<span ng-if="city.days.length>2">s</span></span>
+                        </span>
+                      </div>
+                      <div class="col-xs-4" style="text-align: right;position: absolute; top: 50%; right: 0%;
+                  transform: translateY(-50%);">
+                        <md-button class="itinerary_transport_name" ng-click="addHotelInCity(index1);" aria-label="Add Hotel" style="color: white;">
+                          <div>
+                            <span ng-if="splitHotel(city)">Split Hotel Stay</span>
+                            <span ng-if="!splitHotel(city)">Add Hotel</span>
+                          </div>
+                        </md-button>
+                      </div>
+                    </div>
+                  </md-card>
+                </div>
+                <div ng-repeat="hotel in city.included_hotels track by $index" ng-init="index2 = $index">
+                  <md-card class="cardmargin" style="box-shadow: none;" ng-if="hotel.hotels[0].hotel_details.id &&  hotel.hotels[0].hotel_details.id != ''">
+                    <!--City Name -->
+                    <div class="col-xs-12" style="padding: 0px;">
+                      <div class="col-xs-8 card_title_padding_left" style="width: 65%;">
+                        <span class="ellipse" style="display: block;">
+                    <span ng-click="detailhotel(index1, index2, 'details')"
+                      class="itinerary_city_name"
+                    style="max-width: 200px;text-transform: capitalize;">{{hotel.hotels[0].hotel_details.name}}</span>
+                        <br>
+                        <span class="itinerary_city_date" style="max-width: 200px;opacity: 1;">
+                      <span style="opacity: 0.4;"> {{hotel.date_string}}</span>
+                        </span>
+                        </span>
+                      </div>
+                      <div class="col-xs-4" style="text-align: right;padding: 8px;padding-top: 14px;width: 35%;">
+                        <div ng-if="hotel.hotels[0].hotel_details.star_rating === '1.0'">
+                          <img src="images/icons/fullstar.png" style="width: 13px;display: inline" />
+                        </div>
+                        <div ng-if="hotel.hotels[0].hotel_details.star_rating === '1.5'">
+                          <img src="images/icons/fullstar.png" style="width: 13px;display: inline" />
+                          <img src="images/icons/halfstar.png" style="width: 13px;display: inline" />
+                        </div>
+                        <div ng-if="hotel.hotels[0].hotel_details.star_rating === '2.0'">
+                          <img src="images/icons/fullstar.png" style="width: 13px;display: inline" />
+                          <img src="images/icons/fullstar.png" style="width: 13px;display: inline" />
+                        </div>
+                        <div ng-if="hotel.hotels[0].hotel_details.star_rating === '2.5' ">
+                          <img src="images/icons/fullstar.png" style="width: 13px;display: inline" />
+                          <img src="images/icons/fullstar.png" style="width: 13px;display: inline" />
+                          <img src="images/icons/halfstar.png" style="width: 13px;display: inline" />
+                        </div>
+                        <div ng-if="hotel.hotels[0].hotel_details.star_rating === '3.0'">
+                          <img src="images/icons/fullstar.png" style="width: 13px;display: inline" />
+                          <img src="images/icons/fullstar.png" style="width: 13px;display: inline" />
+                          <img src="images/icons/fullstar.png" style="width: 13px;display: inline" />
+                        </div>
+                        <div ng-if="hotel.hotels[0].hotel_details.star_rating === '3.5'">
+                          <img src="images/icons/fullstar.png" style="width: 13px;display: inline" />
+                          <img src="images/icons/fullstar.png" style="width: 13px;display: inline" />
+                          <img src="images/icons/fullstar.png" style="width: 13px;display: inline" />
+                          <img src="images/icons/halfstar.png" style="width: 13px;display: inline" />
+                        </div>
+                        <div ng-if="hotel.hotels[0].hotel_details.star_rating === '4.0'">
+                          <img src="images/icons/fullstar.png" style="width: 13px;display: inline" />
+                          <img src="images/icons/fullstar.png" style="width: 13px;display: inline" />
+                          <img src="images/icons/fullstar.png" style="width: 13px;display: inline" />
+                          <img src="images/icons/fullstar.png" style="width: 13px;display: inline" />
+                        </div>
+                        <div ng-if="hotel.hotels[0].hotel_details.star_rating === '4.5'">
+                          <img src="images/icons/fullstar.png" style="width: 13px;display: inline" />
+                          <img src="images/icons/fullstar.png" style="width: 13px;display: inline" />
+                          <img src="images/icons/fullstar.png" style="width: 13px;display: inline" />
+                          <img src="images/icons/fullstar.png" style="width: 13px;display: inline" />
+                          <img src="images/icons/halfstar.png" style="width: 13px;display: inline" />
+                        </div>
+                        <div ng-if="hotel.hotels[0].hotel_details.star_rating === '5.0'">
+                          <img src="images/icons/fullstar.png" style="width: 13px;display: inline" />
+                          <img src="images/icons/fullstar.png" style="width: 13px;display: inline" />
+                          <img src="images/icons/fullstar.png" style="width: 13px;display: inline" />
+                          <img src="images/icons/fullstar.png" style="width: 13px;display: inline" />
+                          <img src="images/icons/fullstar.png" style="width: 13px;display: inline" />
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <!--Hotel Image -->
+                      <div ng-click="detailhotel(index1, index2, 'details')" class="col-xs-12 gradient-effect" style="padding: 0px;">
+                        <img ng-src="{{hotel.hotels[0].hotel_details.images[0].src}}" src="loaders/image_loading.png" style="width: 100%;height: 180px;object-fit: cover;object-position: center;cursor:pointer;" />
+                        <div class="trip_div" style="bottom: 0px;">
+                          <div>
+                            <img ng-src="{{hotel.hotels[0].hotel_details.tripadvisor.rating_image_url}}" style="width: 100px;float: left;">
+                            <span ng-if="hotel.hotels[0].hotel_details.tripadvisor.num_reviews" style="margin-left: 10px;opacity: 1;font-size: 11px;" class="tour_review">{{hotel.hotels[0].hotel_details.tripadvisor.num_reviews}}
+                        Reviews
+                            </span>
+                            <br>
+                            <span>{{hotel.hotels[0].num_rooms}} {{hotel.hotels[0].room_type_name}} Room
+                              <span ng-if="hotel.hotels.length > 1">s</span>
+                            </span>
+                            <span ng-if="itinerary.non_editable_deal===false" style="float: right;" class="hotel_price">
+                              &#8377; {{hotel.hotels[0].hotel_details.selectedoffer.price.base_fare | formatAmount | cur}}/night</span>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                    <div style="border-top: 1px solid #e0e0e0; padding: 0px;margin-top: 16px;">
+                      <div class="col-xs-6" style="height:50px;">
+                        <md-button ng-click="detailhotel(index1, index2)" style="background-color: white;width: 100%;height: 97%;
+                    text-align: center;padding: 0px;margin:1px;">
+                          Change Hotel
+                        </md-button>
+                      </div>
+                      <div class="col-xs-6" style="text-align: center;height:50px;border-left: 1px solid #e0e0e0;">
+                        <md-checkbox aria-label="not required" ng-click="removeHotel(index1, index2);" style="margin-top: 12px;">
+                          Not required
+                        </md-checkbox>
+                      </div>
+                    </div>
+                  </md-card>
+                </div>
+              </div>
+            </div>
+          </md-tab-body>
+        </md-tab>
+      </md-tabs>
+    </div>
+    <!--/ion-content-->
+  </div>
+  <div class="col-xs-12 fab_location" ng-if="itinerary.non_editable_deal===false">
+    <md-fab-speed-dial style="float: right;" md-open="fabObject.isOpen" md-direction="up" ng-class="md-scale">
+      <md-fab-trigger ng-class="(showSnackBar === true||showSnackBarCity === true ||
+    showSnackBarCity === true || showSnackBarCity2 === true)? 'fab_push_up'  : 'fab_default' ">
+        <md-button ng-click="fabActions();" aria-label="menu" class="md-fab">
+          <img ng-show="fabObject.isOpen===false" src="images/icons/ic_add_white.png" style="object-fit: cover;object-position: center;width: 40px;position: absolute; top: 50%; left: 50%;
+    transform:translate(-50%, -50%);" />
+          <img ng-show="fabObject.isOpen" src="images/icons/ic_close_white.png" style="padding:10px; object-fit: cover;object-position: center;width: 40px;position: absolute; top: 50%; left: 50%;
+    transform:translate(-50%, -50%);" />
+        </md-button>
+      </md-fab-trigger>
+      <md-fab-actions ng-if="showFabAction===true">
+        <div>
+          <md-button ng-click="addAnotherCity()" aria-label="Twitter" class="md-fab md-raised md-mini">
+            <md-tooltip md-direction="left" md-visible="fabObject.tooltipsVisible">Add Another City
+            </md-tooltip>
+            <span style="color: #FFFFFF;font-size: 22px;font-weight: bold;font-family: Roboto;">O</span>
+          </md-button>
+        </div>
+        <div>
+          <md-button ng-click="openSortCityDialog()" aria-label="Twitter" class="md-fab md-raised md-mini">
+            <md-tooltip md-direction="left" md-visible="fabObject.tooltipsVisible">Reorder Cities
+            </md-tooltip>
+            <span style="color: #FFFFFF;font-size: 22px;font-weight: bold;font-family: Roboto;">R</span>
+          </md-button>
+        </div>
+      </md-fab-actions>
+    </md-fab-speed-dial>
+  </div>
+  <div class="col-xs-12 snack_bar_panel snack_bar_position" ng-if="showSnackBar===true" style="">
+    <div style="padding: 0px;text-overflow: ellipsis;overflow: hidden;
+      max-height: 20px;text-transform: uppercase;text-align: center;font-family: Roboto-Regular">
+      Please <span ng-click="redirectLogin();" style="font-weight: bold;text-decoration: underline;">login / signup</span> {{snackBarText}}
+    </div>
+  </div>
+  <div ng-if="showFooter === true && showPriceBreakup === true" class="col-xs-12 fixed_btm" style="border:0px; background-color: transparent;" ng-click="outsideClick()">
+    <div style="text-align: center;background-color: transparent;">
+      <span ng-click="showPriceBreakupCard()" style="font-family: Roboto-Light; font-size: 20px;background-color: white;
+        -webkit-border-radius: 90px 90px 0 0; color: #858585;padding-left: 12px;
+        padding-right: 12px; padding-top: 0px;border: 2px solid #e0e0e0; border-bottom: 0px;"><i
+      class="fa fa-angle-double-down" aria-hidden="true"></i></span>
+    </div>
+    <div class="col-xs-12" style="background-color: white; padding: 0px; line-height: 1.0;
+      box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12)">
+      <div class="col-xs-12" style="padding-top: 16px;padding-bottom: 8px;">
+        <span style="font-family: Roboto-Regular; font-size: 18px;">PRICE BREAKDOWN</span>
+      </div>
+      <div class="col-xs-12">
+        <div class="col-xs-8" style="padding: 0px; text-align: left;">
+          <span style="font-family: Roboto-Regular; font-size: 14px; color: #959595;">Flights </span>
+        </div>
+        <div class="col-xs-4" style="padding: 0px; text-align: right;">
+          <span style="font-family: Roboto-Regular; font-size: 14px; color: #959595;">&#8377; {{itinerary.amount.flight_amount | cur}}</span>
+        </div>
+      </div>
+      <div class="col-xs-12" ng-if="fixed">
+        <div class="col-xs-8" style="padding: 0px; text-align: left;">
+          <span style="font-family: Roboto-Regular; font-size: 14px; color: #959595;">Land package price</span>
+        </div>
+        <div class="col-xs-4" style="padding: 0px; text-align: right;">
+          <span style="font-family: Roboto-Regular; font-size: 14px; color: #959595;">&#8377; {{itinerary.amount.package_amount | cur}}</span>
+        </div>
+      </div>
+      <div class="col-xs-12" style="margin-top: 8px;"  ng-if="!fixed">
+        <div class="col-xs-8" style="padding: 0px; text-align: left;">
+          <span style="font-family: Roboto-Regular; font-size: 14px; color: #959595;">Hotels, Activities and Transfers </span>
+          <br>
+        </div>
+        <div class="col-xs-4" style="padding: 0px; text-align: right;">
+          <span style="font-family: Roboto-Regular; font-size: 14px; color: #959595;">&#8377; {{(itinerary.amount.hotel_amount + itinerary.amount.activities_amount + itinerary.amount.transfers_amount)  | cur}}</span>
+        </div>
+      </div>
+      <div class="col-xs-12">
+        <div class="col-xs-8" style="padding: 0px; text-align: left;">
+          <span style="font-family: Roboto-Regular; font-size: 12px; color: #959595;">GST (5%)</span>
+        </div>
+        <div class="col-xs-4" style="padding: 0px; text-align: right;">
+          <span style="font-family: Roboto-Regular; font-size: 12px; color: #959595;">&#8377; {{(itinerary.amount.tax)  | cur}}</span>
+        </div>
+      </div>
+      <div class="col-xs-12" style="margin-top: 8px;" ng-if="itinerary.amount.discount>0">
+        <div class="col-xs-8" style="padding: 0px; text-align: left;">
+          <span style="font-family: Roboto-Regular; font-size: 14px; color: #959595;">Discount</span></div>
+        <div class="col-xs-4" style="padding: 0px; text-align: right;">
+          <span style="font-family: Roboto-Regular; font-size: 14px; color: #959595;">&#8377; {{itinerary.amount.discount | cur}}</span>
+        </div>
+      </div>
+      <div class="col-xs-12" style="margin-top: 8px;">
+        <div class="col-xs-8" style="padding: 0px; text-align: left;">
+          <span style="font-family: Roboto-Regular; font-size: 16px;">TOTAL</span>
+          <br>
+          <span style="font-family: Roboto-Regular; font-size: 12px; color: #959595;">For {{itinerary.num_people_string}}</span></span>
+        </div>
+        <div class="col-xs-4" style="padding: 0px; text-align: right;">
+          <span style="font-family: Roboto-Regular; font-size: 16px;">&#8377; {{(itinerary.amount.gross_amount) | cur}}</span>
+        </div>
+      </div>
+      <div class="col-xs-12" style="padding-top: 16px;padding-bottom: 8px;">
+        <div class="col-xs-4" style="padding: 0px;">
+          <md-button class="nextItnBtn" ng-disabled="itineraryBtnDisabled"
+                     ng-click="submitDraft('book')" aria-label="Save" style="width: 100% !important;color: white;">
+            <div>
+              <span>Next</span>
+            </div>
+          </md-button>
+          <md-button class="nextItnBtn" ng-click="previewDraft()" aria-label="Save" style="width: 100% !important;color: white;">
+            <div>
+              <span>Preview</span>
+            </div>
+          </md-button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div ng-if="showFooter === true && showPriceBreakup === false" class="col-xs-12 fixed_btm" style="border:0px; background-color: transparent;" ng-click="outsideClick()" id="toaster">
+    <div style="text-align: center;background-color: transparent;">
+      <span ng-click="showPriceBreakupCard()" style="font-family: Roboto-Light; font-size:20px;background-color: white;
+            -webkit-border-radius: 90px 90px 0 0; color: #858585;padding-left: 12px;
+            padding-right: 12px; padding-top: 0px;border: 2px solid #e0e0e0; border-bottom: 0px;"><i
+          class="fa fa-angle-double-up" aria-hidden="true"></i></span>
+    </div>
+    <div class="col-xs-12" style="padding: 0px;background-color: white; box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12)">
+      <div class="col-xs-8" style="padding-top: 8px;padding-left: 25px;padding-right: 0px;">
+        <div class="text_total">
+          Total<span style="opacity: 1;
+              font-family: Roboto-Regular"> (incl. of all taxes)</span>
+        </div>
+        <div class="total_amount">
+          <span>&#8377; {{(itinerary.amount.gross_amount?itinerary.amount.gross_amount:0) | cur}}</span>
+        </div>
+        <div class="text_total" style=" opacity: 0.5;font-family: Roboto-Regular;line-height: 1.1;letter-spacing: 1px;
+              color: #232323;margin-top: 5px;margin-bottom: 8px;float: left;">
+          for {{itinerary.num_people_string}}</span>
+        </div>
+      </div>
+      <div class="col-xs-4" style="padding-top: 16px;color:white;padding-left: 0px;padding-right: 15px;">
+        <md-button class="nextItnBtn" ng-disabled="itineraryBtnDisabled" ng-click="submitDraft('book')" aria-label="Save">
+          <div>
+            <span>Next</span>
+          </div>
+        </md-button>
+        <md-button class="nextItnBtn" ng-click="previewDraft()" aria-label="Save">
+          <div>
+            <span>Preview</span>
+          </div>
+        </md-button>
+      </div>
+
+    </div>
+  </div>
+  <modal title="Flight Details" dikhao="showModal">
+    <!--div>{{DraftItineraryController.flight.ongoing_travel_plans.stopDetails}}</div-->
+    <div style="width:100%">
+      <div ng-if="DraftItineraryController.flight.tripType == 'oneway'">
+        <div class="result_flight" ng-repeat="flightRoute in DraftItineraryController.flight.ongoing_travel_plans.flights track by $index" style="display:flex;width:100%;padding: 10px 0;">
+          <div class="airline flightDetails" >
+            <img ng-src="{{DraftItineraryController.flight.ongoing_travel_plans.tripAirlines.length===1?flightRoute.small_image_url:'loaders/multi_airlines.png'}}" alt="Airline Name" ng-if="$index==0" />
+            <p ng-repeat="airline in DraftItineraryController.flight.ongoing_travel_plans.tripAirlines track by $index" ng-if="$parent.$index==0">{{airline}}</p>
+          </div>
+          <div class="flightDetails">{{flightRoute.departure_datetime | formatDepartureTime}}<br/>
+            <span>{{ongoing_travel_plans.stops}}</span><br/>
+            <span>{{flightRoute.origin}} > {{flightRoute.destination}}</span>
+          </div>
+          <div class="flightDetails">{{flightRoute.arrival_datetime | formatDepartureTime}}</div>
+          <div class="flightDetails">{{flightRoute.travel_duration}}</div>
+          <div class="flightDetails"><p ng-show="$index==0">&#8377; {{DraftItineraryController.flight.ongoing_travel_plans.pricing.adult.price.gross_amount | formatAmount | cur}}</p></div>
+        </div>
+        <div>
+          <md-content>
+            <md-tabs md-dynamic-height md-border-bottom>
+              <md-tab label="Flight Details">
+                <md-content class="md-padding">
+                  <div ng-repeat="flight in DraftItineraryController.flight.ongoing_travel_plans.flights">
+                    <div>
+                      <h5>{{flight.origin_city.toUpperCase()}} - {{flight.destination_city.toUpperCase()}}
+                      <span> | </span>
+                      <span>{{flight.departureDate}}</span>
+                      </h5>
+                    </div>
+                    <div class="result_flight" style="display:flex;width:100%;padding: 5px 5px 5px 5px;">
+                      <div class="airline flightDetailstab">
+                        {{flight.airline_name}}
+                        <span>{{flight.pricing[0].class_type}}</span><br/>
+                        <span>{{flight.flight_code}}</span><br/>
+                        <span>{{flight.aircraft_type}}</span>
+                        <div style="color: #ff8500;" ng-show="flight.layover_duration_in_minutes">{{flight.destination}} | Layover: {{flight.layover_duration_in_minutes | formatTime}}</div>
+                      </div>
+                      <div class="flightDetailstab">
+                        {{flight.departure_datetime | formatDepartureTime}}
+                        <span>{{flight.origin}}</span><br/>
+                        <span>{{flight.departureDate}}</span><br/>
+                        <span>{{flight.origin_city}}</span><br/>
+                        <span>{{flight.origin_airport_name}}</span>
+                      </div>
+                      <div class="flightDetailstab">
+                        <p>---></p><br/>
+                        <span>{{flight.travel_duration}}</span>
+                      </div>
+                      <div class="flightDetailsnew">
+                        {{flight.arrival_datetime | formatDepartureTime}}
+                        <span>{{flight.destination}}</span><br/>
+                        <span>{{flight.arrivalDate}}</span><br/>
+                        <span>{{flight.destination_city}}</span><br/>
+                        <span>{{flight.destination_airport_name}}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="clear:both;"></div>
+                </md-content>
+              </md-tab>
+              <md-tab label="Fare Breakup">
+                <md-content class="md-padding">
+                  <div>
+                    <div ng-show="DraftItineraryController.number_adult">
+                      <span>Adult Basefare (*{{DraftItineraryController.number_adult}}):</span>
+                      <span>{{calculateBaseFair(DraftItineraryController.flight.tripType,
+                      DraftItineraryController.flight.flight_type,
+                      DraftItineraryController.flight.ongoing_travel_plans.pricing.adult.price, null, DraftItineraryController.number_adult) | formatAmount | cur}}</span>
+                    </div>
+                    <div ng-show="DraftItineraryController.number_child">
+                      <span>Child Basefare (*{{DraftItineraryController.number_child}}):</span>
+                      <span>{{DraftItineraryController.number_child && calculateBaseFair(DraftItineraryController.flight.tripType,
+                      DraftItineraryController.flight.flight_type, DraftItineraryController.flight.ongoing_travel_plans.pricing.child.price, null, DraftItineraryController.number_child) | formatAmount | cur}}</span>
+                    </div>
+                    <div ng-show="DraftItineraryController.number_kid">
+                      <span>Infant Basefare (*{{DraftItineraryController.number_kid}}):</span>
+                      <span>{{DraftItineraryController.number_kid && calculateBaseFair(DraftItineraryController.flight.tripType,
+                      DraftItineraryController.flight.flight_type,
+                      DraftItineraryController.flight.ongoing_travel_plans.pricing.infant.price, null, DraftItineraryController.number_kid) | formatAmount | cur}}</span>
+                    </div>
+                    <div style="border-bottom: 1px solid rgba(0,0,0,.2);"></div>
+                    <div>
+                      <span>Base fare total:</span>
+                      <span>{{calculateBaseFairTotal(DraftItineraryController.flight.tripType,
+                      DraftItineraryController.flight.flight_type,
+                      DraftItineraryController.flight.ongoing_travel_plans, null) | formatAmount | cur}}</span>
+                    </div>
+                  </div><br/>
+                  <div>
+                    <div ng-show="DraftItineraryController.number_adult">
+                      <span>Adult Taxes & Fees (*{{DraftItineraryController.number_adult}})</span>
+                      <span>{{DraftItineraryController.flight.ongoing_travel_plans.pricing.adult &&
+                      calculateTaxAmount(DraftItineraryController.flight.tripType,
+                      DraftItineraryController.flight.flight_type,
+                      DraftItineraryController.flight.ongoing_travel_plans.pricing.adult,
+                      null, DraftItineraryController.number_adult)  | formatAmount | cur}}</span>
+                    </div>
+                    <div ng-show="DraftItineraryController.number_child">
+                      <span>Child Taxes & Fees (*{{DraftItineraryController.number_child}})</span>
+                      <span>{{DraftItineraryController.flight.ongoing_travel_plans.pricing.child &&
+                      calculateTaxAmount(DraftItineraryController.flight.tripType,
+                      DraftItineraryController.flight.flight_type,
+                      DraftItineraryController.flight.ongoing_travel_plans.pricing.child,
+                      null, DraftItineraryController.number_child)  | formatAmount | cur}}</span>
+                    </div>
+                    <div ng-show="DraftItineraryController.number_kid">
+                      <span>Infant Taxes & Fees (*{{DraftItineraryController.number_kid}})</span>
+                      <span>{{DraftItineraryController.flight.ongoing_travel_plans.pricing.infant &&
+                      calculateTaxAmount(DraftItineraryController.flight.tripType,
+                      DraftItineraryController.flight.flight_type, DraftItineraryController.flight.ongoing_travel_plans.pricing.infant,
+                      null, DraftItineraryController.number_kid)  | formatAmount | cur}}</span>
+                    </div>
+                    <div style="border-bottom: 1px solid rgba(0,0,0,.2);"></div>
+                    <div>
+                      <span>Total fare:</span>
+                      <span>{{calculateTotalFair(DraftItineraryController.flight.tripType,
+                      DraftItineraryController.flight.flight_type,
+                      DraftItineraryController.flight.ongoing_travel_plans, DraftItineraryController.flight.return_travel_plans) | formatAmount | cur}}</span>
+                    </div>
+                  </div>
+                </md-content>
+              </md-tab>
+              <md-tab label="Fare Rule">
+                <md-content class="md-padding">
+                  <div class="result_flight" style="display:flex;width:100%;padding:5px 0;float:left;">
+                    <div class="airline flightDetailstab" ng-init="onGoingFlight =DraftItineraryController.flight.ongoing_travel_plans">
+                      <h5>{{onGoingFlight.flights[0].origin_city.toUpperCase()}} - {{onGoingFlight.flights[onGoingFlight.flights.length - 1].destination_city.toUpperCase()}}</h5>
+                      Cancellation: <span>{{onGoingFlight.pricing.cancellation_fee?onGoingFlight.pricing.cancellation_fee:'N/A' | formatAmount}}</span><br/>
+                      Goomo Cancellation Fee: <span>{{onGoingFlight.pricing.goomo_cancellation_fee?onGoingFlight.pricing.goomo_cancellation_fee:'N/A' | formatAmount}}</span><br/>
+                      Date Change: <span>{{onGoingFlight.pricing.date_change_fee?onGoingFlight.pricing.date_change_fee:'N/A' | formatAmount}}</span><br/>
+                      Goomo Date change Fee: <span>{{onGoingFlight.pricing.goomo_date_change_fee?onGoingFlight.pricing.goomo_date_change_fee:'N/A' | formatAmount}}</span>
+                    </div>
+                  </div>
+                </md-content>
+              </md-tab>
+              <md-tab label="Baggage Rules">
+                <md-content class="md-padding">
+                  <div ng-repeat="flight in DraftItineraryController.flight.ongoing_travel_plans.flights">
+                    <div><h5>{{flight.origin_city}} - {{flight.destination_city}}</h5></div>
+                    <div>Check-in:{{flight.pricing[0].luggage.check_in.quantity}}&nbsp;{{flight.pricing[0].luggage.check_in.unit}}&nbsp;/&nbsp;person</div>
+                    <div>Check-in:{{flight.pricing[0].luggage.hand.quantity}}&nbsp;{{flight.pricing[0].luggage.hand.unit}}&nbsp;/&nbsp;person</div>
+                  </div>
+                </md-content>
+              </md-tab>
+            </md-tabs>
+          </md-content>
+        </div>
+      </div>
+      <div ng-if="DraftItineraryController.flight.tripType == 'return' && DraftItineraryController.flight.flight_type == 'DOMESTIC'">
+        <div class="result_flight" style="display:flex;width:100%;padding: 5px 0;">
+          <div class="airline flightDetails">
+            <img ng-src="{{DraftItineraryController.flight.ongoing_travel_plans.tripAirlines.length===1?DraftItineraryController.flight.ongoing_travel_plans.flights[0].small_image_url:'loaders/multi_airlines.png'}}" alt="Airline Name" />
+            <p ng-repeat="airline in DraftItineraryController.flight.ongoing_travel_plans.tripAirlines track by $index">{{airline}}</p>
+          </div>
+          <div class="flightDetails">{{DraftItineraryController.flight.ongoing_travel_plans.departureDatetime}}<br/>
+            <span>{{DraftItineraryController.flight.ongoing_travel_plans.stopDetails}}</span>
+          </div>
+          <div class="flightDetails">{{DraftItineraryController.flight.ongoing_travel_plans.arrivalDatetime}}</div>
+          <div class="flightDetails">{{DraftItineraryController.flight.ongoing_travel_plans.travel_duration_string}}<br/>
+            <span>{{DraftItineraryController.flight.ongoing_travel_plans.stops}}</span><br/>
+          </div>
+          <div class="flightDetails">&#8377; {{DraftItineraryController.flight.ongoing_travel_plans.pricing.adult.price.gross_amount | formatAmount | cur}}</div>
+        </div>
+        <div class="result_flight" style="display:flex;width:100%;padding: 5px 0;">
+          <div class="airline flightDetails">
+            <img ng-src="{{DraftItineraryController.flight.return_travel_plans.tripAirlines.length===1?DraftItineraryController.flight.return_travel_plans.flights[0].small_image_url:'loaders/multi_airlines.png'}}" alt="Airline Name" />
+            <p ng-repeat="airline in DraftItineraryController.flight.return_travel_plans.tripAirlines track by $index">{{airline}}</p>
+          </div>
+          <div class="flightDetails">{{DraftItineraryController.flight.return_travel_plans.departureDatetime}}<br/>
+            <span>{{DraftItineraryController.flight.return_travel_plans.stopDetails}}</span>
+          </div>
+          <div class="flightDetails">{{DraftItineraryController.flight.return_travel_plans.arrivalDatetime}}</div>
+          <div class="flightDetails">{{DraftItineraryController.flight.return_travel_plans.travel_duration_string}}<br/>
+            <span>{{DraftItineraryController.flight.return_travel_plans.stops}}</span><br/>
+          </div>
+          <div class="flightDetails">&#8377;  {{DraftItineraryController.flight.return_travel_plans.pricing.adult.price.gross_amount | formatAmount | cur}}
+          </div>
+        </div>
+        <div>
+          <md-content>
+            <md-tabs md-dynamic-height md-border-bottom>
+              <md-tab label="Flight Details">
+                <md-content class="md-padding">
+                  <div ng-repeat="flight in DraftItineraryController.flight.ongoing_travel_plans.flights">
+                    <div>
+                      <h5>{{flight.origin_city.toUpperCase()}} - {{flight.destination_city.toUpperCase()}}
+                      <span> | </span>
+                      <span>{{flight.departureDate}}</span></h5>
+                    </div>
+                    <div class="result_flight" style="display:flex;width:100%;padding: 5px 0;">
+                      <div class="airline flightDetailstab">
+                        {{flight.airline_name}}
+                        <span>{{flight.pricing[0].class_type}}</span><br/>
+                        <span>{{flight.flight_code}}</span><br/>
+                        <span>{{flight.aircraft_type}}</span>
+                        <div style="color: #ff8500;" ng-show="flight.layover_duration_in_minutes">{{flight.destination}} | Layover: {{flight.layover_duration_in_minutes | formatTime}}</div>
+                      </div>
+                      <div class="flightDetailstab">
+                        {{flight.departure_datetime | formatDepartureTime}}
+                        <span>{{flight.origin}}</span><br/>
+                        <span>{{flight.departureDate}}</span><br/>
+                        <span>{{flight.origin_city}}</span><br/>
+                        <span>{{flight.origin_airport_name}}</span>
+                      </div>
+                      <div class="flightDetailstab">
+                        <p>---></p><br/>
+                        <span>{{flight.travel_duration}}</span>
+                      </div>
+                      <div class="flightDetailstab">
+                        {{flight.arrival_datetime | formatDepartureTime}}
+                        <span>{{flight.destination}}</span>
+                        <span>{{flight.arrivalDate}}</span><br/>
+                        <span>{{flight.destination_city}}</span><br/>
+                        <span>{{flight.destination_airport_name}}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div ng-repeat="flight in DraftItineraryController.flight.return_travel_plans.flights">
+                    <div>
+                      <h5>{{flight.origin_city.toUpperCase()}} - {{flight.destination_city.toUpperCase()}}
+                      <span> | </span>
+                      <span>{{flight.departureDate}}</span></h5>
+                    </div>
+                    <div class="result_flight" style="display:flex;width:100%;padding: 5px 0;">
+                      <div class="airline flightDetailstab">
+                        {{flight.airline_name}}
+                        <span>{{flight.pricing[0].class_type}}</span><br/>
+                        <span>{{flight.flight_code}}</span><br/>
+                        <span>{{flight.aircraft_type}}</span>
+                        <div style="color: #ff8500;" ng-show="flight.layover_duration_in_minutes">{{flight.destination}} | Layover: {{flight.layover_duration_in_minutes | formatTime}}</div>
+                      </div>
+                      <div class="flightDetailstab">
+                        {{flight.departure_datetime | formatDepartureTime}}
+                        <span>{{flight.origin}}</span><br/>
+                        <span>{{flight.departureDate}}</span><br/>
+                        <span>{{flight.origin_city}}</span><br/>
+                        <span>{{flight.origin_airport_name}}</span>
+                      </div>
+                      <div class="flightDetailstab">
+                        <p>---></p><br/>
+                        <span>{{flight.travel_duration}}</span>
+                      </div>
+                      <div class="flightDetailstab">
+                        {{flight.arrival_datetime | formatDepartureTime}}
+                        <span>{{flight.destination}}</span><br/>
+                        <span>{{flight.arrivalDate}}</span><br/>
+                        <span>{{flight.destination_city}}</span><br/>
+                        <span>{{flight.destination_airport_name}}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="clear_fix_both"></div>
+                </md-content>
+              </md-tab>
+              <md-tab label="Fare Breakup">
+                <md-content class="md-padding">
+                  <div>
+                    <div ng-show="DraftItineraryController.number_adult">
+                      <span>Adult Basefare (*{{DraftItineraryController.number_adult}}):</span>
+                      <span>{{calculateBaseFair(DraftItineraryController.flight.tripType,
+                      DraftItineraryController.flight.flight_type,
+                      DraftItineraryController.flight.ongoing_travel_plans.pricing.adult.price, DraftItineraryController.flight.return_travel_plans.pricing.adult.price, DraftItineraryController.number_adult) | formatAmount | cur}}</span>
+                    </div>
+                    <div ng-show="DraftItineraryController.number_child">
+                      <span>Child Basefare (*{{DraftItineraryController.number_child}}):</span>
+                      <span>{{DraftItineraryController.number_child && calculateBaseFair(DraftItineraryController.flight.tripType,
+                      DraftItineraryController.flight.flight_type,
+                      DraftItineraryController.flight.ongoing_travel_plans.pricing.child.price, DraftItineraryController.flight.return_travel_plans.pricing.child.price, DraftItineraryController.number_child) | formatAmount | cur}}</span>
+                    </div>
+                    <div ng-show="DraftItineraryController.number_kid">
+                      <span>Infant Basefare (*{{DraftItineraryController.number_kid}}):</span>
+                      <span>{{DraftItineraryController.number_kid && calculateBaseFair(DraftItineraryController.flight.tripType,
+                      DraftItineraryController.flight.flight_type,
+                      DraftItineraryController.flight.ongoing_travel_plans.pricing.infant.price, DraftItineraryController.flight.return_travel_plans.pricing.infant.price, DraftItineraryController.number_kid) | formatAmount | cur}}</span>
+                    </div>
+                    <div style="border-bottom: 1px solid rgba(0,0,0,.2);"></div>
+                    <div>
+                      <span>Base fare total:</span>
+                      <span>{{calculateBaseFairTotal(DraftItineraryController.flight.tripType,
+                      DraftItineraryController.flight.flight_type,
+                      DraftItineraryController.flight.ongoing_travel_plans, DraftItineraryController.flight.return_travel_plans) | formatAmount}}</span>
+                    </div>
+                  </div><br/>
+                  <div>
+                    <div ng-show="DraftItineraryController.number_adult">
+                      <span>Adult Taxes & Fees (*{{DraftItineraryController.number_adult}})</span>
+                      <span>{{DraftItineraryController.flight.ongoing_travel_plans.pricing.adult &&
+                      calculateTaxAmount(DraftItineraryController.flight.tripType,
+                      DraftItineraryController.flight.flight_type,
+                      DraftItineraryController.flight.ongoing_travel_plans.pricing.adult, DraftItineraryController.flight.return_travel_plans.pricing.adult, DraftItineraryController.number_adult)  | formatAmount | cur}}</span>
+                    </div>
+                    <div ng-show="DraftItineraryController.number_child">
+                      <span>Child Taxes & Fees (*{{DraftItineraryController.number_child}})</span>
+                      <span>{{DraftItineraryController.flight.ongoing_travel_plans.pricing.child &&
+                      calculateTaxAmount(DraftItineraryController.flight.tripType,
+                      DraftItineraryController.flight.flight_type,
+                      DraftItineraryController.flight.ongoing_travel_plans.pricing.child,  DraftItineraryController.flight.return_travel_plans.pricing.child,  DraftItineraryController.number_child) | formatAmount | cur}}</span>
+                    </div>
+                    <div ng-show="DraftItineraryController.number_kid">
+                      <span>Infant Taxes & Fees (*{{DraftItineraryController.number_kid}})</span>
+                      <span>{{DraftItineraryController.flight.ongoing_travel_plans.pricing.infant &&
+                      calculateTaxAmount(DraftItineraryController.flight.tripType,
+                      DraftItineraryController.flight.flight_type,
+                      DraftItineraryController.flight.ongoing_travel_plans.pricing.infant,  DraftItineraryController.flight.return_travel_plans.pricing.infant,  DraftItineraryController.number_kid)  | formatAmount | cur}}</span>
+                    </div>
+                    <div style="border-bottom: 1px solid rgba(0,0,0,.2);"></div>
+                    <div>
+                      <span>Total fare:</span>
+                      <span>{{calculateTotalFair(DraftItineraryController.flight.tripType,
+                      DraftItineraryController.flight.flight_type,
+                      DraftItineraryController.flight.ongoing_travel_plans, DraftItineraryController.flight.return_travel_plans) | formatAmount | cur}}</span>
+                    </div>
+                  </div>
+                </md-content>
+              </md-tab>
+              <md-tab label="Fare Rule">
+                <md-content class="md-padding">
+                  <div class="result_flight" style="display:flex;width:100%;padding: 5px 0;">
+                      <div class="airline flightDetailstab" ng-init="onGoingFlight =DraftItineraryController.flight.ongoing_travel_plans">
+                        <h5>{{onGoingFlight.flights[0].origin_city.toUpperCase()}} - {{onGoingFlight.flights[onGoingFlight.flights.length - 1].destination_city.toUpperCase()}}</h5>
+                        Cancellation: <span>{{onGoingFlight.pricing.cancellation_fee?onGoingFlight.pricing.cancellation_fee:'N/A' | formatAmount}}</span><br/>
+                        Goomo Cancellation Fee: <span>{{onGoingFlight.pricing.goomo_cancellation_fee?onGoingFlight.pricing.goomo_cancellation_fee:'N/A' | formatAmount}}</span><br/>
+                        Date Change: <span>{{onGoingFlight.pricing.date_change_fee?onGoingFlight.pricing.date_change_fee:'N/A' | formatAmount}}</span><br/>
+                        Goomo Date change Fee: <span>{{onGoingFlight.pricing.goomo_date_change_fee?onGoingFlight.pricing.goomo_date_change_fee:'N/A' | formatAmount}}</span>
+                      </div>
+                      <div class="airline flightDetailstab" ng-init="onReturnFlight=DraftItineraryController.flight.return_travel_plans">
+                        <h5>{{onReturnFlight.flights[0].origin_city.toUpperCase()}} - {{onReturnFlight.flights[onReturnFlight.flights.length - 1].destination_city.toUpperCase()}}</h5>
+                        Cancellation: <span>{{onReturnFlight.pricing.cancellation_fee?onReturnFlight.pricing.cancellation_fee:'N/A' | formatAmount}}</span><br/>
+                        Goomo Cancellation Fee: <span>{{onReturnFlight.pricing.goomo_cancellation_fee?onReturnFlight.pricing.goomo_cancellation_fee:'N/A' | formatAmount}}</span><br/>
+                        Date Change: <span>{{onReturnFlight.pricing.date_change_fee?onReturnFlight.pricing.date_change_fee:'N/A' | formatAmount}}</span><br/>
+                        Goomo Date change Fee: <span>{{onReturnFlight.pricing.goomo_date_change_fee?onReturnFlight.pricing.goomo_date_change_fee:'N/A' | formatAmount}}</span>
+                      </div>
+                    </div>
+                </md-content>
+              </md-tab>
+              <md-tab label="Baggage Rules">
+                <md-content class="md-padding">
+                  <div ng-repeat="flight in DraftItineraryController.flight.ongoing_travel_plans.flights">
+                    <div><h5>{{flight.origin_city}} - {{flight.destination_city}}</h5></div>
+                    <div>Check-in:{{flight.pricing[0].luggage.check_in.quantity}}&nbsp;{{flight.pricing[0].luggage.check_in.unit}}&nbsp;/&nbsp;person</div>
+                    <div>Check-in:{{flight.pricing[0].luggage.hand.quantity}}&nbsp;{{flight.pricing[0].luggage.hand.unit}}&nbsp;/&nbsp;person</div>
+                  </div>
+                  <div ng-repeat="flight in DraftItineraryController.flight.return_travel_plans.flights">
+                    <div><h5>{{flight.origin_city}} - {{flight.destination_city}}</h5></div>
+                    <div>Check-in:{{flight.pricing[0].luggage.check_in.quantity}}&nbsp;{{flight.pricing[0].luggage.check_in.unit}}&nbsp;/&nbsp;person</div>
+                    <div>Check-in:{{flight.pricing[0].luggage.hand.quantity}}&nbsp;{{flight.pricing[0].luggage.hand.unit}}&nbsp;/&nbsp;person</div>
+                  </div>
+                </md-content>
+              </md-tab>
+            </md-tabs>
+          </md-content>
+        </div>
+      </div>
+      <div ng-if="DraftItineraryController.flight.tripType == 'return' && DraftItineraryController.flight.flight_type == 'INTERNATIONAL'">
+        <div class="result_flight" style="display:flex;width:100%;padding: 5px 0;">
+          <div class="airline flightDetails">
+            <img ng-src="{{DraftItineraryController.flight.full_travel_plans.tripAirlines.length===1?DraftItineraryController.flight.full_travel_plans.ongoing.flights[0].small_image_url:'loaders/multi_airlines.png'}}" alt="Airline Name" />
+            <p ng-repeat="airline in DraftItineraryController.flight.full_travel_plans.tripAirlines track by $index">{{airline}}</p>
+          </div>
+          <div class="flightDetails">{{DraftItineraryController.flight.full_travel_plans.ongoing.departureDatetime}}<br/>
+            <span>{{DraftItineraryController.flight.full_travel_plans.ongoing.stopDetails}}</span>
+          </div>
+          <div class="flightDetails">{{DraftItineraryController.flight.full_travel_plans.ongoing.arrivalDatetime}}</div>
+          <div class="flightDetails">{{DraftItineraryController.flight.full_travel_plans.ongoing.travel_duration_string}}<br/>
+            <span>{{DraftItineraryController.flight.full_travel_plans.ongoing.stops}}</span><br/>
+          </div>
+          <div class="flightDetails">&#8377; {{DraftItineraryController.flight.full_travel_plans.pricing.adult.price.gross_amount | formatAmount | cur}}</div>
+        </div>
+        <div class="result_flight" style="display:flex;width:100%;padding: 5px 0;">
+          <div class="airline flightDetails">
+          </div>
+          <div class="flightDetails">{{DraftItineraryController.flight.full_travel_plans.return.departureDatetime}}<br/>
+            <span>{{DraftItineraryController.flight.full_travel_plans.return.stopDetails}}</span>
+          </div>
+          <div class="flightDetails">{{DraftItineraryController.flight.full_travel_plans.return.arrivalDatetime}}</div>
+          <div class="flightDetails">{{DraftItineraryController.flight.full_travel_plans.return.travel_duration_string}}<br/>
+            <span>{{DraftItineraryController.flight.full_travel_plans.return.stops}}</span><br/>
+          </div>
+          <div class="flightDetails">
+          </div>
+        </div>
+        <div>
+          <md-content>
+            <md-tabs md-dynamic-height md-border-bottom>
+              <md-tab label="Flight Details">
+                <md-content class="md-padding">
+                  <div ng-repeat="flight in DraftItineraryController.flight.full_travel_plans.ongoing.flights">
+                    <div>
+                      <h5>{{flight.origin_city.toUpperCase()}} - {{flight.destination_city.toUpperCase()}}
+                      <span> | </span>
+                      <span>{{flight.departureDate}}</span></h5>
+                    </div>
+                    <div class="result_flight" style="display:flex;width:100%;padding: 5px 0;">
+                      <div class="airline flightDetailstab">
+                        {{flight.airline_name}}
+                        <span>{{flight.pricing[0].class_type}}</span><br/>
+                        <span>{{flight.flight_code}}</span><br/>
+                        <span>{{flight.aircraft_type}}</span>
+                        <div style="color: #ff8500;" ng-show="flight.layover_duration_in_minutes">{{flight.destination}} | Layover: {{flight.layover_duration_in_minutes | formatTime}}</div>
+                      </div>
+                      <div class="flightDetailstab">
+                        {{flight.departure_datetime | formatDepartureTime}}
+                        <span>{{flight.origin}}</span><br/>
+                        <span>{{flight.departureDate}}</span><br/>
+                        <span>{{flight.origin_city}}</span><br/>
+                        <span>{{flight.origin_airport_name}}</span>
+                      </div>
+                      <div class="flightDetailstab">
+                        <p>---></p><br/>
+                        <span>{{flight.travel_duration}}</span>
+                      </div>
+                      <div class="flightDetailstab">
+                        {{flight.arrival_datetime | formatDepartureTime}}
+                        <span>{{flight.destination}}</span>
+                        <span>{{flight.arrivalDate}}</span><br/>
+                        <span>{{flight.destination_city}}</span><br/>
+                        <span>{{flight.destination_airport_name}}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div ng-repeat="flight in DraftItineraryController.flight.full_travel_plans.return.flights">
+                    <div>
+                      <h5>{{flight.origin_city.toUpperCase()}} - {{flight.destination_city.toUpperCase()}}
+                      <span> | </span>
+                      <span>{{flight.departureDate}}</span></h5>
+                    </div>
+                    <div class="result_flight" style="display:flex;width:100%;padding: 5px 0;">
+                      <div class="airline flightDetailstab">
+                        {{flight.airline_name}}
+                        <span>{{flight.pricing[0].class_type}}</span><br/>
+                        <span>{{flight.flight_code}}</span><br/>
+                        <span>{{flight.aircraft_type}}</span>
+                        <div style="color: #ff8500;" ng-show="flight.layover_duration_in_minutes">{{flight.destination}} | Layover: {{flight.layover_duration_in_minutes | formatTime}}</div>
+                      </div>
+                      <div class="flightDetailstab">
+                        {{flight.departure_datetime | formatDepartureTime}}
+                        <span>{{flight.origin}}</span><br/>
+                        <span>{{flight.departureDate}}</span><br/>
+                        <span>{{flight.origin_city}}</span><br/>
+                        <span>{{flight.origin_airport_name}}</span>
+                      </div>
+                      <div class="flightDetailstab">
+                        <p>---></p><br/>
+                        <span>{{flight.travel_duration}}</span>
+                      </div>
+                      <div class="flightDetailstab">
+                        {{flight.arrival_datetime | formatDepartureTime}}
+                        <span>{{flight.destination}}</span><br/>
+                        <span>{{flight.arrivalDate}}</span><br/>
+                        <span>{{flight.destination_city}}</span><br/>
+                        <span>{{flight.destination_airport_name}}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="clear_fix_both"></div>
+                </md-content>
+              </md-tab>
+              <md-tab label="Fare Breakup">
+                <md-content class="md-padding">
+                  <div>
+                    <div ng-show="DraftItineraryController.number_adult">
+                      <span>Adult Basefare (*{{DraftItineraryController.number_adult}}):</span>
+                      <span>{{calculateBaseFair(DraftItineraryController.flight.tripType,
+                      DraftItineraryController.flight.flight_type,
+                      DraftItineraryController.flight.full_travel_plans.pricing.adult.price, DraftItineraryController.flight.full_travel_plans.pricing.adult.price, DraftItineraryController.number_adult) | formatAmount | cur}}</span>
+                    </div>
+                    <div ng-show="DraftItineraryController.number_child">
+                      <span>Child Basefare (*{{DraftItineraryController.number_child}}):</span>
+                      <span>{{DraftItineraryController.number_child && calculateBaseFair(DraftItineraryController.flight.tripType,
+                      DraftItineraryController.flight.flight_type,
+                      DraftItineraryController.flight.full_travel_plans.pricing.child.price, DraftItineraryController.flight.full_travel_plans.pricing.child.price, DraftItineraryController.number_child) | formatAmount | cur}}</span>
+                    </div>
+                    <div ng-show="DraftItineraryController.number_kid">
+                      <span>Infant Basefare (*{{DraftItineraryController.number_kid}}):</span>
+                      <span>{{DraftItineraryController.number_kid && calculateBaseFair(DraftItineraryController.flight.tripType,
+                      DraftItineraryController.flight.flight_type,
+                      DraftItineraryController.flight.full_travel_plans.pricing.infant.price, DraftItineraryController.flight.full_travel_plans.pricing.infant.price, DraftItineraryController.number_kid) | formatAmount | cur}}</span>
+                    </div>
+                    <div style="border-bottom: 1px solid rgba(0,0,0,.2);"></div>
+                    <div>
+                      <span>Base fare total:</span>
+                      <span>{{calculateBaseFairTotal(DraftItineraryController.flight.tripType,
+                      DraftItineraryController.flight.flight_type,
+                      DraftItineraryController.flight.full_travel_plans, DraftItineraryController.flight.full_travel_plans) | formatAmount | cur}}</span>
+                    </div>
+                  </div><br/>
+                  <div>
+                    <div ng-show="DraftItineraryController.number_adult">
+                      <span>Adult Taxes & Fees (*{{DraftItineraryController.number_adult}})</span>
+                      <span>{{DraftItineraryController.flight.full_travel_plans.pricing.adult &&
+                      calculateTaxAmount(DraftItineraryController.flight.tripType,
+                      DraftItineraryController.flight.flight_type,
+                      DraftItineraryController.flight.full_travel_plans.pricing.adult, DraftItineraryController.flight.full_travel_plans.pricing.adult, DraftItineraryController.number_adult)  | formatAmount | cur}}</span>
+                    </div>
+                    <div ng-show="DraftItineraryController.number_child">
+                      <span>Child Taxes & Fees (*{{DraftItineraryController.number_child}})</span>
+                      <span>{{DraftItineraryController.flight.full_travel_plans.pricing.child &&
+                      calculateTaxAmount(DraftItineraryController.flight.tripType,
+                      DraftItineraryController.flight.flight_type,
+                      DraftItineraryController.flight.full_travel_plans.pricing.child,  DraftItineraryController.flight.full_travel_plans.pricing.child,  DraftItineraryController.number_child) | formatAmount | cur}}</span>
+                    </div>
+                    <div ng-show="DraftItineraryController.number_kid">
+                      <span>Infant Taxes & Fees (*{{DraftItineraryController.number_kid}})</span>
+                      <span>{{DraftItineraryController.flight.full_travel_plans.pricing.infant &&
+                      calculateTaxAmount(DraftItineraryController.flight.tripType,
+                      DraftItineraryController.flight.flight_type,
+                      DraftItineraryController.flight.full_travel_plans.pricing.infant,  DraftItineraryController.flight.full_travel_plans.pricing.infant,  DraftItineraryController.number_kid)  | formatAmount | cur}}</span>
+                    </div>
+                    <div style="border-bottom: 1px solid rgba(0,0,0,.2);"></div>
+                    <div>
+                      <span>Total fare:</span>
+                      <span>{{calculateTotalFair(DraftItineraryController.flight.tripType,
+                      DraftItineraryController.flight.flight_type,
+                      DraftItineraryController.flight.full_travel_plans, DraftItineraryController.flight.full_travel_plans) | formatAmount | cur}}</span>
+                    </div>
+                  </div>
+                </md-content>
+              </md-tab>
+              <md-tab label="Cancellation">
+                <md-content class="md-padding">
+                  <div class="result_flight" style="display:flex;width:100%;padding: 5px 0;">
+                      <div class="airline flightDetailstab" ng-init="onGoingFlight = DraftItineraryController.flight.full_travel_plans">
+                        <h5>{{onGoingFlight.ongoing.flights[0].origin_city.toUpperCase()}} - {{onGoingFlight.ongoing.flights[onGoingFlight.ongoing.flights.length - 1].destination_city.toUpperCase()}} - {{onGoingFlight.return.flights[onGoingFlight.return.ongoing.flights.length - 1].destination_city.toUpperCase()}}</h5>
+                        Cancellation: <span>{{onGoingFlight.pricing.cancellation_fee?onGoingFlight.pricing.cancellation_fee:'N/A' | formatAmount}}</span><br/>
+                        Goomo Cancellation Fee: <span>{{onGoingFlight.pricing.goomo_cancellation_fee?onGoingFlight.pricing.goomo_cancellation_fee:'N/A' | formatAmount}}</span><br/>
+                        Date Change: <span>{{onGoingFlight.pricing.date_change_fee?onGoingFlight.pricing.date_change_fee:'N/A' | formatAmount}}</span><br/>
+                        Goomo Date change Fee: <span>{{onGoingFlight.pricing.goomo_date_change_fee?onGoingFlight.pricing.goomo_date_change_fee:'N/A' | formatAmount}}</span>
+                      </div>
+                    </div>
+                </md-content>
+              </md-tab>
+              <md-tab label="Baggage Rules">
+                <md-content class="md-padding">
+                  <div ng-repeat="flight in DraftItineraryController.flight.full_travel_plans.ongoing.flights">
+                    <div><h5>{{flight.origin_city}} - {{flight.destination_city}}</h5></div>
+                    <div>Check-in:{{flight.pricing[0].luggage.check_in.quantity}}&nbsp;{{flight.pricing[0].luggage.check_in.unit}}&nbsp;/&nbsp;person</div>
+                    <div>Check-in:{{flight.pricing[0].luggage.hand.quantity}}&nbsp;{{flight.pricing[0].luggage.hand.unit}}&nbsp;/&nbsp;person</div>
+                  </div>
+                  <div ng-repeat="flight in DraftItineraryController.flight.full_travel_plans.return.flights">
+                    <div><h5>{{flight.origin_city}} - {{flight.destination_city}}</h5></div>
+                    <div>Check-in:{{flight.pricing[0].luggage.check_in.quantity}}&nbsp;{{flight.pricing[0].luggage.check_in.unit}}&nbsp;/&nbsp;person</div>
+                    <div>Check-in:{{flight.pricing[0].luggage.hand.quantity}}&nbsp;{{flight.pricing[0].luggage.hand.unit}}&nbsp;/&nbsp;person</div>
+                  </div>
+                </md-content>
+              </md-tab>
+            </md-tabs>
+          </md-content>
+        </div>
+      </div>
+    </div>
+  </modal>
+  <div id="dummy" style="display:none;" class="modal" role="dialog">
+  </div>
+</div>
+<script type="text/ng-template" id="addAnotherHotelDates.tmpl.html">
+  <md-dialog class="dialog_size" aria-label="Dates for Another Hotel" ng-cloak style="z-index: 99998; max-height:68% !important;">
+    <form>
+      <md-dialog-content>
+        <div class="md-dialog-content" style="padding: 0px;">
+          <div class="col-xs-12" style="padding: 15px; background-color: #FFA32C;">
+            <div style="width: 100%; text-align: center; font-family: Roboto-Regular; font-size: 22px;">Dates for Another Hotel
+            </div>
+            <div style="width: 100%; text-align: center; font-family: Roboto-Regular; font-size: 12px;">Which nights would you like to stay in another hotel
+            </div>
+          </div>
+          <div ng-if="ctrl.parent.addAnotherHotelError" class="col-xs-12" style="padding: 0px;background: white;height: 45px; bottom: 11%;text-align: center;color: red;max-width: 450px;">
+            <span style="font-family: Roboto;">{{ctrl.parent.addAnotherHotelError}}</span>
+          </div>
+          <div class="col-xs-12" style="padding: 0px;">
+            <div class="col-xs-4" style="padding: 4px;" ng-repeat="dateObject in ctrl.parent.hotelDatesArray track by $index">
+              <div ng-if="dateObject.isSelected" ng-click="dateObject.isSelected = !dateObject.isSelected" style="width: 100%; text-align: center; font-family: Roboto-Regular;
+                  font-size: 16px; background-color: #FFA32C;  padding: 6px; color:white; border-radius: 4px;cursor:pointer;">
+                {{dateObject.date}}
+              </div>
+              <div ng-if="!dateObject.isSelected" ng-click="dateObject.isSelected = !dateObject.isSelected" style="width: 100%; text-align: center; font-family: Roboto-Regular;
+                  font-size: 16px; background-color: white; padding: 6px; border-radius: 4px;cursor:pointer;">
+                {{dateObject.date}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </md-dialog-content>
+      <md-dialog-actions layout="row" style="padding: 0px;min-height: 40px;padding-top: 15px;">
+        <div class="col-xs-12" style="padding: 0px;">
+          <div ng-click="ctrl.parent.cancelDialog();" class="col-xs-6 room_config_actions">
+            Cancel
+          </div>
+          <div ng-click="ctrl.parent.addAnotherHotelSuccess()" class="col-xs-6 room_config_actions">
+            OK
+          </div>
+        </div>
+      </md-dialog-actions>
+    </form>
+  </md-dialog>
+</script>
+<script type="text/ng-template" id="sort_cities.tmpl.html">
+  <md-dialog class="dialog_size" aria-label="Sort cities" ng-cloak style="z-index: 9999; max-height:75% !important; max-width: 400px !important;">
+    <md-dialog-content style="padding-bottom: 24px;">
+      <div class="col-xs-12">
+        <span class="pull-right dialog_close" style="font-size: 32px;" ng-click="ctrl.parent.cancelSortCitiesDialog()"><i
+        class="fa fa-close"></i></span>
+        <div style="min-height: 10vh;padding: 8px; padding-top: 18px;
+          font-size: 16px; font-family: Roboto-Regular; margin-right: 7vw;">
+          Re-order the city by clicking move-up/ move-down button:
+        </div>
+      </div>
+      <div class="" style="width:100%;margin-top: 20%;margin-bottom: 10%;">
+        <div class="col-xs-12 ng-scope" ng-repeat="city in ctrl.parent.cityCombination track by $index" style="width:100% !important;min-height:10vh;padding: 2px 1vw;">
+          <div class="col-xs-6" style="margin-bottom:5px;padding-left: 5%;">
+            <div style="border: 1px solid;position: relative;height: 9vh;">
+              <span ng-binding style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);background-color: white;text-align: center;">
+                {{city.name}}
+              </span>
+            </div>
+          </div>
+          <div class="col-xs-3" style="margin-bottom:5px;padding: 0px;padding-right: 5%;" ng-if="$index<(ctrl.parent.cityCombination.length-1)">
+            <div style="border: 1px solid;position: relative;height: 9vh;padding: 2px;" ng-click="ctrl.parent.sortCities('down', $index);" ng-disabled="$index === ctrl.parent.cityCombination.length">
+              <div style="width:100%;text-align:center;">
+                <i class="fa fa-arrow-down" style="width:100%;font-size: 2.8vh;"></i>
+                <div style="font-size: 12px;word-wrap: break-word;width: 48px;text-align: center;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);padding-top: 15px;">
+                  Move Down
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-3" style="margin-bottom:5px;padding: 0px;padding-right: 5%;" ng-if="$index===(ctrl.parent.cityCombination.length-1)">
+            <div style="border: 1px solid #ccc;position: relative;height: 9vh;padding: 2px;" ng-disabled="$index === ctrl.parent.cityCombination.length">
+              <div style="width:100%;text-align:center;">
+                <i class="fa fa-arrow-down" style="width:100%;font-size: 2.8vh;color: #ccc;"></i>
+                <div style="font-size: 12px;word-wrap: break-word;width: 48px;text-align: center; color: #ccc;
+                  position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);padding-top: 15px;">
+                  Move Down
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-3" style="margin-bottom:5px;padding: 0px;padding-right: 5%;" ng-if="$index>0">
+            <div style="border: 1px solid;position: relative;height: 9vh;padding: 2px;" ng-click="ctrl.parent.sortCities('up', $index);" ng-disabled="$index === 0">
+              <div style="width:100%;text-align:center;" class="sort_boxes">
+                <i class="fa fa-arrow-up" style="width:100%;font-size: 2.8vh;padding-bottom:5px;"></i>
+                <div style="font-size: 12px;word-wrap: break-word;width: 48px;text-align: center;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);padding-top: 15px;">
+                  Move Up
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-3" style="margin-bottom:5px;padding: 0px;padding-right: 5%;" ng-if="$index===0">
+            <div style="border: 1px solid #ccc;position: relative;height: 9vh;padding: 2px;" ng-disabled="$index === 0">
+              <div style="width:100%;text-align:center;" class="sort_boxes">
+                <i class="fa fa-arrow-up" style="width:100%;font-size: 2.8vh;padding-bottom:5px;color: #ccc;"></i>
+                <div style="font-size: 12px;word-wrap: break-word;width: 48px;text-align: center;position: absolute;color: #ccc;
+                  top: 50%;left: 50%;transform: translate(-50%,-50%);padding-top: 15px;">
+                  Move Up
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row" style="padding: 0px; z-index:9999; position: relative;
+      width:100%; background:white; min-height: 40px;">
+      <div class="col-xs-12 bottom-bar" style="padding-left: 0px;">
+        <div class="col-xs-6">
+          <button class="sort_buttons md-button md-ink-ripple" type="button" ng-click="ctrl.parent.cancelSortCitiesDialog();" style="margin-top: 12px;margin-bottom: 12px;width: 100%; text-align: center;color: white;
+            background-color: #0ebce7;" aria-label="Done">
+            <span class="ng-scope">Cancel</span>
+          </button>
+        </div>
+        <div class="col-xs-6">
+          <button class="sort_buttons md-button md-ink-ripple" type="button" ng-click="ctrl.parent.reorderCities();" style="margin-top: 12px;margin-bottom: 12px;width: 100%;text-align: center;color: white;
+            background-color: #0ebce7;" aria-label="Done">
+            <span class="ng-scope">Done</span>
+          </button>
+        </div>
+      </div>
+    </md-dialog-actions>
+  </md-dialog>
+</script>
+<script type="text/ng-template" id="itinerarySubmitDialog.tmpl.html">
+  <md-dialog class="dialog_size" aria-label="Submit Itinerary" ng-cloak style="z-index: 99999; max-height: 100% !important;">
+    <form>
+      <div class="col-xs-12">
+        <div style="padding-top: 15px;padding-bottom: 10px;font-size: 16px;text-align: center;">
+          <div>Please enter your details to save and proceed with the itinerary</div>
+        </div>
+        <div>
+          <span ng-if="ctrl.parent.showContactError" style="padding-top: 8px;color: red;">{{ctrl.parent.contactError}}</span>
+        </div>
+        <md-input-container md-no-float class="md-block">
+          <div class="col-xs-12" style="padding: 0px;">
+            <input id="submit_dialog_name" ng-change="ctrl.parent.disableAutoComplete('submit_dialog_name');" ng-enter="ctrl.parent.handleEnterClickOnForm('submit_dialog_name', 'submit_dialog_email')" ng-model="ctrl.parent.customerName" autocomplete="false" type="text"
+            placeholder="Full Name">
+          </div>
+        </md-input-container>
+        <md-input-container md-no-float class="md-block">
+          <div class="col-xs-12" style="padding: 0px;">
+            <input id="submit_dialog_email" ng-enter="ctrl.parent.handleEnterClickOnForm('submit_dialog_email', 'submit_dialog_number')" ng-model="ctrl.parent.customerEmail" autocomplete="false" type="email" placeholder="Email">
+          </div>
+        </md-input-container>
+        <md-input-container md-no-float class="md-block">
+          <div class="col-xs-12" style="padding: 0px;">
+            <div class="col-xs-2" style="padding: 0px;">
+              <div style="margin-top: 5px;">+91</div>
+            </div>
+            <div class="col-xs-10" style="padding: 0px;">
+              <input id="submit_dialog_number" ng-pattern=" /^[0]?[789]\d{9}$/" ng-model="ctrl.parent.customerPhoneNumber" autocomplete="false" ng-enter="ctrl.parent.handleEnterClickOnForm('submit_dialog_number', null)" type="number" maxlength="10" placeholder="Mobile Number">
+            </div>
+          </div>
+        </md-input-container>
+        <div class="col-xs-6" style="padding: 0px; margin: 0px;padding-right: 16px;">
+          <md-button ng-click="ctrl.parent.cancelDialog()" type="button" class="btn btn-secondary" style="width:100%; height: 40px;line-height: 0.3;background-color: #ffa32c;color: white;">Cancel
+          </md-button>
+        </div>
+        <div class="col-xs-6" style="padding: 0px; margin: 0px;padding-right: 16px;">
+          <md-button ng-click="ctrl.parent.saveDialogSuccess()" class="btn btn-secondary" style="width:100%; height: 40px;line-height: 0.3;background-color: #ffa32c;color: white;">Submit
+          </md-button>
+        </div>
+      </div>
+    </form>
+  </md-dialog>
+</script>
+<script type="text/ng-template" id="admin.tmpl.html">
+  <md-dialog aria-label="Customer Details" ng-cloak>
+    <div>
+      <spinner name="adminSpinnerModal" ng-cloak="">
+      <div class="overlay">
+        <div class="spinner">
+          <div class="double-bounce1"></div>
+          <div class="double-bounce2"></div>
+        </div>
+        <div class="please-wait">Please Wait...</div>
+      </div>
+    </div>
+    <form>
+      <div class="col-xs-12">
+        <div style="padding-top: 15px;padding-bottom: 10px;font-size: 16px;">
+          <div>Add more details</div>
+        </div>
+        <md-input-container md-no-float class="md-block" >
+          <div class="col-xs-12" style="padding: 0px;" ng-if="ctrl.parent.userType !== 'Sales' && ctrl.parent.userType !== 'Goomo Supervisor' && ctrl.parent.userType !== 'Finance' && ctrl.parent.userType !== 'Operations'">
+            <input id="admin_customer_discount" ng-model="ctrl.parent.customerDiscount" ng-enter="ctrl.parent.handleEnterClickOnForm('admin_customer_discount', 'admin_flight_discount')" type="number" maxlength="10" placeholder="Discount Amount">
+          </div>
+        </md-input-container>
+        <md-input-container md-no-float class="md-block">
+          <div class="col-xs-12" style="padding: 0px;">
+            <textarea id="admin_customer_inclusions" ng-model="ctrl.parent.inclusions" type="text" rows="10" placeholder="Inclusions" />
+          </div>
+        </md-input-container>
+        <md-input-container md-no-float class="md-block">
+          <div class="col-xs-12" style="padding: 0px;">
+            <textarea id="admin_customer_exclusions" ng-model="ctrl.parent.exclusions" type="text" rows="10" placeholder="Exclusions" />
+          </div>
+        </md-input-container>
+        <md-input-container md-no-float class="md-block">
+          <div class="col-xs-12" style="padding: 0px;">
+            <input id="admin_customer_min_pay" ng-model="ctrl.parent.minimumpay" ng-enter="ctrl.parent.handleEnterClickOnForm('admin_customer_min_pay', 'admin_customer_deadline_date')" type="number" maxlength="10" placeholder="Minimum pay amount">
+          </div>
+        </md-input-container>
+        <div class="col-xs-12">
+          <p class="edit-caption edit-caption_departure_city" style="margin-bottom:5px;padding-left:15px;"> Deadline to pay</p>
+          <md-datepicker  id="admin_customer_deadline_date" ng-model="ctrl.parent.deadline_date" md-placeholder="Deadline to pay" ng-click="ctrl.openCalendarPane($event);" md-min-date="ctrl.parent.minDate" md-open-on-focus></md-datepicker>
+        </div>
+        <div class="col-xs-12" style="padding: 8px; margin: 0px;">
+          <md-button class="col-xs-12" ng-click="ctrl.parent.sendEmail()" type="button" class="btn btn-secondary tour_explorebtn" style="height: 40px;line-height: 0.3;background-color: #00aeff;">Send Email
+          </md-button>
+        </div>
+        <div style="padding: 8px; margin: 0px;">
+          <md-button class="col-xs-12" ng-click="ctrl.parent.cancelDialog()" type="button" class="btn btn-secondary tour_explorebtn" style="height: 40px;line-height: 0.3;background-color: #00aeff;">Cancel
+          </md-button>
+        </div>
+      </div>
+    </form>
+  </md-dialog>
+</script>
+<script type="text/ng-template" id="templateOptions.tmpl.html">
+  <md-dialog aria-label="Customer Details" ng-cloak>
+    <div>
+      <spinner name="templateSpinnerModal" ng-cloak="">
+      <div class="overlay">
+        <div class="spinner">
+          <div class="double-bounce1"></div>
+          <div class="double-bounce2"></div>
+        </div>
+        <div class="please-wait">Please Wait...</div>
+      </div>
+    </div>
+    <form>
+      <div class="col-xs-12">
+        <md-input-container md-no-float class="md-block">
+          <div class="col-xs-12" style="padding: 0px;">
+            <dropdown-multiselect id="template_type" options="ctrl.parent.templateTypeData"
+            model="ctrl.parent.templateTypeModel" templatetext="ctrl.parent.templateTypeCustomTexts"></dropdown-multiselect>
+            <span style="color:red" ng-show="(ctrl.parent.templateTypeModel === 0)">Choose atleast one.</span>
+          </div>
+        </md-input-container>
+        <md-input-container md-no-float class="md-block">
+          <div id="cover_image" class="col-xs-12" style="padding: 0px;">
+           <div style="float:left;width:500px;">
+            <input type="text"  id="cover_image" ng-model="ctrl.parent.cover_image" ng-enter="ctrl.parent.handleEnterClickOnForm('cover_image', 'tourist_types_string')" placeholder="Cover image url">
+              <br>
+          </div>
+             <div style="float:left;margin-top:-25px;">
+                <br>
+                  <button ngf-select="ctrl.parent.selectFiles($file)" accept="image/*">Select File</button>
+                  &nbsp;
+                  <button class="btn btn-success" ng-click="ctrl.parent.uploadFiles()">Upload Image</button>
+                  &nbsp;
+             </div>
+          </div>
+        </md-input-container>
+        <md-input-container md-no-float class="md-block">
+          <div class="col-xs-12" style="padding: 0px;">
+            <dropdown-multiselect id="tourist_types_string" options="ctrl.parent.touristTypeData"
+            model="ctrl.parent.touristTypeModel" templatetext="ctrl.parent.touristTypeCustomTexts" ng-enter="ctrl.parent.handleEnterClickOnForm('tourist_types_string', 'template_name')"></dropdown-multiselect>
+            <span style="color:red" ng-show="(ctrl.parent.touristTypeModel === 0)">Choose atleast one.</span>
+          </div>
+        </md-input-container>
+        <md-input-container md-no-float class="md-block">
+          <div class="col-xs-12" style="padding: 0px;">
+            <input id="template_name" ng-model="ctrl.parent.template_name" ng-enter="ctrl.parent.handleEnterClickOnForm('template_name', 'inclusions')" type="text" placeholder="Template name">
+          </div>
+        </md-input-container>
+        <md-input-container md-no-float class="md-block">
+          <div class="col-xs-12" style="padding: 0px;">
+            <textarea id="inclusions" ng-model="ctrl.parent.inclusions" type="text" rows="10" placeholder="Inclusions" />
+          </div>
+        </md-input-container>
+        <md-input-container md-no-float class="md-block">
+          <div class="col-xs-12" style="padding: 0px;">
+            <textarea id="exclusions" ng-model="ctrl.parent.exclusions" type="text" rows="10" placeholder="Exclusions" />
+          </div>
+        </md-input-container>
+        <div class="col-xs-12 itinerary_transfer_name" style="padding-top: 8px;">Visa Included:</div>
+        <div class="col-xs-12">
+          <input type="checkbox" id="visa_included"ng-model="ctrl.parent.visa_included" ng-enter="ctrl.parent.handleEnterClickOnForm('visa_included', 'similar_hotel')">
+        </div>
+        <div class="col-xs-12 itinerary_transfer_name" style="padding-top: 8px;">This or similar hotels:</div>
+        <div class="col-xs-12">
+          <input type="checkbox" id="similar_hotel" ng-model="ctrl.parent.or_similar" ng-enter="ctrl.parent.handleEnterClickOnForm('similar_hotel', 'hot_deal')">
+        </div>
+        <div class="col-xs-12 itinerary_transfer_name" style="padding-top: 8px;">Hot deal:</div>
+        <div class="col-xs-12">
+          <input type="checkbox" id="hot_deal" ng-model="ctrl.parent.hot_deal" ng-enter="ctrl.parent.handleEnterClickOnForm('hot_deal', 'save_template')">
+        </div>
+        <div class="col-xs-12" style="padding: 8px; margin: 0px;">
+          <md-button class="col-xs-12" ng-click="ctrl.parent.saveAsTemplateSuccess()" type="button" id="save_template" class="btn btn-secondary tour_explorebtn" style="height: 40px;line-height: 0.3;background-color: #00aeff;">{{ ctrl.parent.saveAsTemplateText }}
+          </md-button>
+        </div>
+      </div>
+    </form>
+  </md-dialog>
+</script>
+<script type="text/ng-template" id="dealOptions.tmpl.html">
+  <md-dialog aria-label="Customer Details" ng-cloak>
+    <div>
+      <spinner name="dealSpinnerModal" ng-cloak="">
+      <div class="overlay">
+        <div class="spinner">
+          <div class="double-bounce1"></div>
+          <div class="double-bounce2"></div>
+        </div>
+        <div class="please-wait">Please Wait...</div>
+      </div>
+    </div>
+    <form>
+      <div class="col-xs-12">
+        <md-input-container md-no-float class="md-block">
+          <div class="col-xs-12" style="padding: 0px;">
+            <dropdown-multiselect id="template_type" options="ctrl.parent.templateTypeData"
+            model="ctrl.parent.templateTypeModel" templatetext="ctrl.parent.templateTypeCustomTexts"></dropdown-multiselect>
+            <span style="color:red" ng-show="(ctrl.parent.templateTypeModel === 0)">Choose atleast one.</span>
+          </div>
+        </md-input-container>
+        <md-input-container md-no-float class="md-block">
+          <div id="cover_image_deal" class="col-xs-12" style="padding: 0px;">
+           <div style="float:left;width:500px;">
+            <input ng-model="ctrl.parent.cover_image" ng-enter="ctrl.parent.handleEnterClickOnForm('cover_image_deal', 'tourist_types_string_deal')" type="text" placeholder="Cover image url">
+           <br>
+            </div>
+            <div style="float:left;margin-top:-25px;">
+                <br>
+                  <button ngf-select="ctrl.parent.selectFiles($file)" accept="image/*">Select File</button>
+                  &nbsp;
+                  <button class="btn btn-success" ng-click="ctrl.parent.uploadFiles()">Upload Image</button>
+                  &nbsp;
+             </div>
+                  <label class="col-sm-3 col-sm-offset-3 control-label">{{ctrl.parent.uploadedFile.name}}</label>
+          </div>
+        </md-input-container>
+        <md-input-container md-no-float class="md-block">
+          <div class="col-xs-12" style="padding: 0px;">
+            <dropdown-multiselect id="tourist_types_string" options="ctrl.parent.touristTypeData"
+            model="ctrl.parent.touristTypeModel" templatetext="ctrl.parent.touristTypeCustomTexts"></dropdown-multiselect>
+            <span style="color:red" ng-show="(ctrl.parent.touristTypeModel === 0)">Choose atleast one.</span>
+          </div>
+        </md-input-container>
+        <md-input-container md-no-float class="md-block">
+          <div class="col-xs-12" style="padding: 0px;">
+            <input id="template_name_deal" ng-model="ctrl.parent.template_name" ng-enter="ctrl.parent.handleEnterClickOnForm('template_name_deal', 'price_single_deal')" type="text" placeholder="Template name">
+          </div>
+        </md-input-container>
+        <md-input-container md-no-float class="md-block">
+          <div class="col-xs-12" style="padding: 0px;">
+            <input id="price_single_deal" ng-model="ctrl.parent.price_single_deal" ng-enter="ctrl.parent.handleEnterClickOnForm('price_single_deal', 'price_double_deal')" type="number" placeholder="Price per adult for single sharing">
+          </div>
+        </md-input-container>
+        <md-input-container md-no-float class="md-block">
+          <div class="col-xs-12" style="padding: 0px;">
+            <input id="price_double_deal" ng-model="ctrl.parent.price_double_deal" ng-enter="ctrl.parent.handleEnterClickOnForm('price_double_deal', 'price_triple_deal')" type="number" placeholder="Price per adult for double">
+          </div>
+        </md-input-container>
+        <md-input-container md-no-float class="md-block">
+          <div class="col-xs-12" style="padding: 0px;">
+            <input id="price_triple_deal" ng-model="ctrl.parent.price_triple_deal" ng-enter="ctrl.parent.handleEnterClickOnForm('price_triple_deal', 'price_cwb_deal')" type="number" placeholder="Price per adult for triple">
+          </div>
+        </md-input-container>
+        <md-input-container md-no-float class="md-block">
+          <div class="col-xs-12" style="padding: 0px;">
+            <input id="price_cwb_deal" ng-model="ctrl.parent.price_cwb_deal" ng-enter="ctrl.parent.handleEnterClickOnForm('price_cwb_deal', 'price_cnb_deal')" type="number" placeholder="Price for child with bed">
+          </div>
+        </md-input-container>
+        <md-input-container md-no-float class="md-block">
+          <div class="col-xs-12" style="padding: 0px;">
+            <input id="price_cnb_deal" ng-model="ctrl.parent.price_cnb_deal" ng-enter="ctrl.parent.handleEnterClickOnForm('price_cnb_deal', 'price_infant_deal')" type="number" placeholder="Price for child without bed">
+          </div>
+        </md-input-container>
+        <md-input-container md-no-float class="md-block">
+          <div class="col-xs-12" style="padding: 0px;">
+            <input id="price_infant_deal" ng-model="ctrl.parent.price_infant_deal" ng-enter="ctrl.parent.handleEnterClickOnForm('price_infant_deal', null)" type="number" placeholder="Price for infant">
+          </div>
+        </md-input-container>
+        <md-input-container md-no-float class="md-block">
+          <div class="col-xs-12" style="padding: 0px;">
+            <input id="price_extra_bed" ng-model="ctrl.parent.price_extra_bed" ng-enter="ctrl.parent.handleEnterClickOnForm('price_extra_bed')" type="number" placeholder="Price for extra bed">
+          </div>
+        </md-input-container>
+        <md-input-container md-no-float class="md-block">
+          <div class="col-xs-12" style="padding: 0px;">
+            <textarea id="inclusions" ng-model="ctrl.parent.inclusions" type="text" rows="10" placeholder="Inclusions" />
+            <!--input id="inclusions" ng-model="ctrl.parent.inclusions" ng-enter="ctrl.parent.handleEnterClickOnForm('inclusions')" type="text" placeholder="Inclusion"-->
+          </div>
+        </md-input-container>
+        <md-input-container md-no-float class="md-block">
+          <div class="col-xs-12" style="padding: 0px;">
+            <textarea id="exclusions" ng-model="ctrl.parent.exclusions" type="text" rows="10" placeholder="Exclusions" />
+            <!--input id="exclusions" ng-model="ctrl.parent.exclusions" ng-enter="ctrl.parent.handleEnterClickOnForm('exclusions')" type="text" placeholder="Exclusion"-->
+          </div>
+        </md-input-container>
+        <div class="col-xs-12 itinerary_transfer_name" style="padding-top: 8px;">Visa Included:</div>
+        <div class="col-xs-12">
+          <input type="checkbox" ng-model="ctrl.parent.visa_included">
+        </div>
+        <div class="col-xs-12 itinerary_transfer_name" style="padding-top: 8px;">This or similar hotels:</div>
+        <div class="col-xs-12">
+          <input type="checkbox" ng-model="ctrl.parent.or_similar">
+        </div>
+        <div class="col-xs-12 itinerary_transfer_name" style="padding-top: 8px;">Hot deal:</div>
+        <div class="col-xs-12">
+          <input type="checkbox" ng-model="ctrl.parent.hot_deal">
+        </div>
+        <div class="col-xs-12 itinerary_transfer_name" style="padding-top: 8px;">Deal start date</div>
+        <div class="col-xs-12">
+          <md-datepicker ng-model="ctrl.parent.deal_start_date" md-placeholder="Enter date" ng-click="ctrl.openCalendarPane($event);" md-open-on-focus></md-datepicker>
+        </div>
+        <div class="col-xs-12 itinerary_transfer_name" style="padding-top: 8px;">Deal end date</div>
+        <div class="col-xs-12">
+          <md-datepicker ng-model="ctrl.parent.deal_end_date" md-placeholder="Enter date" ng-click="ctrl.openCalendarPane($event);" md-open-on-focus></md-datepicker>
+        </div>
+        <div class="col-xs-12" style="padding: 8px; margin: 0px;">
+          <md-button class="col-xs-12" ng-click="ctrl.parent.saveAsTemplateSuccess(true)" type="button" class="btn btn-secondary tour_explorebtn" style="height: 40px;line-height: 0.3;background-color: #00aeff;">Save As A Deal
+          </md-button>
+        </div>
+      </div>
+    </form>
+  </md-dialog>
+</script>
+<script type="text/ng-template" id="adminOptions.tmpl.html">
+  <md-dialog aria-label="Customer Details" ng-cloak>
+    <form>
+      <div class="col-xs-12">
+        <!--div class="col-xs-12" style="padding: 8px; margin: 0px;" ng-if="!ctrl.parent.lead_id && !ctrl.parent.fixed">
+          <md-button class="col-xs-12" ng-click="ctrl.parent.saveAsTemplate()"
+                     type="button" class="btn btn-secondary tour_explorebtn"
+                     style="height: 40px;line-height: 0.3;background-color: #00aeff;">Save as a customisable deal
+          </md-button>
+        </div>
+        <div class="col-xs-12" style="padding: 8px; margin: 0px;" ng-if="!ctrl.parent.lead_id && ctrl.parent.fixed">
+          <md-button class="col-xs-12" ng-click="ctrl.parent.saveAsDeal()"
+                     type="button" class="btn btn-secondary tour_explorebtn"
+                     style="height: 40px;line-height: 0.3;background-color: #00aeff;">Save as a fixed deal
+          </md-button>
+        </div-->
+        <div class="col-xs-12" style="padding: 8px; margin: 0px;" ng-if="ctrl.parent.lead_id">
+          <md-button class="col-xs-12" ng-click="ctrl.parent.otherOptions()"
+                     type="button" class="btn btn-secondary tour_explorebtn"
+                     style="height: 40px;line-height: 0.3;background-color: #00aeff;">Send to customer
+          </md-button>
+        </div>
+      </div>
+    </form>
+  </md-dialog>
+</script>
+<script type="text/ng-template" id="contactnumber.tmpl.html">
+  <md-dialog aria-label="Phone Number" ng-cloak>
+    <div class="col-xs-12">
+      <div style="padding-top: 15px;padding-bottom: 10px;font-size: 16px;">
+        <div>Please confirm your mobile number</div>
+        <div style="font-size: 12px;">You will receive an OTP for verification.</div>
+      </div>
+      <md-input-container md-no-float class="md-block">
+        <div class="col-xs-12" style="padding: 0px;">
+          <div class="col-xs-2" style="padding: 0px;">
+            <div style="margin-top: 5px;">+91</div>
+          </div>
+          <div class="col-xs-10" style="padding: 0px;">
+            <input id="contact_number" ng-pattern=" /^[0]?[789]\d{9}$/" ng-enter="ctrl.parent.handleEnterClickOnForm('contact_number', null)" ng-model="ctrl.parent.customerPhoneNumber" autocomplete="off" type="number" maxlength="10" placeholder="Mobile Number">
+            <br>
+            <span style="padding-top: 8px;color: red;" ng-if="ctrl.parent.showContactError">
+            {{ctrl.parent.contactError}}</span>
+          </div>
+        </div>
+      </md-input-container>
+      <md-dialog-actions layout="row">
+        <md-button ng-click="ctrl.parent.cancelDialog()" type="button" class="btn btn-secondary tour_explorebtn" style="height: 40px;line-height: 0.3;background-color: white;">Cancel
+        </md-button>
+        <md-button ng-click="ctrl.parent.saveDialogSuccess()" type="button" class="btn btn-secondary tour_explorebtn" style="height: 40px;line-height: 0.3;background-color: white;">Submit
+        </md-button>
+      </md-dialog-actions>
+    </div>
+  </md-dialog>
+</script>

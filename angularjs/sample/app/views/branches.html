@@ -1,0 +1,263 @@
+<div class="col-lg-12 col-md-12" ng-controller="BranchesController" ng-init="getAllConstants();getAllCompanies();getActiveSalesChannels();">
+  <h3 class="text-center">Branches</h3>
+
+  <button style="position:relative;z-index:10" class="btn btn-success" ng-click="editBranch('new');toggleModal();">
+  <span class="fa fa-bed"></span> Create New Branch
+</button>
+  <div style="position:relative;z-index:20" class="form-group pull-right">
+    <input type="text" ng-model="searchValue" class="form-control" placeholder="Search">
+  </div>
+
+  </br>
+  </br>
+  <div style="position:relative;z-index:10" class="table-responsive">
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th ng-click="sort('id')">Id
+            <span class="glyphicon sort-icon" ng-show="sortKey=='id'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+          </th>
+          <th ng-click="sort('name')">Name
+            <span class="glyphicon sort-icon" ng-show="sortKey=='name'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+          </th>
+          <th ng-click="sort('city_name')">City
+            <span class="glyphicon sort-icon" ng-show="sortKey=='city_name'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+          </th>
+          <th ng-click="sort('address')">Address
+            <span class="glyphicon sort-icon" ng-show="sortKey=='address'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+          </th>
+          <th>Edit</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr dir-paginate="branch in branches |orderBy:sortKey:reverse|filter:searchValue|itemsPerPage:8">
+          <td>{{ branch.id}}</td>
+          <td>{{ branch.name}}</td>
+          <td>{{ branch.city_name}}</td>
+          <td>{{ branch.address}}</td>
+          <td>
+            <button class="btn" ng-click="editBranch(branch.sequence,'edit');toggleModal();">
+              <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Edit
+            </button>
+          </td>
+          <td class="text-center">
+            <button class="btn btn-success btn-sm statusBtn" ng-show="branch.status" ng-click="statusBranch(branch.sequence)">
+              Active
+            </button>
+            <button class="btn btn-danger btn-sm statusBtn" ng-hide="branch.status" ng-click="statusBranch(branch.sequence)">
+              Deactive
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <dir-pagination-controls max-size="20" direction-links="true" boundary-links="true">
+    </dir-pagination-controls>
+  </div>
+
+  <button style="position:relative;z-index:10" class="btn btn-success" ng-click="getMoreBranches();">
+    <span class="glyphicon glyphicon-"></span> Get More
+  </button>
+
+  <modal title="Branch Form" dikhao="showModal">
+    <form class="form-horizontal" name="myForm">
+      <div class="form-group" ng-class="{ 'has-error' : myForm.branchName.$invalid && !myForm.branchName.$pristine }">
+        <label class="col-sm-4 control-label">Name:<span style="color:red">*</span></label>
+        <div class="col-sm-4">
+          <input type="text" class="form-control" name="branchName" ng-model="BranchesController.name" placeholder="Branch name" ng-disabled="info">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-md-4 control-label">Country:<span style="color:red">*</span></label>
+        <select class="form-control col-md-4 control_input" ng-model="BranchesController.country"
+                ng-options="item.id as item.name for item in countries" ng-change="getActiveStatesByCountries()">
+          <option value="">Select country</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="col-md-4 control-label">State:<span style="color:red">*</span></label>
+        <select class="form-control col-md-4 control_input" ng-model="BranchesController.state"
+                ng-options="item.id as item.state for item in states" ng-change="getActiveCitiesByStates()">
+          <option value="">Select state</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="col-md-4 control-label">City:<span style="color:red">*</span></label>
+        <select class="form-control col-md-4 control_input" ng-model="BranchesController.city"
+                ng-options="item.id as item.city for item in cities">
+          <option value="">Select city</option>
+        </select>
+      </div>
+      <div class="form-group" ng-class="{ 'has-error' : myForm.address.$invalid && !myForm.address.$pristine }">
+        <label class="col-sm-4 control-label">Address:<span style="color:red">*</span></label>
+        <div class="col-sm-4">
+          <input type="text" class="form-control" name="address" ng-model="BranchesController.address" placeholder="Address" ng-disabled="info">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-4 control-label">Sales Channel:</label>
+        <div class="col-sm-4">
+          <div
+            isteven-multi-select
+            input-model="channels"
+            output-model="BranchesController.sales_channel"
+            button-label="name"
+            item-label="name"
+            tick-property="selected"
+            output-properties="id name"
+            max-height="300px"
+            selection-mode="multiple"
+            >
+          </div>
+        </div>
+      </div>
+      <div class="form-group" ng-show="BranchesController.sales_channel === 'B2B Uniglobe' || BranchesController.sales_channel === 'Goomo Retail'">
+        <label class="col-sm-4 control-label">CMS agent ID:<span style="color:red">*</span></label>
+        <div class="col-sm-4">
+          <input type="number" class="form-control" name="cms_agent_id" ng-model="BranchesController.cms_agent_id" placeholder="CMS Agent ID">
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-4 control-label">Company:</label>
+        <div class="col-sm-4">
+          <select class="form-control" ng-model="BranchesController.company" ng-options="item.id as item.name for item in companies">
+            <option value="">Select Company</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-4 control-label">Branch Sales Head:</label>
+        <div class="col-sm-4">
+          <select class="form-control" ng-model="BranchesController.branchSalesHead" ng-options="item.id as item.name for item in employees">
+            <option value="">Select Branch Sales Head</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group" ng-class="{ 'has-error' : myForm.contact_email.$invalid && !myForm.contact_email.$pristine }">
+        <label class="col-sm-4 control-label">Email:<span style="color:red">*</span></label>
+        <div class="col-sm-4">
+          <input   type="contact_email" class="form-control" name="contact_email" ng-model="BranchesController.contact_email" placeholder="Contact Person Email"
+            required>
+          <p ng-show="myForm.contact_email.$invalid && !myForm.contact_email.$pristine && BranchesController.contact_email!==null" class="help-block">Enter a valid email.</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-4 control-label">Country Code:<span style="color:red">*</span></label>
+        <div class="col-sm-4">
+          <input  type="text" class="form-control" ng-model="BranchesController.country_code" placeholder="Country Code"
+            required>
+        </div>
+      </div>
+
+      <div class="form-group" ng-class="{ 'has-error' : myForm.mobile_number.$invalid && !myForm.mobile_number.$pristine }">
+        <label class="col-sm-4 control-label">Mobile Number:<span style="color:red">*</span></label>
+        <div class="col-sm-4">
+          <input   type="text" class="form-control" name="mobile_number" ng-model="BranchesController.mobile_number"
+            placeholder="Mobile Number" ng-minlength="10" ng-maxlength="10" pattern="^([1-9][0-9]*)$" required>
+          <p ng-show="myForm.mobile_number.$error.minlength" class="help-block">Should be 10 digits</p>
+          <p ng-show="myForm.mobile_number.$error.maxlength" class="help-block">Should be 10 digits</p>
+          <p ng-show="myForm.mobile_number.$error.pattern" class="help-block">Numbers only and should not start with 0.</p>
+        </div>
+      </div>
+      <div class="form-group" ng-class="{ 'has-error' : myForm.pin_code.$invalid && !myForm.pin_code.$pristine }">
+        <label class="col-sm-4 control-label">Pincode:</label>
+        <div class="col-sm-4">
+          <input type="text" class="form-control" name="pin_code" ng-model="BranchesController.pin_code" placeholder="Pincode">
+        </div>
+      </div>
+      <div class="form-group" ng-class="{ 'has-error' : myForm.office_phone.$invalid && !myForm.office_phone.$pristine }">
+        <label class="col-sm-4 control-label">Office phone:</label>
+        <div class="col-sm-4">
+          <input type="text" class="form-control" name="office_phone" ng-model="BranchesController.office_phone" placeholder="Office phone">
+        </div>
+      </div>
+
+      <div class="form-group" ng-class="{ 'has-error' : myForm.landline_number.$invalid && !myForm.landline_number.$pristine }">
+        <label class="col-sm-4 control-label">Landline number:</label>
+        <div class="col-sm-4">
+          <input type="text" class="form-control" name="landline_number" ng-model="BranchesController.landline_number" placeholder="Landline number">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-4 control-label">Location:<span style="color:red">*</span></label>
+        <div class="col-sm-4">
+          <select class="form-control" ng-model="BranchesController.location" ng-options="item as item.name for item in googleLocations"
+            ng-change="onLocationSelected(BranchesController.location)">
+        <option value="">Select Option</option>
+      </select>
+          <input type="text" class="form-control" ng-model="BranchesController.latitude" placeholder="Latitude">
+          <input type="text" class="form-control" ng-model="BranchesController.longitude" placeholder="longitute">
+        </div>
+        <div class="col-sm-4">
+          <button class="btn btn-success" ng-click="getGoogleLocation();">
+        <span class="glyphicon glyphicon-"></span> Get Location
+      </button>
+        </div>
+        <div class="col-sm-4" style="margin-top:10px"><span style="color:red" ng-show="(BranchesController.latitude === '')">Latitude is required.</span></div>
+        <div class="col-sm-4" style="margin-top:10px"><span style="color:red" ng-show="(BranchesController.longitude === '')">Longitude is required.</span></div>
+      </div>
+      <div class="form-group" ng-class="{ 'has-error' : myForm.countries_offered.$invalid && !myForm.countries_offered.$pristine }">
+        <label class="col-sm-4 control-label">Countries Offered:<span style="color:red">*</span></label>
+        <div class="col-sm-8">
+          <dropdown-multiselect model="BranchesController.countries_offered" options="branchcountries"></dropdown-multiselect>
+        </div>
+        <div class="col-sm-4 col-sm-offset-3">
+          <span style="color:red" ng-show="(BranchesController.countries_offered.length === 0)">Choose atleast one.</span>
+        </div>
+      </div>
+      <div class="form-group" ng-class="{ 'has-error' : myForm.staff_size.$invalid && !myForm.staff_size.$pristine }">
+        <label class="col-sm-4 control-label">Staff Size:</label>
+        <div class="col-sm-4">
+          <input type="number" min='0' class="form-control mod" name="staff_size" ng-model="BranchesController.staff_size" placeholder="Staff Size">
+          <p ng-show="myForm.staff_size.$invalid && !myForm.staff_size.$pristine" class="help-block">Enter valid staff Size.</p>
+        </div>
+      </div>
+      <div class="form-group" ng-class="{ 'has-error' : myForm.in_bussiness_since.$invalid && !myForm.in_bussiness_since.$pristine }">
+        <label class="col-sm-4 control-label">In Business Since:</label>
+        <div class="col-sm-4">
+          <input type="number" min='1900' max='2018' class="form-control mod" name="in_bussiness_since" ng-model="BranchesController.in_bussiness_since"
+            placeholder="Business Since">
+          <p ng-show="myForm.in_bussiness_since.$invalid && !myForm.in_bussiness_since.$pristine" class="help-block">Enter valid business date.</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-4 control-label">Office Timings</label>
+        <div class="col-sm-2">
+          <ng-time-selector hours="BranchesController.openTimehours" minutes="BranchesController.openTimeminutes" time="BranchesController.open_time"></ng-time-selector>
+        </div>
+        <div class="col-sm-2">
+          <ng-time-selector hours="BranchesController.closeTimehours" minutes="BranchesController.closeTimeminutes" time="BranchesController.close_time"></ng-time-selector>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-4 control-label">Operating days:<span style="color:red">*</span></label>
+        <div class="col-sm-8">
+          <dropdown-multiselect model="BranchesController.operating_days" options="operating_days"></dropdown-multiselect>
+        </div>
+        <div class="col-sm-4 col-sm-offset-3">
+          <span style="color:red" ng-show="(BranchesController.operating_days.length === 0)">Choose atleast one.</span>
+        </div>
+      </div>
+
+      <div class="form-group" ng-class="{ 'has-error' : myForm.web_link.$invalid && !myForm.web_link.$pristine }">
+        <label class="col-sm-4 control-label">Web Link:</label>
+        <div class="col-sm-4">
+          <input type="text" class="form-control" name="web_link" ng-model="BranchesController.web_link" placeholder="Web Link">
+        </div>
+      </div>
+    </form>
+    <hr>
+    <button class="btn btn-primary" ng-disabled="(BranchesController.address === null || BranchesController.address === '')
+                                                  || (BranchesController.name === '' || BranchesController.name === null)
+                                                  || (BranchesController.cityId === 0 || BranchesController.cityId === null)
+                                                  || ((BranchesController.sales_channel === 'B2B Uniglobe' || BranchesController.sales_channel === 'Goomo Retail') && (BranchesController.cms_agent_id === null || BranchesController.cms_agent_id === 0))"
+      ng-click="saveBranch()" ng-hide="info">
+      <span class="glyphicon glyphicon-save"></span> Save Changes
+    </button>
+  </modal>
+</div>

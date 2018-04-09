@@ -1,0 +1,167 @@
+<style>
+  .md-scroll-mask {
+    position: initial !important;
+  }
+</style>
+<!--ion-view
+  style=" height:100%;max-width: 450px;left: 50%; transform: translateX(-50%);"
+  ng-controller="ActivitydetailsController" ng-init="getData()"-->
+<div class="col-lg-12 col-md-12" ng-controller="ActivitydetailsController" ng-init="getData()">
+  <md-toolbar scroll="false" style="padding: 0px;">
+    <div class="md-toolbar-tools" style="padding-top: 6px;">
+      <md-button ng-click="goBack();" style="height: 48px; width:48px;align-content: center;" class="md-icon-button" aria-label="Settings">
+        <img class="backicon" style="align-content: center;" src="images/ic_arrow_back.png" />
+      </md-button>
+      <h2>
+        <span style="overflow: hidden;
+          white-space: nowrap;color: #0e0e0e">{{activitydescription.name}}</span>
+      </h2>
+      <span flex></span>
+    </div>
+  </md-toolbar>
+  <!--ion-content overflow-scroll="true" zooming="false" direction="y" style="{{heightStyle}}"-->
+  <div style="{{heightStyle}}">
+    <div ng-if="activityDiv">
+      <div ng-if="dataready" style="margin-top: 48px;height: auto;">
+        <slick settings="slickConfig" lazy-load="ondemand" slides-to-show=1 slides-to-scroll=1 init-onload=true data="activitydescription">
+          <div ng-repeat="image in activitydescription.photos">
+            <img src="loaders/image_loading.png" data-lazy="{{image.photo_url}}" err-src="loaders/image_loading.png" style="height: 200px;width: 100%;object-fit: cover;object-position: center;position: relative" />
+
+            <div style="position: absolute;bottom: 10.5%;" ng-if="image.photo_url">
+              <img src="images/icons/watermark.png" style="width: 60px;">
+            </div>
+          </div>
+        </slick>
+      </div>
+      <md-tabs md-stretch-tabs="auto" md-dynamic-height md-border-bottom style="padding-bottom: 10px;height: 2000px;" md-swipe-content="true">
+        <md-tab label="details">
+          <md-content class="md-padding">
+            <div style="font-size: 18px;text-transform: uppercase;padding-bottom: 8px;
+        padding-left:8px;padding-top: 8px;font-family: Roboto-Regular;">
+              {{activitydescription.name}}
+            </div>
+            <div ng-show="showActivityPrice" ng-if="activityPrice != null" class="col-xs-12 hoteldesc  " style="text-align: justify;padding-bottom: 16px;padding-right: 8px;padding-left: 8px;">
+              <div style="font-size: 18px;text-transform: uppercase;padding-bottom: 8px;font-weight: bold;padding-top: 8px;color: #FFA32C;">
+                Price
+              </div>
+               <div>
+                <span style="font-weight: bold;">Total Price:</span> &#8377; {{activityPrice.total_price_INR | cur}}
+              </div>
+              <!-- <div>
+                <span style="font-weight: bold;">Adult:</span> &#8377; {{activityPrice.price_adult | cur}}
+                <span>/person</span>
+                <br>
+                <span style="font-weight: bold;">Child:</span> &#8377; {{activityPrice.price_child | cur}}
+                <span>/person</span>
+              </div> -->
+            </div>
+            <hr ng-show="showActivityPrice" ng-if="activitydescription.suitableType != null">
+            <div ng-if="activitydescription.suitableType != null" class="col-xs-12 hoteldesc  " style="text-align: justify;padding-bottom: 16px;padding-right: 8px;padding-left: 8px;">
+              <div style="font-size: 18px;text-transform: uppercase;padding-bottom: 8px;font-weight: bold;padding-top: 8px;color: #FFA32C;">
+                Suitable For
+              </div>
+              <div>
+                {{activitydescription.suitableType}}
+              </div>
+            </div>
+            <hr ng-if="activityPrice.slot.duration !=null">
+            <div ng-show="showActivityDuration" ng-if="activityPrice.slot.duration !=null" class="col-xs-12 hoteldesc  " style="text-align: justify;padding-bottom: 16px;padding-right: 8px;padding-left: 8px;">
+              <div style="font-size: 18px;text-transform: uppercase;padding-bottom: 8px;font-weight: bold;padding-top: 8px;color: #FFA32C;">
+                Duration
+              </div>
+              <div>
+                {{activityPrice.slot.duration | formatTime}}
+              </div>
+            </div>
+            <hr ng-if="activitydescription.theme">
+            <div ng-if="activitydescription.theme" class="col-xs-12 hoteldesc  " style="text-align: justify;padding-bottom: 16px;padding-right: 8px;padding-left: 8px;">
+              <div style="font-size: 18px;text-transform: uppercase;padding-bottom: 8px;font-weight: bold;padding-top: 8px;color: #FFA32C;">
+                Theme
+              </div>
+              <div>
+                {{activitydescription.theme}}
+              </div>
+            </div>
+            <hr ng-if="activitydescription.description ">
+
+            <div ng-if="activitydescription " class="col-xs-12 hoteldesc  " style="text-align: justify;padding-bottom: 16px;padding-right: 8px;padding-left: 8px;">
+              <div style="font-size: 18px;text-transform: uppercase;padding-bottom: 8px;font-weight: bold;padding-top: 8px;color: #FFA32C;">
+                description
+              </div>
+              <div class="linebreak"> {{activitydescription.description | linebreak}}</div>
+            </div>
+            <hr ng-if="activityPrice.inclusions">
+            <div ng-if="activityPrice.inclusions" class="col-xs-12 hoteldesc  " style="text-align: justify;padding-top: 16px;padding-bottom: 16px;padding-right: 8px;padding-left: 8px;">
+              <div style="font-size: 18px;text-transform: uppercase;padding-bottom: 8px;font-weight: bold;padding-top: 8px;color: #FFA32C;">
+                inclusions
+              </div>
+              <div class="linebreak"> {{activityPrice.inclusions | linebreak}}</div>
+            </div>
+            <hr ng-if="activityPrice.exclusions">
+            <div ng-if="activityPrice.exclusions" class="col-xs-12 hoteldesc  " style="text-align: justify;padding-top: 16px;padding-right: 8px;padding-left: 8px;">
+              <div style="font-size: 18px;text-transform: uppercase;padding-bottom: 8px;font-weight: bold;padding-top: 8px;color: #FFA32C;">
+                exclusions
+              </div>
+              <div class="linebreak"> {{activityPrice.exclusions | linebreak}}</div>
+            </div>
+          </md-content>
+        </md-tab>
+        <md-tab ng-if="activitydescription.trip_advisor_reviews != undefined || activitydescription.trip_advisor_reviews != null" label="reviews" ng-click="onTablick(activitydescription.name,activitydescription.city)">
+          <md-content class="md-padding " style="padding-bottom: 10px;">
+            <div>
+              <div class="col-xs-12" style="padding: 0px;border-bottom: 1px solid black;">
+                <div style="padding:8px;">
+                  <div>TripAdvisor Traveler Rating</div>
+                  <div style="padding-top: 8px;display: inline;">
+                    <div style="float: left;margin-right: 15px;padding-top: 6px;">
+                      <img ng-src="{{activitydescription.rating_image_url}}" width="80" style="object-fit:cover;object-position: center;">
+                    </div>
+                    <div style="padding-top: 9px;">Based on {{activitydescription.num_reviews}} reviews</div>
+                  </div>
+                </div>
+              </div>
+              <div ng-repeat="trip in activitydescription.trip_advisor_reviews" class="col-xs-12" style="padding: 0px;border-bottom: 1px solid black;">
+                <div style="padding:8px;">
+                  <div style="display: inline;">
+                    <img style="margin-right: 15px;" ng-src="{{trip.rating_image_url}}" width="60">
+                    <span>{{trip.title}}</span>
+                  </div>
+                  <div class="tuser"> by <span style="text-decoration: underline;">{{trip.user.username}}</span> on {{trip.published_date | date:'dd MMMM, yyyy'}}
+                  </div>
+                  <div class="reviewdesc">
+                    {{trip.text}}
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12" style="padding-top: 15px;padding-left:8px;padding-right:8px;text-align: center;">
+                <div class="col-xs-6" style="font-size: 17px;padding: 0px;">
+                  &#169; TripAdvisor 2016
+                </div>
+                <div class="col-xs-6" style="padding-left: 8px;padding-right: 8px;">
+                  <img src="images/TripAdvisor.png" style="width: 160px;margin-top: -3px;">
+                </div>
+              </div>
+            </div>
+
+          </md-content>
+        </md-tab>
+
+      </md-tabs>
+    </div>
+    <!--/ion-content-->
+  </div>
+
+  <div class="col-xs-12 fixed_btm" ng-if="fromDiscover">
+    <div class="col-xs-12 btn_right">
+      <md-button ng-click="goToForm1()" type="button" class="btn btn-secondary btn_bottom_next" style="width: 170px;">Create itinerary
+      </md-button>
+    </div>
+  </div>
+  <div class="col-xs-12  snack_bar_panel snack_bar_position" ng-if="showSnackBar">
+    <div style="padding: 0px;text-overflow: ellipsis;overflow: hidden;
+    max-height: 20px;font-family: Roboto-Regular">
+      Please <span class="snack_bar_undo" ng-click="redirectLogin();" style="font-weight: bold;text-decoration: underline;">login / signup</span> to continue
+    </div>
+  </div>
+  <!--/ion-view-->
+</div>

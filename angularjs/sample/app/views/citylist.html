@@ -1,0 +1,112 @@
+<style>
+.activity img {
+  margin: 0 auto;
+  width:300px;
+  float: left;
+}
+
+.activity_card {
+  background: #fff;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+  color: rgba(0,0,0,.7);
+  display: flex;
+  padding: 0px;
+  position: relative;
+}
+
+.activityDetailsImg {
+    flex:2;
+    text-align: center;
+}
+
+.activityDetails {
+  flex:4;
+  text-align: center;
+}
+
+.activityAdd {
+  flex:1;
+  text-align: center;
+}
+
+.activityName {
+  width: 256px;
+  height: 17px;
+  font-family: MuseoSansRounded;
+  font-size: 17.9px;
+  font-weight: bold;
+  letter-spacing: 0.2px;
+  text-align: left;
+  color: #000000;
+  float:left;
+}
+
+.activityDescription {
+  font-family: MuseoSansRounded;
+  letter-spacing: 0.2px;
+  text-align: left;
+  float:left;
+}
+
+</style>
+<!-- ng-controller="addCityController" -->
+<div class="col-lg-12 col-md-12" ng-init="initData()" style="max-width:75%; margin-left: 12%;margin-right:12%;">
+  <md-toolbar class="md-hue-2" style="padding: 0px;">
+    <div class="md-toolbar-tools" style="padding-top: 6px;">
+      <md-button ng-click="goBack();" style="height:48px; width:48px;align-content: center;" class="md-icon-button" aria-label="Settings">
+        <img class="backicon" style="align-content: center;" src="images/ic_arrow_back.png"/>
+      </md-button>
+      <h2>
+        <span style="overflow: hidden; white-space: nowrap;color: #fff;">More City Options </span>
+      </h2>
+    </div>
+  </md-toolbar>
+  <!--End ToolBar  -->
+  <!--Tab-->
+  <div ng-if="cityErrorMessage " style="text-align: center;margin-top: 40vh;font-size: 22px;">
+    Sorry, it seems like you cannot pair your itinerary with any other cities
+  </div>
+  <div class="col-xs-12" ng-if="showGifLoader" style="margin-top: 65vh;text-align: center;z-index: 999999;">
+    <div class="loader_text">Searching other nearby cities</div>
+  </div>
+  <div style="height: 100%;margin-top: 25px;">
+    <div ng-if="showCityDiv" style="padding: 0px;height: auto;" ng-repeat="city in cityListArray track by $index">
+      <md-card style="margin: 11px;">
+        <div class="activity_card">
+          <div class="activity activityDetailsImg" style="padding: 0px;outline: none;">
+            <div class="gradient-effect" style=" position: relative; float: left;width: 100%;">
+              <img src='loaders/image_loading.png' ng-src='{{city.cover_image}}' style="width: 100%;height: 200px;z-index: -1;object-fit: cover;object-position: center;">
+            </div>
+          </div>
+          <div class="activityDetails">
+            <div class="col-xs-10 card_title_padding_left">
+              <span class="activityName">{{city.name}}
+                <span class="itinerary_city_date" style="max-width: 200px;font-size: 12px;">{{city.country_name}}</span>
+              </span><br><br>
+              <span style="" class="activityDescription mustdobtn" ng-if="city.is_common === true">
+                Popular
+              </span>
+              <span ng-if="city.is_common === true">&nbsp;</span>
+              <span class="activityDescription" style="width:100%;font-size: 12px;">
+                Best time to go: {{city.dayString}}
+              </span><br><br>
+              <span style="width:100%;font-size:12px;" class="activityDescription">{{city.short_description}}</span>
+            </div>
+          </div>
+          <div class="activityAdd">
+            <button class="btn_close" ng-click="addCity($index)" style="padding-right:20px;">
+              <img src="images/icons/ic_add.png" style="width: 24px;"/>
+            </button>
+          </div>
+        </div>
+      </md-card>
+    </div>
+  </div>
+  <div class="col-xs-12 snack_bar_panel snack_bar_position" ng-if="showSnackBar===true" style="">
+    <div style="padding: 0px;text-overflow: ellipsis;overflow: hidden;
+    max-height: 20px;text-transform: uppercase;text-align: center;font-family: Roboto-Regular">
+      Please <span ng-click="redirectLogin();" style="font-weight: bold;text-decoration: underline;">login / signup</span> to add city
+    </div>
+  </div>
+  <!--End Tab-->
+</div>

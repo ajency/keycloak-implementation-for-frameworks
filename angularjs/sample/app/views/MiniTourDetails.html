@@ -1,0 +1,220 @@
+<style>
+  .md-scroll-mask {
+    position: initial !important;
+  }
+
+  #mdtab md-tabs-wrapper{
+    display: none;
+  }
+
+</style>
+
+<ion-view style="background-color: #F2F2F2; height:100%;max-width: 450px;left: 50%; transform: translateX(-50%);"
+          ng-controller="minitourdetailsController" ng-init="initData();">
+
+  <!--ToolBar-->
+  <md-toolbar style="padding: 0px;">
+    <div class="md-toolbar-tools" style="padding-top: 6px;">
+
+      <md-button ng-click="goBack();" style="height:48px; width:48px;align-content: center;"
+                 class="md-icon-button" aria-label="Settings" >
+        <img class="backicon" style="height:16px; width: 16px;align-content: center;" src="images/ic_arrow_back.png"/>
+
+      </md-button>
+      <h2>
+        <span style="overflow: hidden;
+          white-space: nowrap;color: #0e0e0e">{{minitourData.name}}</span>
+      </h2>
+      <span flex></span>
+      <!--<md-button class="md-icon-button" aria-label="More">-->
+      <!--<i  ng-if="minitourData.fav === false" ng-click="addFav(minitourData.id)" style="font-size: 20px;outline:none;color: red;margin-top: 3px;" class="fa fa-heart-o"></i>-->
+      <!--<i  ng-if="minitourData.fav === true"  ng-click="removeFav(minitourData.id)"  style="font-size: 20px;outline:none;color: red;margin-top: 3px;" class="fa fa-heart"></i>-->
+      <!--</md-button>-->
+      <!--<a onclick="event.preventDefault();openNSLauncher();">-->
+        <!--<i style="font-size: 24px;padding: 8px;" class="fa fa-comments" aria-hidden="true"></i>-->
+
+      <!--</a>-->
+    </div>
+  </md-toolbar>
+
+  <md-tabs id="mdtab1" md-stretch-tabs="auto" md-stretch-tabs="auto" md-dynamic-height md-selected="data.selectedIndex"
+           md-border-bottom md-swipe-content="true" style="height: auto;">
+    <md-tab label="activities included">
+    </md-tab>
+    <md-tab label="details">
+    </md-tab>
+
+  </md-tabs>
+
+  <!--Tab -->
+  <ion-content overflow-scroll="true" zooming="false" direction="y" style="{{heightStyle}} margin-top:106px;">
+    <!--<div ng-if="showMinitourDiv" style="height: auto;margin-top: 13%;">-->
+    <md-tabs id="mdtab"  md-stretch-tabs="auto" md-stretch-tabs="auto" md-dynamic-height md-selected="data.selectedIndex"
+             md-border-bottom md-swipe-content="true" style="height: auto;">
+      <md-tab label="activities included">
+        <md-content class="md-padding" style="margin: 0px;padding: 0px;background-color: #F2F2F2;padding-bottom:30vh;">
+
+          <div ng-repeat="tour in minitourData.included_activities">
+            <md-card class="cardmargin" ng-click="getactivityDetails(tour.id,minitourId,tour.name)">
+              <!--Description-->
+              <div class="col-xs-12" style="padding: 0px;">
+                <div class="col-xs-12 card_title_padding_left">
+
+                    <span class="ellipse" style="display: block;">
+                        <span ng-click="getactivityDetails(tour.id,minitourId)" class="itinerary_city_name"
+                              style="max-width: 130px;text-transform: capitalize;">{{tour.name}}</span>
+                        <br>
+                        <span class="itinerary_city_date"
+                              style="max-width: 200px;text-transform: capitalize;">
+                            {{tour.activity_type.name}}
+                        </span>
+                    </span>
+                </div>
+
+              </div>
+              <!--Image-->
+
+              <div class="col-xs-12" style="padding: 0px;">
+                <div class="gradient-effect" style=" position: relative; float: left;width:100%">
+                  <img src="loaders/image_loading.png" err-src="loaders/image_loading.png"
+                       ng-src="{{tour.cover_image}}"
+                       style=";height: 200px;z-index: -1;object-fit: cover;object-position: center;">
+
+                  <div class="trip_div" style="bottom:10px;">
+                    <div>
+                      <img ng-if="tour.rating_image_url" ng-src="{{tour.rating_image_url}}"
+                           style="width: 100px;float: left;">
+                      <span ng-if="tour.rating_image_url" style="margin-left: 10px;opacity: 1;font-size: 11px;"
+                            class="tour_review">{{tour.num_reviews}} Reviews</span>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              <div ng-if="tour.activity_price.inclusions != null && activity.activity_price.inclusions!= ''"
+                   class="col-xs-12 itinerary_city_date"
+                   style="padding:8px;background-color: #e0e0e0;text-align: center;">
+                Includes {{activity.activity_price.inclusions}}
+              </div>
+              <!--Price-->
+              <div class="col-xs-12" style="padding: 0px;">
+              </div>
+            </md-card>
+          </div>
+
+        </md-content>
+      </md-tab>
+      <md-tab label="details">
+        <md-content style="background-color: #ffffff;padding-bottom:30vh;height: auto;">
+          <div
+            style="font-size: 18px;text-transform: uppercase;font-family: Roboto-Regular;padding:8px;color: black;">
+            {{ minitourData.name}}
+          </div>
+
+          <div class="col-xs-12 hoteldesc  "
+               style="text-align: justify;padding-bottom: 16px;padding-right: 8px;padding-left: 8px;">
+            <div
+              style="font-size: 18px;text-transform: uppercase;padding-bottom: 8px;font-weight: bold;padding-top: 8px;color: #FFA32C;">
+              Price
+            </div>
+              <div>
+              <span style="font-weight: bold;">Total Price</span> &#8377; {{minitourPrice.total_price_INR | cur}}
+            </div>
+          </div>
+
+          <hr ng-if="minitourPrice.slot.duration !=null">
+          <div ng-if="minitourPrice.slot.duration !=null" class="col-xs-12 hoteldesc  "
+               style="text-align: justify;padding-bottom: 16px;padding-right: 8px;padding-left: 8px;">
+            <div
+              style="font-size: 18px;text-transform: uppercase;padding-bottom: 8px;font-weight: bold;padding-top: 8px;color: #FFA32C;">
+              Duration
+            </div>
+            <div>
+              {{minitourPrice.slot.duration | formatTime}}
+            </div>
+          </div>
+
+          <hr>
+          <div ng-if="minitourData.description" class="col-xs-12 hoteldesc  "
+               style="text-align: justify;padding-bottom: 16px;padding-right: 8px;padding-left: 8px;">
+            <div
+              style="font-size: 18px;text-transform: uppercase;padding-bottom: 8px;font-weight: bold;padding-top: 8px;color: #FFA32C;">
+              description
+            </div>
+            <div class="linebreak"> {{minitourData.description | linebreak}}</div>
+          </div>
+          <hr ng-if="minitourPrice.inclusions">
+          <div ng-if="minitourPrice.inclusions" class="col-xs-12 hoteldesc  "
+               style="text-align: justify;padding-top: 16px;padding-bottom: 16px;padding-right: 8px;padding-left: 8px;">
+            <div
+              style="font-size: 18px;text-transform: uppercase;padding-bottom: 8px;font-weight: bold;padding-top: 8px;color: #FFA32C;">
+              inclusion
+            </div>
+            <div class="linebreak"> {{minitourPrice.inclusions | linebreak}}</div>
+          </div>
+          <hr ng-if="minitourPrice.exclusions">
+          <div ng-if="minitourPrice.exclusions"
+               class="col-xs-12 hoteldesc  "
+               style="text-align: justify;padding-top: 16px;padding-right: 8px;padding-left: 8px;">
+            <div
+              style="font-size: 18px;text-transform: uppercase;padding-bottom: 8px;font-weight: bold;padding-top: 8px;color: #FFA32C;">
+              exclusion
+            </div>
+            <div class="linebreak"> {{minitourPrice.exclusions | linebreak}}</div>
+          </div>
+
+
+          <!--<div class="col-xs-12 hoteldesc  " style="text-align: justify;padding-bottom: 16px;padding-right: 8px;padding-left: 8px;">-->
+          <!--<div style="font-size: 18px;text-transform: uppercase;padding-bottom: 8px;font-weight: bold;padding-top: 8px;color: #FFA32C;padding-left: 8px;">-->
+          <!--location-->
+          <!--</div>-->
+          <!--<md-card style="margin: 11px;">-->
+          <!--<div map-lazy-load="https://maps.google.com/maps/api/js">-->
+          <!--<ng-map style="height: 176px;" center="{{minitourData.location.lat}}, {{minitourData.location.long}}" zoom="13">-->
+          <!--<marker position="{{minitourData.location.lat}}, {{minitourData.location.long}}" title="Zopky"></marker>-->
+          <!--</ng-map>-->
+          <!--</div>-->
+          <!--</md-card>-->
+          <!--</div>-->
+
+
+        </md-content>
+
+
+      </md-tab>
+
+    </md-tabs>
+  </ion-content>
+
+  <div class="col-xs-12 fixed_btm" ng-if="fromDiscover">
+    <!--<div class="col-xs-6"-->
+         <!--style="padding-top: 15px;padding-bottom:15px;padding-left:15px;padding-right: 0px;text-align: center;">-->
+      <!--<md-button ng-if="minitourData.fav === false" ng-click="addFav(minitourData.id)" type="button"-->
+                 <!--class="btn btn-secondary btn_bottom_reset"-->
+                 <!--style="">-->
+        <!--Add to <i style="color:red;" class="fa fa-heart"></i>-->
+      <!--</md-button>-->
+
+      <!--<md-button ng-if="minitourData.fav === true" ng-click="removeFav(minitourData.id)" type="button"-->
+                 <!--class="btn btn-secondary btn_bottom_reset"-->
+                 <!--style="">-->
+        <!--Remove from <i style="color:red;" class="fa fa-heart"></i>-->
+      <!--</md-button>-->
+    <!--</div>-->
+    <div class="col-xs-12 btn_right">
+      <md-button ng-click="goToForm1()" type="button" class="btn btn-secondary btn_bottom_next"
+                 style="width: 170px;">Create itinerary
+      </md-button>
+    </div>
+  </div>
+  <!--end tab-->
+  <div class="col-xs-12 snack_bar_panel" ng-if="showSnackBar"
+       style="position: fixed;bottom: 0%;">
+    <div style="padding: 0px;text-overflow: ellipsis;overflow: hidden;
+    max-height: 20px;font-family: Roboto-Regular">
+      Please <span class="snack_bar_undo" ng-click="redirectLogin();"
+                   style="font-weight: bold;text-decoration: underline;">login / signup</span> to continue
+    </div>
+  </div>
+
+</ion-view>

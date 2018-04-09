@@ -1,0 +1,546 @@
+<!--Page div-->
+<style>
+.angucomplete-description {
+float: left !important;
+display: inline !important;
+text-transform: capitalize;
+margin-left: 5px;
+opacity: 0.4;
+font-size: 12px;
+margin-top: 3px;
+}
+.angucomplete-description::before {
+content: "("
+}
+.angucomplete-description::after {
+content: ")"
+}
+.angucomplete-title {
+float: left !important;
+}
+.md-scroll-mask {
+position: initial !important;
+}
+.angucomplete-row {
+padding-left: 8px;
+padding-top: 10px;
+color: #000000;
+clear: both;
+padding-bottom: 25px;
+}
+.md-card {
+margin: 1vh !important;
+}
+.things {
+padding-left: 0px;
+padding-right: 0px;
+}
+.top_bar {
+padding-top: 5px;
+padding-bottom: 5px;
+min-height: 6vh;
+}
+.top_bar p {
+font-size: 14px;
+margin: 0px 5vw 0px 0px !important;
+min-height: 5vh;
+padding-top: 2.2vh;
+font-family: Roboto-Light;
+/*font-weight: 700;*/
+}
+.things .genre {
+margin: 0px;
+margin-right: 5px;
+}
+.adventure {
+min-height: 17vh;
+background-position: center;
+background-size: cover;
+border-radius: 0px !important;
+position: relative;
+}
+.overlay-text {
+position: absolute;
+color: #fff;
+text-transform: capitalize;
+font-size: 2.4vh;
+vertical-align: middle;
+text-align: center;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+line-height: 1.2;
+font-family: Roboto-Regular;
+padding: 11px;
+}
+.things_dialog {
+min-height: 100% !important;
+min-width: 100%;
+}
+.theme_dialog_button {
+background-color: #0ebce7 !important;
+color: #fff !important;
+min-width: 35vw;
+}
+/*Desktop*/
+@media screen
+and (min-device-width: 450px) {
+.things_dialog {
+/*min-height: 100% !important;*/
+width: 450px !important;
+}
+.theme_dialog_button {
+width: 100px !important;
+min-width: 5vw !important;
+}
+}
+.things_action {
+bottom: 10px;
+padding: 0px;
+position: absolute;
+right: 0px;
+}
+.close_icon {
+position: absolute;
+top: 0px;
+right: 0px;
+padding: 12px;
+font-size: 20px;
+}
+.tab {
+border: none;
+}
+.tab_active {
+border: 4px solid #0ebce7;
+}
+.content_box {
+padding-left: 6px;
+padding-right: 6px;
+}
+</style>
+<!--ion-view overflow-scroll="true" style="background-color: #F2F2F2; height:100%;overflow-x: hidden;padding: 0px;
+max-width: 450px;left: 50%; transform: translateX(-50%);"
+class="col-md-4" ng-controller="HolidayPreferenceController" ng-init="initData()"-->
+<div class="col-lg-12 col-md-12" ng-controller="HolidayPreferenceController" ng-init="initData()">
+  <!--ToolBar-->
+  <md-toolbar>
+  <div class="md-toolbar-tools" style="padding-top: 6px;vertical-align: middle;">
+    <md-button ng-click="goBack();" style="height: 48px; width:48px;align-content: center;"
+    class="md-icon-button" aria-label="Settings">
+    <img class="backicon" style="height: 16px; width: 16px;align-content: center;"
+    src="images/ic_arrow_back.png"/>
+    </md-button>
+    <h2>
+    <span style="overflow: hidden;
+    white-space: nowrap;color: #0e0e0e">Preferences</span>
+    </h2>
+    <span flex></span>
+    <!--<md-button class="md-icon-button" aria-label="Favorite">-->
+    <!--<md-icon md-svg-icon="img/icons/favorite.svg" style="color: greenyellow;"></md-icon>-->
+    <!--</md-button>-->
+    <!--<a onclick="event.preventDefault();openNSLauncher();">-->
+    <!--<i style="font-size: 24px;padding: 8px;" class="fa fa-comments" aria-hidden="true"></i>-->
+    <!--</a>-->
+  </div>
+  </md-toolbar>
+  <!--ion-content overflow-scroll="true" zooming="false" direction="y" style="height: 100%;padding-top: 56px;"-->
+  <div style="height: 100%;padding-top: 56px;">
+    <!--Type of travel-->
+    <div class="col-xs-12" style="padding: 0px;background-color: #eeeeee;">
+      <!--Number of travelers-->
+      <div class="details_title" ng-show="divdisabled">Number of travelers</div>
+      <!--<div class="f3title" ng-show="divdisabled">Number of travelers</div>-->
+      <md-card class="cardmargin" ng-show="divdisabled">
+      <div class="col-xs-12" style="margin: 0px; padding: 8px;">
+        <div class="col-xs-4 form3_travelers" style="margin: 0px; padding: 0px;width: 33.33%; text-align: center;">
+          <span class="not">Adults </span><span class="not" style="opacity: 0.6">&gt;12 yrs</span><br>
+          <div style="width: 100%; text-align: center;padding-top: 8px; padding-bottom: 8px;">
+            <div class="col-xs-12 col-md-12" style="padding: 0px; text-align: center;">
+              <div class="col-xs-5 col-md-5" style="padding: 0px; text-align: right;">
+                <img src="images/icons/minus-button.png" style="width: 24px;height: 24px;float: right;margin: 4px;"
+                ng-click="AdultCount(1)">
+              </div>
+              <div class="col-xs-2 col-md-2" style="padding: 0px; text-align: center;top: 5px;">
+                <span style="padding: 4px;" class="not" ng-model="adult">{{AdultCounter}}</span>
+              </div>
+              <div class="col-xs-5 col-md-5" style="padding: 0px; text-align: left;">
+                <img src="images/icons/plus-button.png" style="width: 24px;height: 24px;float: left;margin: 4px;"
+                ng-click="AdultCount(0)">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xs-4 form3_travelers" style="margin: 0px; padding: 0px;width: 33.33%; text-align: center;">
+          <span class="not">Children</span>
+          <div style="width: 100%; text-align: center;padding-top: 8px; padding-bottom: 8px;">
+            <div class="col-xs-12 col-md-12" style="padding: 0px; text-align: center;">
+              <div class="col-xs-5 col-md-5" style="padding: 0px; text-align: right;">
+                <img src="images/icons/minus-button.png" style="width: 24px;height: 24px;float: right;margin: 4px;"
+                ng-click="ChildCount(1)">
+              </div>
+              <div class="col-xs-2 col-md-2" style="padding: 0px; text-align: center;top: 5px;">
+                <span style="padding: 4px;" class="not" ng-model="adult">{{ChildCounter}}</span>
+              </div>
+              <div class="col-xs-5 col-md-5" style="padding: 0px; text-align: left;">
+                <img src="images/icons/plus-button.png" style="width: 24px;height: 24px;float: left;margin: 4px;"
+                ng-click="ChildCount(0)">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xs-4 form3_travelers" style="margin: 0px; padding: 0px;width: 33.33%; text-align: center;">
+          <span class="not">Infants </span><span class="not" style="opacity: 0.6">&lt;2 yrs</span><br>
+          <div style="width: 100%; text-align: center;padding-top: 8px; padding-bottom: 8px;">
+            <div class="col-xs-12 col-md-12" style="padding: 0px; text-align: center;">
+              <div class="col-xs-5 col-md-5" style="padding: 0px; text-align: right;">
+                <img src="images/icons/minus-button.png" style="width: 24px;height: 24px;float: right;margin: 4px;"
+                ng-click="KidCount(1)">
+              </div>
+              <div class="col-xs-2 col-md-2" style="padding: 0px; text-align: center;top: 5px;">
+                <span style="padding: 4px;" class="not" ng-model="adult">{{KidCounter}}</span>
+              </div>
+              <div class="col-xs-5 col-md-5" style="padding: 0px; text-align: left;">
+                <img src="images/icons/plus-button.png" style="width: 24px;height: 24px;float: left;margin: 4px;"
+                ng-click="KidCount(0)">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </md-card>
+      <!--ENd number of travelers-->
+      <div class="details_title">Departure City</div>
+      <md-card class="cardmargin">
+      <div class="col-xs-12" style="padding: 0px;">
+        <div class="col-xs-1" style="padding-left: 5px;padding-top: 8px;">
+          <i style="width: 14px;height: 19px;margin-top: 12px;margin-left: 10px;color: #332008"
+          class="fa fa-map-marker fa-2x"></i>
+        </div>
+        <div class="col-xs-11" style="padding-left: 8px;padding-top: 8px;padding-bottom: 8px;">
+          <div style="border: none;border-color:transparent;border-bottom: 1px solid #ccc;padding-left:16px;"
+            angucomplete-alt id="ex8b"
+            placeholder="{{boardingPlaceholder}}"
+            maxlength="50"
+            pause="100"
+            selected-object="selectedBoarding"
+            local-data="boardingcity"
+            search-fields="name"
+            title-field="name"
+            minlength="1"
+            field-required="true"
+            input-changed="inputChanged"
+            focus-in="resetBoardingData()"
+            input-class="form-control form-control-small"
+            match-class="highlight" ng-model="BoardingCity">
+          </div>
+        </div>
+      </div>
+      </md-card>
+      <!--Destination-->
+      <div class="f3title" ng-if="!templateId || templateId.length === 0">Destination</div>
+      <md-card class="cardmargin" ng-if="!templateId || templateId.length === 0">
+      <div class="col-xs-12" style="padding: 0px;">
+        <div class="col-xs-1" style="padding-left: 5px;padding-top: 8px;">
+          <i style="width: 14px;height: 19px;margin-top: 12px;margin-left: 10px;" class="fa fa-map-marker fa-2x"></i>
+        </div>
+        <div class="col-xs-11" style="padding-left: 8px;padding-top: 8px;padding-bottom: 8px;">
+          <div angucomplete-alt id="ex5" style="border-bottom: 1px solid #ccc; padding-left:16px;"
+            placeholder="{{placeholder}}"
+            pause="500"
+            selected-object="selectedDestinationObjectFunction"
+            remote-url="{{destinationSearchUrl}}"
+            remote-url-request-formatter="remoteUrlRequestFn"
+            remote-url-data-field="response.message"
+            title-field="name"
+            description-field="type"
+            minlength="1"
+            focus-in="resetDestData()"
+            input-class="form-control form-control-small"
+            match-class="highlight" ng-modal="DestinationCity">
+          </div>
+        </div>
+      </div>
+      </md-card>
+      <!--End Destination-->
+      <!-- Type of Things to do -->
+      <div class="details_title">Type of Things to do <span style="font-family: Roboto-Regular"></span></div>
+      <md-card class="cardmargin">
+      <md-card-content ng-click="requestThingstoDo();">
+      <p ng-if="genreText !== ''">{{genreText}} <span class="pull-right"><i class="fa fa-caret-down "></i></span></p>
+      <p style="opacity: 0.6;" ng-if="genreText === ''">Select Type of Things To Do <span class="pull-right"><i class="fa fa-caret-down "></i></span></p>
+      </md-card-content>
+      </md-card>
+      <!-- Type of Things to do -->
+      <!--Budget-->
+      <!--<div class="f3title">Budget Per Person</div>-->
+      <div class="details_title">Budget per person <br><span style="font-weight: normal" class="details_sub_title">(Including flights, hotels, things to do & transfers)</span>
+    </div>
+    <md-card class="cardmargin">
+    <div class="col-xs-12" style="text-align: center;padding-top: 16px;">
+      <button ng-click="handleBudget('sub')" type="button" class="btn btn-default btn-circle"
+      style="width: 30px;height: 30px;text-align: center;padding: 6px 0;font-size: 12px;margin-right: 15px;
+      line-height: 1.428571429;border-radius: 15px;outline: none;"><i class="glyphicon glyphicon-minus"></i>
+      </button>
+      <span class="form3_budget">&#8377; {{sliderbudget}}</span>
+      <button ng-click="handleBudget('add')" type="button" class="btn btn-default btn-circle"
+      style="width: 30px;height: 30px;text-align: center;padding: 6px 0;font-size: 12px;margin-left: 15px;
+      line-height: 1.428571429;border-radius: 15px;outline: none;"><i class="glyphicon glyphicon-plus"></i></button>
+    </div>
+    <div class="col-xs-12" style="text-align: center;padding-left: 20px;padding-right: 20px;">
+      <!--<md-slider flex ng-model="color.green" min="0" max="255" aria-label="green" id="green-slider" class="md-accent">-->
+      <md-slider step="1000" flex style="" ng-model="sliderbudget" min="30000" max="250000"
+      aria-label="blue"
+      id="blue-slider" class="md-primary">
+      </md-slider>
+    </div>
+    <div class="form3_approx" style="" ng-if="sliderbudget > 0">
+      <span>Approx. total budget will be &#8377; {{sliderbudget * AdultCounter + sliderbudget * ChildCounter}}
+      for {{AdultCounter + ChildCounter + KidCounter}} persons</span>
+    </div>
+    </md-card>
+    <div class="details_title">Travel Dates</div>
+    <md-card class="cardmargin" style="margin-bottom: 100px;">
+    <div class="col-xs-12" style="padding: 0px;">
+      <!--div class="col-xs-6 " style="padding: 0px;border-right:1px solid #979797;outline: none;"
+        ng-click="showDatePicker($event)">
+        <div style="height: 40px;   opacity: 0.4;font-family: Roboto-Regular;font-size: 14px;line-height: 1.3;
+          color: #332008;padding-top: 16px;padding-left: 16px;text-transform: uppercase;">
+          start date
+        </div>
+        <div style="height: 40px;padding-top: 9px;padding-left: 15px; font-family: Roboto-Regular;
+          font-size: 16px;
+          line-height: 1.3;
+          color: #0ebce7;">
+          {{ startDateShow }}
+        </div>
+      </div-->
+      <div class="col-xs-6 " style="padding: 0px;border-right:1px solid #979797;outline: none;">
+        <div style="height: 40px;   opacity: 0.4;font-family: Roboto-Regular;font-size: 14px;line-height: 1.3;
+          color: #332008;padding-top: 16px;padding-left: 16px;text-transform: uppercase;">
+          start date
+        </div>
+        <input
+          type="date"
+          class="form-control"
+          name="tripStartDate"
+          ng-model="startDate"
+          placeholder="Trip Start Date"
+        >
+      </div>
+      <!--div class="col-xs-6 " style="padding: 0px;text-align:end;outline: none;"
+        ng-click="showEndDatePicker($event)">
+        <div style="height: 40px;opacity: 0.4;font-family: Roboto-Regular;font-size: 14px;
+          line-height: 1.3;color: #332008;padding-top: 15px;padding-right: 16px;text-transform: uppercase;">
+          return date
+        </div>
+        <div
+          style="height: 40px;padding-top: 9px; font-family: Roboto-Regular;font-size: 16px;line-height: 1.3;color: #0ebce7;padding-right: 12px;">
+          {{ endDateShow}}
+        </div>
+      </div>
+    </div>
+    </md-card>
+  </div-->
+  <div class="col-xs-6 " style="padding: 0px;text-align:end;outline: none;">
+        <div style="height: 40px;opacity: 0.4;font-family: Roboto-Regular;font-size: 14px;
+          line-height: 1.3;color: #332008;padding-top: 15px;padding-right: 16px;text-transform: uppercase;">
+          return date
+        </div>
+        <input
+          type="date"
+          class="form-control"
+          name="tripEndDate"
+          ng-model="endDate"
+          placeholder="Trip End Date"
+        >
+      </div>
+    </div>
+    </md-card>
+  </div>
+  <!--/ion-content-->
+  <div class="col-xs-12 snack_bar_position snack_bar_panel" ng-if="showSnackBar"
+    style="position: fixed !important;bottom: 10% !important;">
+    <div style="padding: 0px;text-overflow: ellipsis;overflow: hidden;
+      max-height: 20px;">
+      {{alertText}}
+    </div>
+  </div>
+  <div class="col-xs-12"
+    style="background-color: #FFFFFF;padding: 0px;">
+    <div class="col-xs-6 btn_right" style="text-align:center;">
+      <md-button ng-click="createDraft()" type="button" class="btn btn-secondary btn_bottom_next"
+      style="outline:none;">Get itinerary
+      </md-button>
+    </div>
+  </div>
+  <!--ENd Buttons-->
+  <!--/ion-view-->
+</div>
+<!--End page div-->
+<script type="text/ng-template" id="thingstoDo.tmpl.html">
+<md-dialog class="dialog_size things_dialog" aria-label="Category Selection" ng-cloak style="min-width: 400px;">
+<div style="">
+  <div class="col-xs-12 top_bar" style="padding-top: 5px;padding-bottom: 5px;margin-bottom: 2.2vh;">
+    <p style="">We recommend you to select  2-3</p>
+    <span class="close_icon" ng-click="ctrl.parent.closethings_todo_dialog()"><i class="fa fa-close"></i></span>
+  </div>
+  <div class="col-xs-12 content_box">
+    <div class="col-xs-4 things">
+      <md-card class="adventure  md-card tab_active" ng-if="ctrl.parent.genreArray[0].selected === true"
+      ng-click="ctrl.parent.typeSelection(0)"
+      style=" background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ),  url(images/Genre/Nature.jpg);"
+      >
+      <div class="overlay-text" style="color: #0ebce7;text-shadow:0px 1px 1px #000;">Nature</div>
+      </md-card>
+      <md-card class="adventure  md-card tab" ng-if="ctrl.parent.genreArray[0].selected === false"
+      ng-click="ctrl.parent.typeSelection(0)"
+      style=" background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ),  url(images/Genre/Nature.jpg);"
+      >
+      <div class="overlay-text">Nature</div>
+      </md-card>
+    </div>
+    <div class="col-xs-4 things">
+      <md-card class="adventure md-card tab_active" ng-if="ctrl.parent.genreArray[3].selected === true"
+      ng-click="ctrl.parent.typeSelection(3)"
+      style=" background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ),  url(images/Genre/Wildlife.jpg);">
+      <div class="overlay-text" style="color: #0ebce7;text-shadow:0px 1px 1px #000;"><span>WildLife/ Zoos</span></div>
+      </md-card>
+      <md-card class="adventure md-card" ng-if="ctrl.parent.genreArray[3].selected === false"
+      ng-click="ctrl.parent.typeSelection(3)"
+      style=" background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ),  url(images/Genre/Wildlife.jpg);">
+      <div class="overlay-text"><span>WildLife/ Zoos</span></div>
+      </md-card>
+    </div>
+    <div class="col-xs-4 things">
+      <md-card class="adventure md-card tab_active" ng-if="ctrl.parent.genreArray[1].selected === true"
+      ng-click="ctrl.parent.typeSelection(1)"
+      style=" background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ),  url(images/Genre/Sports.jpg);">
+      <div class="overlay-text" style="color: #0ebce7;text-shadow:0px 1px 1px #000;">Light Adventure</div>
+      </md-card>
+      <md-card class="adventure md-card" ng-if="ctrl.parent.genreArray[1].selected === false"
+      ng-click="ctrl.parent.typeSelection(1)"
+      style=" background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ),  url(images/Genre/Sports.jpg);">
+      <div class="overlay-text">Light Adventure</div>
+      </md-card>
+    </div>
+    <div class="col-xs-4 things">
+      <md-card class="adventure md-card tab_active" ng-if="ctrl.parent.genreArray[2].selected === true"
+      ng-click="ctrl.parent.typeSelection(2)"
+      style=" background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ),  url(images/Genre/AirSport.jpg);">
+      <div class="overlay-text" style="color: #0ebce7;text-shadow:0px 1px 1px #000;">Extreme Sports</div>
+      </md-card>
+      <md-card class="adventure md-card" ng-if="ctrl.parent.genreArray[2].selected === false"
+      ng-click="ctrl.parent.typeSelection(2)"
+      style=" background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ),  url(images/Genre/AirSport.jpg);">
+      <div class="overlay-text">Extreme Sports</div>
+      </md-card>
+    </div>
+    <div class="col-xs-4 things">
+      <md-card class="adventure md-card tab_active" ng-if="ctrl.parent.genreArray[5].selected === true"
+      ng-click="ctrl.parent.typeSelection(5)"
+      style=" background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ),  url(images/Genre/Party.jpg);">
+      <div class="overlay-text" style="color: #0ebce7;text-shadow:0px 1px 1px #000;">Party</div>
+      </md-card>
+      <md-card class="adventure md-card" ng-if="ctrl.parent.genreArray[5].selected === false"
+      ng-click="ctrl.parent.typeSelection(5)"
+      style=" background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ),  url(images/Genre/Party.jpg);">
+      <div class="overlay-text">Party</div>
+      </md-card>
+    </div>
+    <div class="col-xs-4 things">
+      <md-card class="adventure md-card tab_active" ng-if="ctrl.parent.genreArray[4].selected === true"
+      ng-click="ctrl.parent.typeSelection(4)"
+      style=" background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ),  url(images/Genre/EP.jpg);">
+      <div class="overlay-text" style="color: #0ebce7;text-shadow:0px 1px 1px #000;">Entertainment Parks</div>
+      </md-card>
+      <md-card class="adventure md-card" ng-if="ctrl.parent.genreArray[4].selected === false"
+      ng-click="ctrl.parent.typeSelection(4)"
+      style=" background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ),  url(images/Genre/EP.jpg);">
+      <div class="overlay-text">Entertainment Parks</div>
+      </md-card>
+    </div>
+    <div class="col-xs-4 things">
+      <md-card class="adventure md-card tab_active" ng-if="ctrl.parent.genreArray[6].selected === true"
+      ng-click="ctrl.parent.typeSelection(6)"
+      style=" background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ),  url(images/Genre/Local.jpg);">
+      <div class="overlay-text" style="color: #0ebce7;text-shadow:0px 1px 1px #000;">Local Food & Experiences</div>
+      </md-card>
+      <md-card class="adventure md-card" ng-if="ctrl.parent.genreArray[6].selected === false"
+      ng-click="ctrl.parent.typeSelection(6)"
+      style=" background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ),  url(images/Genre/Local.jpg);">
+      <div class="overlay-text">Local Food & Experiences</div>
+      </md-card>
+    </div>
+    <div class="col-xs-4 things">
+      <md-card class="adventure md-card tab_active"  ng-if="ctrl.parent.genreArray[10].selected === true"
+      ng-click="ctrl.parent.typeSelection(10)"
+      style=" background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ),  url(images/Genre/Religion.jpg);">
+      <div class="overlay-text" style="color: #0ebce7;text-shadow:0px 1px 1px #000;">Religion</div>
+      </md-card>
+      <md-card class="adventure md-card"  ng-if="ctrl.parent.genreArray[10].selected === false"
+      ng-click="ctrl.parent.typeSelection(10)"
+      style=" background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ),  url(images/Genre/Religion.jpg);">
+      <div class="overlay-text">Religion</div>
+      </md-card>
+    </div>
+    <div class="col-xs-4 things">
+      <md-card class="adventure md-card tab_active"  ng-if="ctrl.parent.genreArray[9].selected === true"
+      ng-click="ctrl.parent.typeSelection(9)"
+      style=" background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ),  url(images/Genre/Sightseeing.jpg);">
+      <div class="overlay-text" style="color: #0ebce7;">Shopping & City Sights</div>
+      </md-card>
+      <md-card class="adventure md-card"  ng-if="ctrl.parent.genreArray[9].selected === false"
+      ng-click="ctrl.parent.typeSelection(9)"
+      style=" background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ),  url(images/Genre/Sightseeing.jpg);">
+      <div class="overlay-text">Shopping & City Sights</div>
+      </md-card>
+    </div>
+    <div class="col-xs-4 things">
+      <md-card class="adventure md-card tab_active"   ng-if="ctrl.parent.genreArray[8].selected === true"
+      ng-click="ctrl.parent.typeSelection(8)"
+      style=" background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ),  url(images/Genre/Kids.jpg);">
+      <div class="overlay-text" style="color: #0ebce7;text-shadow:0px 1px 1px #000;">Family & Kids</div>
+      </md-card>
+      <md-card class="adventure md-card"   ng-if="ctrl.parent.genreArray[8].selected === false"
+      ng-click="ctrl.parent.typeSelection(8)"
+      style=" background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ),  url(images/Genre/Kids.jpg);">
+      <div class="overlay-text">Family & Kids</div>
+      </md-card>
+    </div>
+    <div class="col-xs-4 things">
+      <md-card class="adventure md-card tab_active"  ng-if="ctrl.parent.genreArray[7].selected === true"
+      ng-click="ctrl.parent.typeSelection(7)"
+      style=" background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ),  url(images/Genre/Historical.jpg);">
+      <div class="overlay-text" style="color: #0ebce7;text-shadow:0px 1px 1px #000;">History & Culture</div>
+      </md-card>
+      <md-card class="adventure md-card"  ng-if="ctrl.parent.genreArray[7].selected === false"
+      ng-click="ctrl.parent.typeSelection(7)"
+      style=" background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ),  url(images/Genre/Historical.jpg);">
+      <div class="overlay-text">History & Culture</div>
+      </md-card>
+    </div>
+    <div class="col-xs-4 things">
+      <md-card class="adventure md-card tab_active"  ng-if="ctrl.parent.genreArray[11].selected === true"
+      ng-click="ctrl.parent.typeSelection(11)"
+      style=" background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ),  url(images/Genre/Health.jpg);">
+      <div class="overlay-text" style="color: #0ebce7;text-shadow:0px 1px 1px #000;">Health & Spa</div>
+      </md-card>
+      <md-card class="adventure md-card"  ng-if="ctrl.parent.genreArray[11].selected === false"
+      ng-click="ctrl.parent.typeSelection(11)"
+      style=" background-image: linear-gradient( rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6) ),  url(images/Genre/Health.jpg);">
+      <div class="overlay-text">Health & Spa</div>
+      </md-card>
+    </div>
+  </div>
+  <div class="col-xs-12 things_action">
+    <md-dialog-actions>
+    <div class="col-xs-12" style="text-align: right;">
+      <md-button class="theme_dialog_button" ng-click="ctrl.parent.onGenreSelection()"
+      class="btn btn-secondary pull-right">Done
+      </md-button>
+    </div>
+    </md-dialog-actions>
+  </div>
+</div>
+</md-dialog>
+</script>

@@ -1,0 +1,111 @@
+<div class="col-lg-12 col-md-12" ng-controller="CurrencyController">
+<h3 class="text-center">Currency</h3>
+
+<button  style="position:relative;z-index:10" class="btn btn-success" ng-click="editCurrency('new');toggleModal();">
+  <span class="fa fa-bed"></span> Create New Currency
+</button>
+  <div style="position:relative;z-index:20" class="form-group pull-right">
+    <input type="text" ng-model="searchValue" class="form-control" placeholder="Search">
+  </div>
+
+</br></br>
+<div  style="position:relative;z-index:10" class="table-responsive">
+<table class="table table-striped table-bordered">
+  <thead><tr>
+    <th ng-click="sort('id')">Type Id
+        <span class="glyphicon sort-icon" ng-show="sortKey=='id'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+    </th>
+    <th ng-click="sort('name')">Name
+        <span class="glyphicon sort-icon" ng-show="sortKey=='name'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+    </th>
+    <th ng-click="sort('code')">Code
+        <span class="glyphicon sort-icon" ng-show="sortKey=='code'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+    </th>
+    <th ng-click="sort('inrConvertionRate')">INR Convertion Rate
+        <span class="glyphicon sort-icon" ng-show="sortKey=='inrConvertionRate'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+    </th>
+    <th>Edit</th>
+    <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+  <tr dir-paginate="currency in currencies |orderBy:sortKey:reverse|filter:searchValue|itemsPerPage:8">
+    <td>{{ currency.id }}</td>
+    <td>{{ currency.name }}</td>
+    <td>{{ currency.code }}</td>
+    <td>{{ currency.inrConvertionRate }}</td>
+    <td>
+      <button class="btn" ng-click="editCurrency(currency.sequence,'edit');toggleModal();" >
+      <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Edit
+      </button>
+    </td>
+    <td class="text-center">
+      <button class="btn btn-success btn-sm statusBtn" ng-show="currency.active" ng-click="statusCurrency(currency.sequence)" >
+        Active
+      </button>
+      <button class="btn btn-danger btn-sm statusBtn" ng-hide="currency.active" ng-click="statusCurrency(currency.sequence)" >
+        Deactive
+      </button>
+    </td>
+  </tr></tbody>
+</table>
+  <dir-pagination-controls
+    max-size="20"
+    direction-links="true"
+    boundary-links="true">
+  </dir-pagination-controls>
+</div>
+
+  <button  style="position:relative;z-index:10" class="btn btn-success" ng-click="getMoreCurriencies();">
+    <span class="glyphicon glyphicon-"></span> Get More
+  </button>
+
+<modal title="Currency Form" dikhao="showModal">
+
+<form class="form-horizontal" name="myForm">
+<div class="form-group" ng-class="{ 'has-error' : myForm.currency.$invalid && !myForm.currency.$pristine }">
+  <label class="col-sm-4 control-label">Name:<span style="color:red">*</span></label>
+  <div class="col-sm-4">
+     <input type="text" class="form-control" name="name" ng-model="CurrencyController.name"
+            placeholder="name" ng-disabled="info">
+  </div>
+  <div class="col-sm-4">
+    <span style="color:red" ng-show="(CurrencyController.name === '')">Name is required.</span>
+  </div>
+</div>
+
+<div class="form-group" ng-class="{ 'has-error' : myForm.currency.$invalid && !myForm.currency.$pristine }">
+  <label class="col-sm-4 control-label">Code:<span style="color:red">*</span></label>
+  <div class="col-sm-4">
+     <input type="text" class="form-control" name="code" ng-model="CurrencyController.code"
+            placeholder="code" ng-disabled="info">
+  </div>
+  <div class="col-sm-4">
+    <span style="color:red" ng-show="(CurrencyController.code === '')">Code is required.</span>
+  </div>
+</div>
+
+<div class="form-group" ng-class="{ 'has-error' : myForm.currency.$invalid && !myForm.currency.$pristine }">
+  <label class="col-sm-4 control-label">INR Convertion Rate:<span style="color:red">*</span></label>
+  <div class="col-sm-4">
+     <input type="text" class="form-control" name="inrConvertionRate" ng-model="CurrencyController.inrConvertionRate"
+            placeholder="INR Convertion Rate" type="number" ng-disabled="info">
+  </div>
+  <div class="col-sm-4">
+    <span style="color:red" ng-show="(CurrencyController.inrConvertionRate === '')">INR Convertion Rate is required.</span>
+  </div>
+</div>
+</form>
+<hr>
+ <button class="btn btn-primary" ng-disabled="error || incomplete
+ || (CurrencyController.name === null) || (CurrencyController.name === '')
+ || (CurrencyController.code === null) || (CurrencyController.code === '')
+ || (CurrencyController.inrConvertionRate === null) || (CurrencyController.inrConvertionRate === '')"
+  ng-click="saveCurrency()" ng-hide="info">
+    <span class="glyphicon glyphicon-save"></span> Save Changes
+  </button>
+  <button class="btn" ng-click="editCurrency(currency.id,'edit');toggleModal();" ng-show="info">
+      <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Edit
+      </button>
+</modal>
+</div>

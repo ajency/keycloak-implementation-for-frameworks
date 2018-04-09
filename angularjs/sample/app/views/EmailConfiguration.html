@@ -1,0 +1,130 @@
+<h3 class="text-center">Email Configuration</h3>
+<form id="footer_form_nonedit" class="form_wrap" name="myForm" ng-show="!isVisible">
+  <div class="row clearfix">
+    <div class="col-md-6 email_input" ng-class="{ 'has-error' : myForm.name.$invalid && !myForm.name.$pristine }">
+      <label class="col-sm-3 control-label nopad">Name:<span style="color:red">*</span></label>
+      <div class="col-sm-4">
+        <input type="text" class="form-control" name="name" ng-model="emailConfigurationCtrl.configured_account_name" placeholder="Name"
+          ng-minlength="3" required>
+      </div>
+    </div>
+
+    <div class="col-md-6 email_input" ng-class="{ 'has-error' : myForm.email.$invalid && !myForm.email.$pristine }">
+      <label class="col-sm-3 control-label nopad">Email:<span style="color:red">*</span></label>
+      <div class="col-sm-4">
+        <input type="text" class="form-control" type="email" name="email" ng-model="emailConfigurationCtrl.configured_email" placeholder="Email"
+          required>
+      </div>
+    </div>
+
+    <div class="col-md-6 email_input" ng-class="{ 'has-error' : myForm.email_password.$invalid && !myForm.email_password.$pristine }">
+      <label class="col-sm-3 control-label nopad">Email Password:<span style="color:red">*</span></label>
+      <div class="col-sm-4">
+        <input type="password" class="form-control" name="email_password" ng-model="emailConfigurationCtrl.email_password" placeholder="Email Password"
+          required>
+      </div>
+    </div>
+
+    <div class="col-md-6 email_input" ng-class="{ 'has-error' : myForm.email_host.$invalid && !myForm.email_host.$pristine }">
+      <label class="col-sm-3 control-label nopad">Email SMTP Host:<span style="color:red">*</span></label>
+      <div class="col-sm-4">
+        <input type="text" class="form-control" name="email_host" ng-model="emailConfigurationCtrl.email_host" placeholder="Email SMTP Host"
+          required>
+      </div>
+    </div>
+
+    <div class="col-md-6 email_input" ng-class="{ 'has-error' : myForm.email_smtp_port.$invalid && !myForm.email_smtp_port.$pristine }">
+      <label class="col-sm-3 control-label nopad">Email SMTP Port:<span style="color:red">*</span></label>
+      <div class="col-sm-4">
+        <input type="number" class="form-control" name="email_smtp_port" ng-model="emailConfigurationCtrl.email_smtp_port" placeholder="Email SMTP Port"
+          required>
+      </div>
+    </div>
+
+    <div class="col-md-6 email_input" ng-class="{ 'has-error' : myForm.email_imap_host.$invalid && !myForm.email_imap_host.$pristine }">
+      <label class="col-sm-3 control-label nopad">Email IMAP Host:<span style="color:red">*</span></label>
+      <div class="col-sm-4">
+        <input type="text" class="form-control" name="email_imap_host" ng-model="emailConfigurationCtrl.email_imap_host" placeholder="Email IMAP Host"
+          required>
+      </div>
+    </div>
+
+    <div class="col-md-6 email_input" ng-class="{ 'has-error' : myForm.email_imap_port.$invalid && !myForm.email_imap_port.$pristine }">
+      <label class="col-sm-3 control-label nopad">Email IMAP Port:<span style="color:red">*</span></label>
+      <div class="col-sm-4">
+        <input type="number" class="form-control" name="email_imap_port" ng-model="emailConfigurationCtrl.email_imap_port" placeholder="Email IMAP Port"
+          required>
+      </div>
+    </div>
+
+    <div class="col-md-6 email_input" ng-class="{ 'has-error' : myForm.mail_box_folder.$invalid && !myForm.mail_box_folder.$pristine }">
+      <label class="col-sm-3 control-label nopad">Mail Box Folder:<span style="color:red">*</span></label>
+      <div class="col-sm-4">
+        <input type="text" class="form-control" name="mail_box_folder" ng-model="emailConfigurationCtrl.mail_box_folder" placeholder="Mail Box Folder"
+          required>
+      </div>
+    </div>
+
+    <div class="col-md-6 email_input" ng-class="{ 'has-error' : myForm.is_secure_email.$invalid && !myForm.is_secure_email.$pristine }">
+      <label class="col-sm-3 control-label nopad">Is Secure Email:</label>
+      <div class="col-sm-4">
+        <input type="checkbox" ng-model="emailConfigurationCtrl.is_secure_email">
+      </div>
+    </div>
+  </div>
+  <div class="text-center" id="button">
+    <button class="btn btn-primary email_save_btn" ng-disabled="error || incomplete" ng-click="updateEmailConfiguration()">
+      <span class="glyphicon glyphicon-save"></span> Save Changes
+    </button>
+  </div>
+  </div>
+</form>
+<form id="footer_form_edit" class="form_wrap" ng-show="isVisible">
+  <div class="row clearfix">
+    <div class="col-md-6">
+      <p>
+        <label>Name:</label>
+        <span>{{emailConfigurationCtrl.configured_account_name}}</span>
+      </p>
+      <p>
+        <label>Email SMTP Host:</label>
+        <span>{{emailConfigurationCtrl.email_host}}</span>
+      </p>
+    </div>
+    <div class="col-md-6">
+      <p>
+        <label>Email:</label>
+        <span>{{emailConfigurationCtrl.configured_email}}</span>
+      </p>
+      <p>
+        <label>Email SMTP Port:</label>
+        <span>{{emailConfigurationCtrl.email_smtp_port}}</span>
+      </p>
+    </div>
+    <div class="col-md-6">
+      <p>
+        <label>Email IMAP Host:</label>
+        <span>{{emailConfigurationCtrl.email_imap_host}}</span>
+      </p>
+      <p>
+        <label>Mail Box Folder:</label>
+        <span>{{emailConfigurationCtrl.mail_box_folder}}</span>
+      </p>
+    </div>
+    <div class="col-md-6">
+      <p>
+        <label>Email IMAP Port:</label>
+        <span>{{emailConfigurationCtrl.email_imap_port}}</span>
+      </p>
+      <p>
+        <label>Is Mail Secure:</label>
+        <span>{{emailConfigurationCtrl.is_secure_email}}</span>
+      </p>
+  </div>
+  </div>
+  <div class="text-center" id="button">
+    <button class="btn btn-primary" ng-disabled="error || incomplete" ng-click="deleteEmailConfiguration()">
+      <span class="glyphicon glyphicon-save"></span> Delete Configuration
+    </button>
+  </div>
+</form>

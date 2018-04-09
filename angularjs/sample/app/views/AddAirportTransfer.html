@@ -1,0 +1,198 @@
+<div class="col-lg-12 col-md-12" ng-controller="airportTransferController" ng-init="getAllConstants()">
+  <h3 class="text-center">Airport Transfers</h3>
+
+  <button style="position:relative;z-index:10" class="btn btn-success" ng-click="editActivity('new');toggleModal();">
+    <span class="glyphicon glyphicon-"></span> Create New Transfer
+  </button>
+  <div style="position:relative;z-index:20" class="form-group pull-right">
+    <input type="text" ng-model="searchValue" class="form-control" placeholder="Search">
+  </div>
+  </br>
+  </br>
+  <div style="position:relative;z-index:10" class="table-responsive">
+    <table class="table table-striped table-bordered">
+      <thead>
+      <tr>
+        <th ng-click="sort('id')">Transfer Id
+          <span class="glyphicon sort-icon" ng-show="sortKey=='id'"
+                ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+        </th>
+        <th ng-click="sort('cityName')">City
+          <span class="glyphicon sort-icon" ng-show="sortKey=='cityId'"
+                ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+        </th>
+        <th ng-click="sort('airportName')">Airport
+          <span class="glyphicon sort-icon" ng-show="sortKey=='cityId'"
+                ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+        </th>
+        <th ng-click="sort('defaultTransferType')">Transfer Type
+          <span class="glyphicon sort-icon" ng-show="sortKey=='defaultTransferType'"
+                ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+        </th>
+        <th>Edit</th>
+        <th>Status</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr dir-paginate="activity in activities |orderBy:sortKey:reverse|filter:searchValue|itemsPerPage:50 "
+          current-page="currentPage">
+
+        <td>{{ activity.id }}</td>
+        <td>{{ activity.cityName }}</td>
+        <td>{{ activity.airportName }}</td>
+        <td>{{ activity.defaultTransferType }}</td>
+        <td>
+          <button class="btn" ng-click="editActivity(activity.sequence);toggleModal();">
+            <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Edit
+          </button>
+        </td>
+        <td class="text-center">
+          <button class="btn btn-success btn-sm statusBtn" ng-show="activity.active"
+                  ng-click="statusActivity(activity.sequence)">
+            Active
+          </button>
+          <button class="btn btn-danger btn-sm statusBtn" ng-hide="activity.active"
+                  ng-click="statusActivity(activity.sequence)">
+            Deactive
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <dir-pagination-controls
+      max-size="20"
+      direction-links="true"
+      boundary-links="true">
+    </dir-pagination-controls>
+  </div>
+
+  <!-- End table-responsive -->
+  <div class="col-sm-12">
+    <button style="position:relative;z-index:10" class="btn btn-success" ng-click="getMoreActivities();">
+      <span class="glyphicon glyphicon-"></span> Get More
+    </button>
+  </div>
+
+  <modal dikhao="showModal" class="container-fluid">
+
+    <form class="form-horizontal" name='activityForm' novalidate>
+
+      <div class="form-group" ng-show="isNew">
+        <label class="col-sm-3 control-label">Country:<span style="color:red">*</span></label>
+
+        <div class="col-sm-4">
+          <select ng-disabled="(act === 'update')" class="form-control" ng-model="airportTransferController.country"
+                  ng-options="item.id as item.name for item in countries" ng-change="getActiveStatesByCountries(1)">
+            <option value="">Select country</option>
+
+          </select>
+        </div>
+      </div>
+      <div class="form-group" ng-show="isNew">
+        <label class="col-sm-3 control-label">State:<span style="color:red">*</span></label>
+
+        <div class="col-sm-4">
+          <select ng-disabled="(act === 'update')" class="form-control" ng-model="airportTransferController.state"
+                  ng-options="item.id as item.state for item in states" ng-change="getActiveCitiesByStates(1)">
+            <option value="">Select state</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group" ng-show="isNew">
+        <label class="col-sm-3 control-label">City:<span style="color:red">*</span></label>
+
+        <div class="col-sm-4">
+          <select ng-disabled="(act === 'update')" class="form-control" ng-model="airportTransferController.city"
+                  ng-options="item.id as item.city for item in cities">
+            <option value="">Select city</option>
+          </select>
+        </div>
+      </div>
+
+      <!--<div class="form-group" ng-if="isNew">-->
+        <!--<label class="col-sm-3 control-label">Airport :<span style="color:red">*</span></label>-->
+
+        <!--<div class="col-sm-4">-->
+          <!--<select class="form-control" ng-model="airportTransferController.airportId" ng-change = "createAirportsArray()"-->
+                  <!--ng-options="item.id as item.name for item in airportsOfCity">-->
+            <!--<option value="">Select Option</option>-->
+          <!--</select>-->
+        <!--</div>-->
+      <!--</div>-->
+
+      <div class="form-group" ng-if="isNew">
+
+        <label class="col-sm-3 control-label">Airport:<span style="color:red">*</span></label></label>
+
+        <div class="col-sm-4">
+          <div class="input-group">
+            <input type="text" ng-disabled="(act === 'update')" class="form-control" name="search"
+             ng-model="airportTransferController.search"
+                   placeholder="Search by name, code">
+              <span class="input-group-addon search" ng-click="addNewAirport()"><span
+                class="glyphicon glyphicon-search"></span> </span>
+          </div>
+        </div>
+
+
+        <div class="col-sm-4">
+          <span style="color:red" ng-show="showerror() && showerr">Search text is required.</span>
+        </div>
+
+      </div>
+
+      <div class="form-group" ng-show="showselect" ng-if="isNew">
+        <div class="col-sm-4 col-sm-offset-3">
+          <select class="form-control" ng-model="airportTransferController.airportId"
+                  ng-options="item.id as item.formattedName for item in airportTransferController.listAirports">
+            <option value="">Select Airport</option>
+          </select>
+        </div>
+      </div>
+
+
+      <div class="form-group" ng-hide="isNew">
+        <label class="col-sm-3 control-label">City</label>
+
+        <div class="col-sm-8">
+          <p>{{oldcityname}}</p>
+        </div>
+      </div>
+
+      <div class="form-group" ng-hide="isNew">
+        <label class="col-sm-3 control-label">Airport</label>
+
+        <div class="col-sm-8">
+          <p>{{oldairportname}}</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Default Transfer Type<span style="color:red">*</span></label>
+
+        <div class="col-sm-7">
+          <select class="form-control" ng-model="airportTransferController.default_transfer_type"
+                  ng-options="item.id as item.fullName for item in transferTypes">
+            <option value="">Select Type</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">From airport to hotel</label>
+        <div class="col-sm-7">
+          <input type="checkbox" ng-model="airportTransferController.from_airport" ng-checked="airportTransferController.from_airport === true">
+        </div>
+      </div>
+    </form>
+    <!-- End Form -->
+    <hr>
+    <button class="btn btn-primary" ng-disabled="validateAirportTransfer(error, incomplete)"
+       ng-click="saveActivity()">
+      <span class="glyphicon glyphicon-save"></span> Save Changes
+    </button>
+  </modal>
+  <!-- End modal -->
+  <div>
+
+  </div>
+</div> <!-- End container -->
