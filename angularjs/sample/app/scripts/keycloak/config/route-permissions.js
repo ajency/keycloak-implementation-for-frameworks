@@ -1,13 +1,13 @@
-zopkyFrontendApp.constant("KCroutePermissions",{
+mainModule.constant("KCroutePermissions",{
     "/leads": [
         {
             "resource_set_name" : "res:leads",
             // "scopes":["scopes:list"]
         }
     ],
-    "/goomourl": [
+    "/adduser": [
                     {
-                        "resource_set_name" : "res:goomourl",
+                        "resource_set_name" : "res:adduser",
                     }
                 ],
     "/employee": [

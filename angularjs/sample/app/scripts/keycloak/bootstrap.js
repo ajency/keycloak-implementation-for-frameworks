@@ -1,164 +1,74 @@
-function bootstrapAngular(ajkeycloak,userInfo){ // bootstrap after keycloak is done
-
-  zopkyFrontendApp.constant("KEYCLOAKINFO", userInfo); // add keycloak user info as constant
-  zopkyFrontendApp.constant("$ajkeycloak",ajkeycloak); // add keycloak instance as constant
-
-  zopkyFrontendApp.factory('unAuthorisedLogin',function($ajkeycloak, $rootScope, KCuiPermissions){
-    $rootScope.ajkeycloak = ajkeycloak;
-    $rootScope.KCuiPermissions = KCuiPermissions;
-
-    return {
-      inValidApiAccess: false
-    }
-  });
-
-  zopkyFrontendApp.factory('setKeycloakHeaders',function($q, $location, unAuthorisedLogin){
-    return {
-      request: function(config){
-        let deferred = $q.defer();
-        ajkeycloak.keycloak.updateToken(5).success(function(refreshed){
-          config.headers['Authorization'] = "Bearer " + ajkeycloak.keycloak.token;
-          deferred.resolve(config);
-        })
-        .error(function(err){
-          deferred.reject(err);
-        });
-        return deferred.promise;
-      },
-      requestError: function(rejection) {
-        // do something on error
-        console.warn("requestError: ", rejection);
-        return $q.reject(rejection);
-      },
-      responseError: function(rejection) {
-        // do something on error
-        console.warn("responseError: ", rejection);
-        // if(rejection.status === 401){
-        //   unAuthorisedLogin.inValidApiAccess = true;
-        //   $location.path("/unauthorized");
-        // }
-        return $q.reject(rejection);
-      }
-    }
-  });
-
-  zopkyFrontendApp.config(function($httpProvider){
-    $httpProvider.interceptors.push('setKeycloakHeaders');
-  });
-
-  angular.bootstrap(document.body, ['zopkyFrontendApp']);
-  
-  zopkyFrontendApp.run(function ($location, $localStorage, $mdSidenav,
-    $mdToast, $rootScope, $mdDialog, CommonMethods, $timeout, spinnerService) {
-
-    spinnerService.show('html5spinner');
-
-    $rootScope.alertDialog = false;
-    $rootScope.showAlertDialog = function (title, message, shouldGoBack) {
-      $rootScope.alertDialog = true;
-
-      var alert = $mdDialog.alert()
-        .parent(angular.element(document.querySelector('#popupContainer')))
-        .clickOutsideToClose(true)
-        .title(title)
-        .textContent(message)
-        .ariaLabel('Alert')
-        .ok('Got it!')
-
-      $mdDialog.show(alert).then(function () {
-        $rootScope.alertDialog = false;
-        $mdDialog.cancel();
-        if (shouldGoBack) {
-          $rootScope.back();
-        }
-      });
-    };
-
-    $rootScope.handleEnterClickOnForm = function(input1, input2) {
-      document.getElementById(input1).blur();
-      if(input2) {
-        document.getElementById(input2).focus();
-      }
-    }
-
-    $rootScope.back = function () {
-      if ($rootScope.alertDialog === false) {
-        var prevPage = window.location.href;
-        window.history.back();
-        setTimeout(function () {
-          if (window.location.href == prevPage) $location.path('/');
-        }, 500);
-      }
-    }
-    $rootScope.saveItinerary = function (draft_id, deal_id) {
-      $rootScope.showFooter = true;
-
-      var postData = {};
-      postData.submit_type = 'save';
-      if (draft_id) {
-        var url = saveDraft + draft_id;
-      } else {
-        var url = saveDeal + deal_id;
-      }
-      CommonMethods.doPostCall(url, postData, function (err, data, status) {
-        if (err) {
-          if (status === 405) {
-            $mdDialog.cancel();
-            $location.search({ draft_id: draft_id, deal_id: deal_id });
-            $location.path('/login');
-            $mdToast.show(
-              $mdToast.simple()
-                .textContent(err)
-                .hideDelay(3000)
-            );
-          } else {
-            $mdToast.show(
-              $mdToast.simple()
-                .textContent(err)
-                .hideDelay(3000)
-            );
-          }
-        } else {
-          $mdDialog.cancel();
-          $mdToast.show(
-            $mdToast.simple()
-              .textContent(data)
-              .hideDelay(2000)
-          );
-
-          if (!$localStorage.zopkytoken.contact || !$localStorage.zopkytoken.contact === '') {
-            $rootScope.verifyContact();
-          }
-        }
-      })
-    }
-  });
-
+function bootstrapAngularCallback(ajkeycloak,userInfo){ // callback invoked after keycloak initialisation is done but before angularjs bootstrap
+  console.log("we do nothing here now", ajkeycloak, userInfo);
 } // end bootstrap Angular
 
-function initializeKeycloak() {
 
-  $.getJSON('keycloak.json', function(data) {
-      //do stuff with your data here
-      console.log("keycloak json", data);
+// define additional services / factories to be injected
+// var unAuthorisedLogincallback = function($ajkeycloak, $rootScope, KCuiPermissions){
+//   return {
+//     inValidApiAccess: false
+//   }
+// }
 
-      var ajkeycloak = Ajkeycloak(data);
+// define a default interceptor service callback to handle 401 unauthorised api calls
+var keycloakinterceptorcallback = function($q, $location, ajkeycloakservice){ // ( NOTE: ajkeycloak & KCuiPermissions are globally available for use within view templates once we inject the ajkeycloakservice into any service, controller, etc )
+                          return {
+                            request: function(config){
+                              let deferred = $q.defer();
+                              Ajkeycloak().keycloak.updateToken(5).success(function(refreshed){
+                                config.headers['Authorization'] = "Bearer " + Ajkeycloak().keycloak.token;
+                                deferred.resolve(config);
+                              })
+                              .error(function(err){
+                                deferred.reject(err);
+                              });
+                              return deferred.promise;
+                            },
+                            requestError: function(rejection) {
+                              // do something on error
+                              console.warn("requestError: ", rejection);
+                              return $q.reject(rejection);
+                            },
+                            responseError: function(rejection) {
+                              // do something on error
+                              console.warn("responseError: ", rejection);
+                              // if(rejection.status === 401){
+                              //   ajkeycloakservice.inValidApiAccess = true;
+                              //   $location.path("/unauthorized");
+                              // }
+                              return $q.reject(rejection);
+                            }
+                          }
+                        };
 
-      ajkeycloak.keycloak.init({
-          onLoad: 'login-required'
-      }).success(function () {
-        ajkeycloak.keycloak.loadUserInfo().success(function (userInfo) {
-            console.log("userinfo", userInfo);
-              // if(keycloak.hasResourceRole('angular-js-app-role')){
-                bootstrapAngular(ajkeycloak,userInfo);
-              // }
-          })
-          .error(function(error){
-            alert(error);
-          });
-      });
-  });
+// your apps main run block goes here
+var runblockcallback = function ($location, $localStorage, $mdSidenav,
+    $mdToast, $rootScope, $mdDialog, CommonMethods, $timeout, spinnerService) {
+      // add your run code here
+  };
+                        
+// options to be passed to the angular bootstrap method
+var ajkeycloak_bootstrap_options = {
+                          keycloakjson: 'keycloak.json', // required
+                          angularmodule: {
+                                name: "mainModule", // required
+                                instance: mainModule // required
+                              },
+                          keycloakoptions: { // required
+                                      onLoad: 'login-required'
+                                    },
+                          interceptor: keycloakinterceptorcallback, // optional
+                          // helperservices: {
+                          //     unAuthorisedLogin: {
+                          //       type: "factory", 
+                          //       service: unAuthorisedLogincallback
+                          //     }
+                          // },
+                          bootstrapnode: document.body, // required
+                          runblock: runblockcallback // required
+                      };
 
-}  
 
-initializeKeycloak();
+// running this code creates a service called ajkeycloakservice as well as 2 constants $ajkeycloak & USERINFO
+// which can be used in your angularjs application.
+Ajkeycloak().bootstrapAngular(ajkeycloak_bootstrap_options,bootstrapAngularCallback);

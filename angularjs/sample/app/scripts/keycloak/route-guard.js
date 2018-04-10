@@ -1,4 +1,4 @@
-zopkyFrontendApp.constant("KCrouteGuard",{
+mainModule.constant("KCrouteGuard",{
         redirectUnauthorizedView: function($location, deferred, message){
             $location.path("/unauthorized");
             deferred.reject(message);
@@ -12,7 +12,7 @@ zopkyFrontendApp.constant("KCrouteGuard",{
                 }
             }
 
-            resolves.check_resource_authorization = function($q, $ajkeycloak, $location, unAuthorisedLogin){
+            resolves.check_resource_authorization = function($q, $ajkeycloak, $location, ajkeycloakservice){
                 var deferred = $q.defer();
                 if($ajkeycloak){
 
@@ -23,7 +23,7 @@ zopkyFrontendApp.constant("KCrouteGuard",{
                             })
                             .catch(function(err){
                                 console.warn("check resource authorization error:", err);
-                                unAuthorisedLogin.inValidApiAccess = true;
+                                ajkeycloakservice.inValidApiAccess = true;
                                 self.redirectUnauthorizedView($location, deferred, err);
                             });
                 }
