@@ -19,3 +19,11 @@
 * `KCroutePermissions` would be used to specify route entitlement permissions to be used in the routes.js file for use in the client side routing implementation
 * `KCuiPermissions` can be used your view templates for show / hide of UI elements by calling the `hasAccess` method of the library *(Note: The `protect` method must be implicitly called on the associated client route before using the `hasAccess` method in the view template for the associated route.)*
 
+**Variables available for use in angular after bootstrap**
+* `$ajkeycloak` : ajkeycloak singleton instance as an angular constant
+* `KEYCLOAKINFO` : Keycloak user info as an angular constant
+* `ajkeycloakservice` : angular service having instances of the above 2
+
+**Variables available for use in view templates (NOTE: These UI variables are globally available for use within view templates only after injection of ajkeycloakservice into another angularjs component)**
+* `ajkeycloak` : ajkeycloak singleton instance attached to `$rootscope`
+* `KCuiPermissions` : UI permissions constant attached to `$rootscope`
