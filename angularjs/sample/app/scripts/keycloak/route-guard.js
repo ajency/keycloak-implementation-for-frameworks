@@ -6,13 +6,13 @@ mainModule.constant("KCrouteGuard",{
         protect: function(permissions, resolvable_instance){ // arguments passed in are permissions & resolvable instance object of the same format as specified in the documentation of resolve under angular $routeProvider
             var resolves = {}, self = this;
             if(typeof resolvable_instance === 'object'){
-                for(key in resolvable_instance){
+                for(var key in resolvable_instance){
                     if(typeof resolvable_instance[key] === 'string' || typeof resolvable_instance[key] === 'function')
                         resolves[key] = resolvable_instance[key];
                 }
             }
 
-            resolves.check_resource_authorization = function($q, $ajkeycloak, $location, ajkeycloakservice){
+            resolves.check_resource_authorization = ["$q", "$ajkeycloak", "$location", "ajkeycloakservice", function($q, $ajkeycloak, $location, ajkeycloakservice){
                 var deferred = $q.defer();
                 if($ajkeycloak){
 
@@ -32,7 +32,7 @@ mainModule.constant("KCrouteGuard",{
                     self.redirectUnauthorizedView($location, deferred, "keycloak instance not present");
                 }
                 return deferred.promise;
-            };
+            }];
 
             return resolves;
         }

@@ -24,6 +24,6 @@
 * `KEYCLOAKINFO` : Keycloak user info as an angular constant
 * `ajkeycloakservice` : angular service having instances of the above 2
 
-**Variables available for use in view templates (NOTE: These UI variables are globally available for use within view templates only after injection of ajkeycloakservice into another angularjs component)**
+**Variables available for use in view templates (NOTE: These UI variables are globally available for use within view templates only after injection of `ajkeycloakservice` into another angularjs component or if you do not wish to use the *service* you could add them to `$rootScope` yourself within the run block for example)**
 * `ajkeycloak` : ajkeycloak singleton instance attached to `$rootscope`
 * `KCuiPermissions` : UI permissions constant attached to `$rootscope`
