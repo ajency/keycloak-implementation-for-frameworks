@@ -6,13 +6,18 @@
 
 
 **Setup steps**
+* Add you clients `keycloak.json` file to the apps root
 * Create a folder `keycloak` at the app entry point of your angularjs application
 * Within the newly created folder add 2 new files `bootstrap.js` and `route_guard.js`
 * Create another folder named `config` within `keycloak`
-* This folder contains 2 additional files `route-permissions.js` and `ui-permissions.js` 
+* This folder contains 2 additional files `route-permissions.js` and `ui-permissions.js`
+* Create a separate unauthorised view / route for your app if it doesnt already exist 
+* Add references to all of the above files in your apps `index.html` file *(refer to sample code)*
+* If you are using angular's auto bootstrap remove the `ng-app` attribute from your `index.html` file as we will be performing a manual bootstrap of the application. 
 
 **Explanation**
-* The main entry point for your application will be within `keycloak/bootstrap.js` where you would need to define all your boilerplate initialisation code.
+* The main entry point for your application will be within `keycloak/bootstrap.js` where you would need to define all your boilerplate initialisation code. You would need to move some of your initailisation code from your `app.js` file here.
+* If your app already has a login page changes would be needed to be made to the code to perform an auto login & also maybe bypassing a password check.
 * Ideally angularjs applications have a seperate routes file aptly named as routes.js or similar which either use `ngRouter` or `uiRouter` both of which have support from resolving routes based on returned promises which we will use.
 * Will will create a custom route-guard.js file contain the `KCrouteGuard` which implements the resolve functionality of `ngRouter` or `uiRouter`.
 * We also need the 2 additional files *route-permissions.js* containing the `KCroutePermissions` constant & *ui-permissions.js* containing the `KCuiPermissions` constant.

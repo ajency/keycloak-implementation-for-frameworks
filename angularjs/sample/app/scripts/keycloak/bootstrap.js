@@ -14,7 +14,7 @@
   // define a default interceptor service callback to handle 401 unauthorised api calls
   var keycloakinterceptorcallback = ["$q", "$location", "ajkeycloakservice", function($q, $location, ajkeycloakservice){ // ( NOTE: ajkeycloak & KCuiPermissions are globally available for use within view templates once we inject the ajkeycloakservice into any service, controller, etc )
         return {
-          request: function(config){
+          request: function(config){ // set the keycloak access token in the authorization header for every request going out of the app (to be handled by your rest server)
             let deferred = $q.defer();
             Ajkeycloak().keycloak.updateToken(5).success(function(refreshed){
               config.headers['Authorization'] = "Bearer " + Ajkeycloak().keycloak.token;
@@ -59,7 +59,7 @@
                                         onLoad: 'login-required'
                                       },
                             interceptor: keycloakinterceptorcallback, // optional
-                            // helperservices: {
+                            // helperservices: { // optional
                             //     unAuthorisedLogin: {
                             //       type: "factory", 
                             //       service: unAuthorisedLogincallback
@@ -70,7 +70,7 @@
                         };
   
   
-  // running this code creates a service called ajkeycloakservice as well as 2 constants $ajkeycloak & USERINFO
+  // running this code creates a service called ajkeycloakservice as well as 2 constants $ajkeycloak & KEYCLOAKINFO
   // which can be used in your angularjs application.
   Ajkeycloak().bootstrapAngular(ajkeycloak_bootstrap_options,bootstrapAngularCallback);
   
