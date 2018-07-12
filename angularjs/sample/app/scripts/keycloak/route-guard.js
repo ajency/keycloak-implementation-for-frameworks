@@ -12,7 +12,7 @@ mainModule.constant("KCrouteGuard",{
                 }
             }
 
-            resolves.check_resource_authorization = ["$q", "$ajkeycloak", "$location", "ajkeycloakservice", function($q, $ajkeycloak, $location, ajkeycloakservice){
+            resolves.check_resource_authorization = ["$q", "$ajkeycloak", "$location", function($q, $ajkeycloak, $location){
                 var deferred = $q.defer();
                 if($ajkeycloak){
 
@@ -23,7 +23,7 @@ mainModule.constant("KCrouteGuard",{
                             })
                             .catch(function(err){
                                 console.warn("check resource authorization error:", err);
-                                ajkeycloakservice.inValidApiAccess = true;
+                                $ajkeycloak.inValidApiAccess = true;
                                 self.redirectUnauthorizedView($location, deferred, err);
                             });
                 }

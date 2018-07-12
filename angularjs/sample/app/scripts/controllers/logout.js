@@ -1,9 +1,9 @@
 'use strict';
-mainModule.controller('logoutController', ['$scope', '$http', 'UtilsFactory', '$localStorage', '$window', 'ajkeycloakservice',
-  function ($scope, $http, UtilsFactory, $localStorage, $window, ajkeycloakservice) {
+mainModule.controller('logoutController', ['$scope', '$http', 'UtilsFactory', '$localStorage', '$window', '$ajkeycloak',
+  function ($scope, $http, UtilsFactory, $localStorage, $window, $ajkeycloak) {
     // console.log("inside logout");
     $scope.logout = function(){
-      ajkeycloakservice.instance.keycloak.logout();
+      $ajkeycloak.keycloak.logout();
     }
 
   }

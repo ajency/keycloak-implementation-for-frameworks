@@ -1,7 +1,7 @@
 'use strict';
 mainModule.controller('loginController',
-  ['$scope', '$http', 'UtilsFactory', '$localStorage', '$window', 'dialogs','KEYCLOAKINFO',
-    function ($scope, $http, UtilsFactory, $localStorage, $window, dialogs, KEYCLOAKINFO) {
+  ['$scope', '$http', 'UtilsFactory', '$localStorage', '$window', 'dialogs','$ajkeycloak',
+    function ($scope, $http, UtilsFactory, $localStorage, $window, dialogs, $ajkeycloak) {
 
       //$scope.$storage = $localStorage;
 
@@ -44,9 +44,9 @@ mainModule.controller('loginController',
       $scope.initKeycloakLogin = function(){
         if($localStorage.zopkytoken == null){
             //DOM has finished rendering
-            console.log("keycloka info", KEYCLOAKINFO);
-            if(KEYCLOAKINFO && KEYCLOAKINFO.email){
-              $scope.loginController.username = KEYCLOAKINFO.email
+            console.log("keycloka info", $ajkeycloak);
+            if($ajkeycloak && $ajkeycloak.userInfo && $ajkeycloak.userInfo.email){
+              $scope.loginController.username = $ajkeycloak.userInfo.email
               $scope.loginController.password = "xxxxxxxxxx";
   
               $scope.login();

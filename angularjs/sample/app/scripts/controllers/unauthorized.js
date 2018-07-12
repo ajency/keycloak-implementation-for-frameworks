@@ -8,18 +8,18 @@
  * Controller of the mainModule
  */
 angular.module('mainModule')
-  .controller('UnauthorizedCtrl', ["$scope", "$location", "ajkeycloakservice", function ($scope, $location, ajkeycloakservice) {
+  .controller('UnauthorizedCtrl', ["$scope", "$location", "$ajkeycloak", function ($scope, $location, $ajkeycloak) {
         $scope.logout = function(){
-            ajkeycloakservice.instance.keycloak.logout();
+            $ajkeycloak.keycloak.logout();
         }
 
         $scope.init = function(){
-            if(ajkeycloakservice.inValidApiAccess){
+            if($ajkeycloak.inValidApiAccess){
                 
             }
             else{
                 $location.path("/leads");
             }
-            ajkeycloakservice.inValidApiAccess = false;
+            $ajkeycloak.inValidApiAccess = false;
         }
   }]);
