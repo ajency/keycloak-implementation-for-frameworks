@@ -15,7 +15,12 @@ module.exports = {
 
 
     search: function (req, res) {
-            // search controller code
+        // search controller code
+        // ...
+        // AJKEYCLOAKFACTORY is a global
+        var user_roles = AJKEYCLOAKFACTORY.getUserGroupMembership(req); 
+        var user_info= AJKEYCLOAKFACTORY.getUserInfo(req);
+        // ...
     },
 
 }
